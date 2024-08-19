@@ -1,0 +1,38 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.javamodularity:moduleplugin:1.8.12'
+        classpath 'org.openjfx:javafx-plugin:0.0.13'
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'org.javamodularity.moduleplugin'
+    apply plugin: 'org.openjfx.javafxplugin'
+
+    repositories {
+        mavenCentral()
+    }
+
+    group 'rahulstech.javafx'
+    version '1.0'
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_9
+        targetCompatibility = JavaVersion.VERSION_1_9
+    }
+}

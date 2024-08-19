@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+}
+
+javafx {
+    version '11'
+    modules = ['javafx.fxml','javafx.controls']
+    configuration = 'compileOnly'
+}

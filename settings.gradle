@@ -1,0 +1,3 @@
+rootProject.name = "javafx-routing"
+include ":library"
+include ":samples:single-scene-demo"

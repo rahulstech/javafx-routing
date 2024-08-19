@@ -1,0 +1,17 @@
+plugins {
+    id 'application'
+}
+
+javafx {
+    version = '21'
+    modules = ['javafx.fxml','javafx.controls']
+}
+
+application {
+    mainModule = "singlescenedemo"
+    mainClass = "rahulstech.jfx.singlescenedemo.DemoApplication"
+}
+
+dependencies {
+    implementation project(":library")
+}

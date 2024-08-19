@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="10">
+
+    <padding>
+        <Insets top="12" left="12" right="12" bottom="12"/>
+    </padding>
+
+    <Label VBox.vgrow="NEVER" fx:id="label" style="-fx-font-size: 24pt; -fx-font-weight: 700"/>
+
+    <Label text="Screen Number" />
+
+    <Spinner fx:id="spinner" editable="true" min="0" max="9" initialValue="0" amountToStepBy="1" />
+
+    <Button fx:id="backButton" text="Back" onAction="#handleBackButtonClick"/>
+
+    <Button fx:id="nextDestinationButton" text="Go To" onAction="#handleNextDestinationButtonClick"/>
+
+</VBox>

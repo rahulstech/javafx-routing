@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import rahulstech.jfx.routing.layout.RouterStackPane?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml/1"
+            fx:id="borderPane"
+            fx:controller="rahulstech.jfx.singlescenedemo.DemoRoutingController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Button text="Change Center" onAction="#handleChangeCenterButtonClick"/>
+        </HBox>
+    </top>
+<center>
+    <RouterStackPane
+            contextClass="rahulstech.jfx.singlescenedemo.DemoRouterContext"
+            routerConfig="router.xml"/>
+</center>
+</BorderPane>
