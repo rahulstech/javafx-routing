@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+ adding animation is not mandatory; but animations make the transition look
+ more elegant, so you are recomanded to use some animation for screen transition.
+ you can set home destination enter animation seperately. to set home destination
+ enter transition use homeEnterAnimation attribute.
+ -->
+<router xmlns="https://github.com/rahulstech/javafx-routing"
+        home="dashboard"
+        enterAnimation="scale_up_xy"
+        exitAnimation="scale_down_xy"
+        popEnterAnimation="scale_up_xy"
+        popExitAnimation="scale_down_xy">
+
+    <!-- define some destinations -->
+    <destination id="dashboard"
+                 fxml="dashboard.fxml"/>
+
+    <!--
+        if your fxml does not set fxml:controller then you must set controller atribute.
+        if fxml:controller is set then this controller attribute value will be ignoed.
+        if fxml attribute not provided then you set controller attribute otherwise it will
+        throw error.
+
+        NOTE: If you are not using fxml then you are resposible to creat the layout file inside
+              this controller class. see the ScreenTwoController.java
+     -->
+
+    <destination id="screen1"
+                 fxml="screen1.fxml"
+                 controllerClass="rahulstech.jfx.routing.demo.ScreenOneController"/>
+
+    <destination id="screen2"
+                 controllerClass="rahulstech.jfx.routing.demo.ScreenTwoController"/>
+
+</router>

@@ -219,7 +219,7 @@ public class Router implements Disposable {
         return backstack;
     }
 
-    public Object getCurrentData() {
+    public RouterArgument getCurrentData() {
         RouterBackstackEntry topEntry = backstack.peekBackstackEntry();
         return topEntry.getData();
     }

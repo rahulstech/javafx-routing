@@ -86,8 +86,9 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
             controller = doCreateFromClass(controllerClass,options);
         }
         SingleSceneTransaction.SingleSceneTarget target
-                = new SingleSceneTransaction.SingleSceneTarget(destination.getId(),controller,controller.getRoot());
+                = new SingleSceneTransaction.SingleSceneTarget(destination.getId(),controller);
         target.onCreate();
+        target.setNode(controller.getRoot());
         return target;
     }
 

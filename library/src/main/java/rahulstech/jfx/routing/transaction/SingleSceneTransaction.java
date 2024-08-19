@@ -317,10 +317,9 @@ public class SingleSceneTransaction extends Transaction {
 
         private Backdrop backdrop;
 
-        public SingleSceneTarget(String tag, Object controller, Node node) {
+        public SingleSceneTarget(String tag, Object controller) {
             super(tag);
-            this.controller = Objects.requireNonNull(controller,"controller is null");
-            this.node = Objects.requireNonNull(node,"node is null");
+            this.controller = Objects.requireNonNull(controller, "controller is null");
         }
 
         public Object getController() {
@@ -329,6 +328,10 @@ public class SingleSceneTransaction extends Transaction {
 
         public Node getNode() {
             return node;
+        }
+
+        public void setNode(Node node) {
+            this.node = Objects.requireNonNull(node,"node is null");
         }
 
         public void setBackdrop(Backdrop backdrop) {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      style="-fx-background-color: CADETBLUE;"
+      spacing="10">
+
+    <Label VBox.vgrow="NEVER" fx:id="label"/>
+
+    <Button text="Back" onAction="#handleBackButtonClick"/>
+
+    <Button text="Go To" onAction="#handleGoToButtonClick"/>
+
+</VBox>
