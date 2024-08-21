@@ -7,9 +7,8 @@ import rahulstech.jfx.routing.Transaction;
 import rahulstech.jfx.routing.backstack.Backstack;
 import rahulstech.jfx.routing.element.RouterAnimation;
 import rahulstech.jfx.routing.element.RouterCompoundAnimation;
-import rahulstech.jfx.routing.lifecycle.LifecycleAwareController;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -81,41 +80,22 @@ public class SingleSceneTransaction extends Transaction {
         }
         enqueueOperation(()->{
             Backstack<Target> backstack = getBackstack();
-            int size = backstack.size();
 
+            // the top entry is the target entry, i.e. we are already in the target, no transaction to perform
             SingleSceneTarget from = (SingleSceneTarget) backstack.peekBackstackEntry();
             if (from.getTag().equals(tag)) {
                 return;
             }
 
-            SingleSceneTarget to = null;
-            ArrayList<Target> removal = new ArrayList<>();
-            Target entry;
-            for (int i=1; i<size; i++) {
-                if (!(entry = backstack.peekBackstackEntry(i)).getTag().equals(tag)) {
-                    removal.add(entry);
-                }
-                else {
-                    to = (SingleSceneTarget) entry;
-                    break;
-                }
-            }
+            SingleSceneTarget top = (SingleSceneTarget) backstack.popBackstackEntry();
 
-            if (null==to) {
-                // we did not find backstack entry for the given tag, no transaction to perform
-                removal.clear();
-                return;
-            }
+            // peek to Target to be shown next
+            SingleSceneTarget next = (SingleSceneTarget) backstack.peekBackstackEntry();
 
-            addInternal(to,popEnter);
-            destroyInternal(from,popExit);
 
-            removal.forEach(e->{
-                e.onDestroy();
-                backstack.remove(e);
-            });
-            backstack.remove(from);
-            removal.clear();
+            // perform the transaction
+            addInternal(next,popEnter);
+            destroyInternal(top,popExit);
         });
         return this;
     }
@@ -153,6 +133,7 @@ public class SingleSceneTransaction extends Transaction {
         return executePendingOperations();
     }
 
+    /** @InheritDoc */
     @Override
     public void doForcedShow(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
@@ -170,6 +151,8 @@ public class SingleSceneTransaction extends Transaction {
         addInternal(sst,sst.getCachedAnimation());
     }
 
+    /** @InheritDoc */
+    @Override
     public void doForcedHide(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
         Node node = sst.getNode();
@@ -180,6 +163,19 @@ public class SingleSceneTransaction extends Transaction {
         }
 
         Platform.runLater(sst::onHide);
+    }
+
+    /** @InheritDoc */
+    @Override
+    public void doForcedDestroy(Target target) {
+        SingleSceneTarget sst = (SingleSceneTarget) target;
+
+        RouterAnimation pending = RouterAnimation.getPendingAnimation(sst.getNode());
+        if (null!=pending) {
+            pending.stop();
+        }
+
+        Platform.runLater(sst::onDestroy);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -307,11 +303,9 @@ public class SingleSceneTransaction extends Transaction {
     //                       Declared Sub Classes                         //
     ///////////////////////////////////////////////////////////////////////
 
-    public static class SingleSceneTarget extends Target {
+    public static abstract class SingleSceneTarget extends Target {
 
-        private Object controller;
-
-        private Node node;
+        private final Object controller;
 
         private RouterAnimation cachedAnimation;
 
@@ -326,13 +320,7 @@ public class SingleSceneTransaction extends Transaction {
             return controller;
         }
 
-        public Node getNode() {
-            return node;
-        }
-
-        public void setNode(Node node) {
-            this.node = Objects.requireNonNull(node,"node is null");
-        }
+        public abstract Node getNode();
 
         public void setBackdrop(Backdrop backdrop) {
             this.backdrop = backdrop;
@@ -348,56 +336,6 @@ public class SingleSceneTransaction extends Transaction {
 
         public void setCachedAnimation(RouterAnimation cachedAnimation) {
             this.cachedAnimation = cachedAnimation;
-        }
-
-        @Override
-        public void onCreate() {
-            callOnLifecycleAwareController(controller,LifecycleAwareController::onLifecycleCreate);
-        }
-
-        @Override
-        public void onBeforeShow() {
-            callOnLifecycleAwareController(controller,LifecycleAwareController::onLifecycleInitialize);
-        }
-
-        @Override
-        public void onShow() {
-            callOnLifecycleAwareController(controller,LifecycleAwareController::onLifecycleShow);
-        }
-
-        @Override
-        public void onHide() {
-            callOnLifecycleAwareController(controller,LifecycleAwareController::onLifecycleHide);
-        }
-
-        @Override
-        public void onDestroy() {
-            callOnLifecycleAwareController(controller, LifecycleAwareController::onLifecycleDestroy);
-        }
-
-        @Override
-        public void dispose() {
-            if (isDisposed()) {
-                // it's already disposed
-                return;
-            }
-            RouterAnimation pending = RouterAnimation.getPendingAnimation(node);
-            if (null!=pending) {
-                pending.stop();
-            }
-            controller = null;
-            node = null;
-            cachedAnimation = null;
-            backdrop = null;
-            super.dispose();
-            setDisposed(true);
-        }
-
-        private void callOnLifecycleAwareController(Object controller, Consumer<LifecycleAwareController> consumer) {
-            if (controller instanceof LifecycleAwareController) {
-                LifecycleAwareController lac = (LifecycleAwareController) controller;
-                consumer.accept(lac);
-            }
         }
     }
 

@@ -22,9 +22,11 @@ public abstract class RouterExecutor implements Disposable {
 
     public abstract void popBackstack(Destination destination, RouterOptions options);
 
-    public abstract void doLifecycleShow(Destination destination, RouterOptions options);
+    public abstract void doLifecycleShow(Destination destination);
 
     public abstract void doLifecycleHide(Destination destination);
+
+    public abstract void doLifecycleDestroy(Destination destination);
 
     @Override
     public void dispose() {}

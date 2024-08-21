@@ -1,17 +1,16 @@
 package rahulstech.jfx.routing.routerexecutor;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import rahulstech.jfx.routing.Router;
-import rahulstech.jfx.routing.RouterContext;
-import rahulstech.jfx.routing.RouterExecutor;
-import rahulstech.jfx.routing.RouterOptions;
+import rahulstech.jfx.routing.*;
 import rahulstech.jfx.routing.element.Destination;
 import rahulstech.jfx.routing.element.RouterAnimation;
 import rahulstech.jfx.routing.lifecycle.LifecycleAwareController;
 import rahulstech.jfx.routing.transaction.SingleSceneTransaction;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class SingleSceneScreenExecutor extends RouterExecutor {
@@ -29,9 +28,7 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         String exitAnimationId = options.getExitAnimation();
         RouterAnimation enterAnimation = getAnimation(enterAnimationId);
         RouterAnimation exitAnimation = getAnimation(exitAnimationId);
-
         SingleSceneTransaction.SingleSceneTarget target = createTarget(destination,options);
-
         transaction.begin().replace(target,enterAnimation,exitAnimation).commit();
     }
 
@@ -46,7 +43,7 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
     }
 
     @Override
-    public void doLifecycleShow(Destination destination, RouterOptions options) {
+    public void doLifecycleShow(Destination destination) {
         String id = destination.getId();
         transaction.getBackstack()
                 .findFirst(target -> id.equals(target.getTag()))
@@ -59,6 +56,14 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         transaction.getBackstack()
                 .findFirst(target -> id.equals(target.getTag()))
                 .ifPresent(target -> transaction.doForcedHide(target));
+    }
+
+    @Override
+    public void doLifecycleDestroy(Destination destination) {
+        String id = destination.getId();
+        transaction.getBackstack()
+                .findFirst(target -> id.equals(target.getTag()))
+                .ifPresent(target -> transaction.doForcedDestroy(target));
     }
 
     @Override
@@ -86,9 +91,8 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
             controller = doCreateFromClass(controllerClass,options);
         }
         SingleSceneTransaction.SingleSceneTarget target
-                = new SingleSceneTransaction.SingleSceneTarget(destination.getId(),controller);
+                = new LifecycleAwareControllerTarget(destination.getId(),controller);
         target.onCreate();
-        target.setNode(controller.getRoot());
         return target;
     }
 
@@ -114,5 +118,57 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         LifecycleAwareController controller = (LifecycleAwareController) context.newControllerInstance(controllerClass);
         controller.setRouter(router);
         return controller;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    //                       Declared Sub Classes                         //
+    ///////////////////////////////////////////////////////////////////////
+
+    public static class LifecycleAwareControllerTarget extends SingleSceneTransaction.SingleSceneTarget {
+
+        public LifecycleAwareControllerTarget(String tag, LifecycleAwareController controller) {
+            super(tag,controller);
+        }
+
+        @Override
+        public LifecycleAwareController getController() {
+            return (LifecycleAwareController) super.getController();
+        }
+
+        public Node getNode() {
+            return getController().getRoot();
+        }
+
+        @Override
+        public void onCreate() {
+            callOnLifecycleAwareController(LifecycleAwareController::onLifecycleCreate);
+        }
+
+        @Override
+        public void onBeforeShow() {
+            callOnLifecycleAwareController(LifecycleAwareController::onLifecycleInitialize);
+        }
+
+        @Override
+        public void onShow() {
+            callOnLifecycleAwareController(LifecycleAwareController::onLifecycleShow);
+        }
+
+        @Override
+        public void onHide() {
+            callOnLifecycleAwareController(LifecycleAwareController::onLifecycleHide);
+        }
+
+        @Override
+        public void onDestroy() {
+            callOnLifecycleAwareController(LifecycleAwareController::onLifecycleDestroy);
+        }
+
+        private void callOnLifecycleAwareController(Consumer<LifecycleAwareController> consumer) {
+            LifecycleAwareController controller = getController();
+            if (null!=controller) {
+                consumer.accept(controller);
+            }
+        }
     }
 }

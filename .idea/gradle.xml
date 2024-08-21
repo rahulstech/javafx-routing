@@ -10,15 +10,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/samples" />
-            <option value="$PROJECT_DIR$/samples/single-scene-demo" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/samples/basic-demo" />
-        <option name="modules">
-          <set>
             <option value="$PROJECT_DIR$/samples/basic-demo" />
+            <option value="$PROJECT_DIR$/samples/single-scene-demo" />
           </set>
         </option>
       </GradleProjectSettings>

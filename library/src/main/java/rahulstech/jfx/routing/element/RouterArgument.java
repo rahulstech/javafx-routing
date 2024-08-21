@@ -43,7 +43,7 @@ public class RouterArgument {
         return map.get(name);
     }
 
-    public Object getValue(String name) {
+    public <T> T getValue(String name) {
         NameValue nv = getArgument(name);
         if (null==nv) {
             return null;
@@ -156,8 +156,9 @@ public class RouterArgument {
             this.value = value;
         }
 
-        public Object getValue() {
-            return value;
+        @SuppressWarnings("unchecked")
+        public <T> T getValue() {
+            return (T) value;
         }
 
         public char getAsChar() {

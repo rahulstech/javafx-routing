@@ -3,6 +3,8 @@ package rahulstech.jfx.routing.backstack;
 import rahulstech.jfx.routing.util.Disposable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -40,6 +42,36 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             throw new IndexOutOfBoundsException("popping entry at "+indexFromTop+" from a stack of size "+size);
         }
         return backstack.get(index);
+    }
+
+    /**
+     * Pop the backstack entries up to a certain condition is met. Target entry
+     * i.e. the entry for which the check test is true may or may not be popped.
+     * Use parameter inclusive to decide popping the target entry.
+     *
+     * @param check {@link Predicate} to test the target entry
+     * @param inclusive if {@literal true} then target entry is popped, if {@literal false} target entry is not poppped
+     * @return non-null {@link List} of popped entries
+     */
+    public List<E> popBackstackEntriesUpTo(Predicate<E> check, boolean inclusive) {
+        int size = size();
+        int target = -1;
+        for (int i=size-1; i>=0; i--) {
+            E entry = backstack.get(i);
+            if (check.test(entry)) {
+                target = i;
+                break;
+            }
+        }
+        if (target==-1) {
+            return Collections.emptyList();
+        }
+        ArrayList<E> popentries = new ArrayList<>();
+        int start = inclusive ? target : target+1;
+        for (int i=size-1; i>=start; i--) {
+            popentries.add(popBackstackEntry());
+        }
+        return popentries;
     }
 
     public E popBackstackEntry(int indexFromTop) {
@@ -104,5 +136,10 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         forEach(Disposable::dispose);
         clear();
         backstack = null;
+    }
+
+    @Override
+    public String toString() {
+        return null==backstack ? "[]" : backstack.toString();
     }
 }

@@ -12,9 +12,7 @@ import rahulstech.jfx.routing.parser.RouterXmlParser;
 import rahulstech.jfx.routing.util.Disposable;
 
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class Router implements Disposable {
@@ -22,6 +20,8 @@ public class Router implements Disposable {
     public static final String KEY_SINGLE_SCENE_SCREEN_EXECUTOR = "rahulstech.jfx.routing.routerexecutor.SingleSceneScreenExecutor";
 
     public static final String KEY_DEFAULT_ROUTER_EXECUTOR = KEY_SINGLE_SCENE_SCREEN_EXECUTOR;
+
+    public static final String KEY_RESULT = "rahulstech.jfx.routing.result";
 
     private Pane content;
 
@@ -268,33 +268,25 @@ public class Router implements Disposable {
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean popBackStack() {
-        if (backstack.size()==1) {
-            // backstack contains single entry so can not perform pop
-            return false;
-        }
+        return moveBackward(getCurrentDestination().getId(),null,true);
+    }
 
-        RouterBackstackEntry top = backstack.popBackstackEntry();
-        RouterBackstackEntry next = backstack.peekBackstackEntry();
+    public boolean popBackstack(RouterArgument result) {
+        return moveBackward(getCurrentDestination().getId(),result,true);
+    }
 
-        Destination popping = top.getDestination();
-        Destination showing = next.getDestination();
+    public boolean popBackstackUpTo(String targetId, boolean inclusive) {
+        return moveBackward(targetId,null,inclusive);
+    }
 
-        RouterOptions options = new RouterOptions();
-        options.setPopEnterAnimation(top.getPopEnterAnimation());
-        options.setPopExitAnimation(top.getPopExitAnimation());
-
-        RouterExecutor poppingExecutor = getRouterExecutorForNameOrDefault(popping.getExecutor());
-        RouterExecutor showingExecutor = getRouterExecutorForNameOrDefault(showing.getExecutor());
-
-        showingExecutor.popBackstack(showing,options);
-        poppingExecutor.hide(popping,options);
-
-        return true;
+    public boolean popBackstackUpTo(String targetId,boolean inclusive, RouterArgument result) {
+        return moveBackward(targetId,result,inclusive);
     }
 
     public void begin() {
         if (null==homeDestination) {
-            throw new IllegalStateException("home not set; use setHomeDestination(String) to set home");
+            throw new IllegalStateException("home not set; use setHomeDestination(String) to set home " +
+                    "or add homeDestination attribute in router configuration xml file");
         }
         RouterOptions options = new RouterOptions();
         options.setEnterAnimation(homeEnterAnimation);
@@ -309,12 +301,9 @@ public class Router implements Disposable {
         if (backstack.isEmpty()) {
             return;
         }
-        RouterBackstackEntry entry = backstack.peekBackstackEntry();
-        Destination destination = entry.getDestination();
+        Destination destination = getCurrentDestination();
         RouterExecutor executor = getRouterExecutorForNameOrDefault(destination.getExecutor());
-        RouterOptions options = new RouterOptions()
-                .setEnterAnimation(entry.getEnterAnimation());
-        executor.doLifecycleShow(destination,options);
+        executor.doLifecycleShow(destination);
     }
 
     public void doLifecycleHide() {
@@ -427,6 +416,47 @@ public class Router implements Disposable {
         showExecutor.show(showing,options);
     }
 
+    private boolean moveBackward(String targetId, RouterArgument result, boolean inclusive) {
+        if (backstack.size()==1) {
+            // backstack contains single entry so can not perform pop
+            return false;
+        }
+
+        // get the popped entries
+        List<RouterBackstackEntry> popentries = backstack
+                .popBackstackEntriesUpTo(entry-> targetId.equals(entry.getDestination().getId()),inclusive);
+
+        // popentries will be empty if target not found
+        if (popentries.isEmpty()) {
+            return false;
+        }
+
+        RouterBackstackEntry top = popentries.remove(0);
+        RouterBackstackEntry next = backstack.peekBackstackEntry();
+
+        Destination popping = top.getDestination();
+        Destination showing = next.getDestination();
+
+        RouterOptions options = new RouterOptions();
+        options.setPopEnterAnimation(top.getPopEnterAnimation());
+        options.setPopExitAnimation(top.getPopExitAnimation());
+
+        RouterExecutor poppingExecutor = getRouterExecutorForNameOrDefault(popping.getExecutor());
+        RouterExecutor showingExecutor = getRouterExecutorForNameOrDefault(showing.getExecutor());
+
+        showingExecutor.popBackstack(showing,options);
+        poppingExecutor.hide(popping,options);
+
+        // destroying all intermediate backstack entries
+        popentries.forEach(entry->{
+            Destination d = entry.getDestination();
+            RouterExecutor executor = getRouterExecutorForNameOrDefault(d.getExecutor());
+            executor.doLifecycleDestroy(d);
+        });
+
+        return true;
+    }
+
     /////////////////////////////////////////////////////////////
     //                      Sub Class                         //
     ///////////////////////////////////////////////////////////
@@ -506,5 +536,4 @@ public class Router implements Disposable {
                     '}';
         }
     }
-
 }

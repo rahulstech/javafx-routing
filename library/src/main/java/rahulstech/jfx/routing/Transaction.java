@@ -43,6 +43,8 @@ public abstract class Transaction implements Disposable {
 
     public abstract void doForcedHide(Target target);
 
+    public abstract void doForcedDestroy(Target target);
+
     @Override
     public void dispose() {
         if (disposed) {
@@ -51,6 +53,7 @@ public abstract class Transaction implements Disposable {
         }
         operations.clear();
         operations = null;
+        backstack.forEach(Target::onDestroy);
         backstack.dispose();
         backstack = null;
         disposed = true;
@@ -59,8 +62,6 @@ public abstract class Transaction implements Disposable {
     public abstract static class Target implements BackstackEntry {
 
         private final String tag;
-
-        private boolean disposed = false;
 
         public Target(String tag) {
             if (StringUtil.isEmpty(tag)) {
@@ -84,16 +85,6 @@ public abstract class Transaction implements Disposable {
         public void onDestroy() {}
 
         @Override
-        public void dispose() {
-            onDestroy();
-        }
-
-        public boolean isDisposed() {
-            return disposed;
-        }
-
-        public void setDisposed(boolean disposed) {
-            this.disposed = disposed;
-        }
+        public void dispose() {}
     }
 }
