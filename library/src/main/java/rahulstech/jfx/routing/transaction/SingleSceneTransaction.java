@@ -6,11 +6,8 @@ import javafx.scene.layout.Pane;
 import rahulstech.jfx.routing.Transaction;
 import rahulstech.jfx.routing.backstack.Backstack;
 import rahulstech.jfx.routing.element.RouterAnimation;
-import rahulstech.jfx.routing.element.RouterCompoundAnimation;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class SingleSceneTransaction extends Transaction {
@@ -56,7 +53,7 @@ public class SingleSceneTransaction extends Transaction {
     public SingleSceneTransaction add(SingleSceneTarget target, RouterAnimation enter_animation) {
         ensureInTransaction();
         enqueueOperation(()->{
-            addInternal(target,enter_animation);
+            target.showInContent(getContent(),enter_animation);
             getBackstack().pushBackstackEntry(target);
         });
         return this;
@@ -87,15 +84,15 @@ public class SingleSceneTransaction extends Transaction {
                 return;
             }
 
-            SingleSceneTarget top = (SingleSceneTarget) backstack.popBackstackEntry();
+            // remove the top entry from backstack
+            backstack.remove(from);
 
-            // peek to Target to be shown next
-            SingleSceneTarget next = (SingleSceneTarget) backstack.peekBackstackEntry();
-
+            // peek the Target with the tag to show next
+            SingleSceneTarget to = (SingleSceneTarget) backstack.findFirst(target -> target.getTag().equals(tag)).get();
 
             // perform the transaction
-            addInternal(next,popEnter);
-            destroyInternal(top,popExit);
+            to.showInContent(getContent(),popEnter);
+            from.destroyTarget(getContent(),popExit);
         });
         return this;
     }
@@ -113,9 +110,9 @@ public class SingleSceneTransaction extends Transaction {
         enqueueOperation(()->{
             if (!getBackstack().isEmpty()) {
                 SingleSceneTarget top = (SingleSceneTarget) getBackstack().peekBackstackEntry();
-                hideInternal(top,exit_animation);
+                top.hideFromContent(getContent(),exit_animation);
             }
-            addInternal(target,enter_animation);
+            target.showInContent(getContent(),enter_animation);
             getBackstack().pushBackstackEntry(target);
         });
         return this;
@@ -137,18 +134,7 @@ public class SingleSceneTransaction extends Transaction {
     @Override
     public void doForcedShow(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
-        Node node = sst.getNode();
-
-        RouterAnimation pending = RouterAnimation.getPendingAnimation(node);
-        if (null!=pending) {
-            pending.stop();
-        }
-
-        if (isInContent(node)) {
-            removeFromContent(node);
-        }
-
-        addInternal(sst,sst.getCachedAnimation());
+        sst.showInContent(getContent(),sst.getCachedAnimation());
     }
 
     /** @InheritDoc */
@@ -175,7 +161,11 @@ public class SingleSceneTransaction extends Transaction {
             pending.stop();
         }
 
-        Platform.runLater(sst::onDestroy);
+        Platform.runLater(()->{
+            target.onDestroy();
+            getBackstack().remove(target);
+
+        });
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -187,111 +177,8 @@ public class SingleSceneTransaction extends Transaction {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    //                        Protected Methods                          //
-    //////////////////////////////////////////////////////////////////////
-
-    protected void addToContent(Node node) {
-        getContent().getChildren().add(node);
-        // unfortunately in javafx layout is not triggered as soon as
-        // a child is added to it but in the next pulse.
-        // some animations may need layout bounds to calculate the animation values,
-        // therefore layout() is called manually so that the layout bounds are available.
-        getContent().layout();
-    }
-
-    protected void removeFromContent(Node node) {
-        getContent().getChildren().remove(node);
-    }
-
-    protected boolean isInContent(Node node) {
-        return getContent().getChildren().contains(node);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
     //                          Private Methods                          //
     //////////////////////////////////////////////////////////////////////
-
-    private void addInternal(SingleSceneTarget target, RouterAnimation enter_animation) {
-        Node front = target.getNode();
-        Backdrop backdrop = target.getBackdrop();
-
-        RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
-        if (null!=pending) {
-            pending.stop();
-        }
-
-        addToContent(front);
-
-        RouterAnimation animation;
-        if (null!=backdrop) {
-            backdrop.enter.setTarget(backdrop.backdrop);
-            enter_animation.setTarget(front);
-            animation = new RouterCompoundAnimation(backdrop.enter,enter_animation);
-        }
-        else {
-            enter_animation.setTarget(front);
-            animation = enter_animation;
-        }
-        target.setCachedAnimation(animation);
-        animation.addRouterAnimationCallback(new RouterAnimation.SimpleRouterAnimationCallback(){
-            @Override
-            public void start(RouterAnimation animation) {
-                target.onBeforeShow();
-            }
-
-            @Override
-            public void finish(RouterAnimation animation) {
-                RouterAnimation.removePendingAnimation(front,animation);
-                target.onShow();
-            }
-        });
-        RouterAnimation.addPendingAnimation(front,animation);
-        animation.play();
-    }
-
-    private void hideInternal(SingleSceneTarget target, RouterAnimation exit_animation) {
-        removeInternal(target,exit_animation,
-                Target::onHide);
-    }
-
-    private void destroyInternal(SingleSceneTarget target,RouterAnimation exit_animation) {
-        removeInternal(target,exit_animation, Target::onDestroy);
-    }
-
-    private void removeInternal(SingleSceneTarget target, RouterAnimation exit_animation, Consumer<Target> consume_after) {
-        Node exiting_node = target.getNode();
-        Backdrop backdrop = target.getBackdrop();
-        RouterAnimation pending = RouterAnimation.removePendingAnimation(exiting_node);
-        if (null!=pending) {
-            pending.stop();
-        }
-
-        RouterAnimation animation;
-        if (null!=backdrop) {
-            backdrop.exit.setTarget(backdrop.backdrop);
-            exit_animation.setTarget(exiting_node);
-            animation = new RouterCompoundAnimation(backdrop.exit,exit_animation);
-        }
-        else {
-            exit_animation.setTarget(exiting_node);
-            animation = exit_animation;
-        }
-        target.setCachedAnimation(animation);
-        animation.setAutoReset(true);
-        animation.addRouterAnimationCallback(new RouterAnimation.SimpleRouterAnimationCallback(){
-            @Override
-            public void finish(RouterAnimation animation) {
-                RouterAnimation.removePendingAnimation(exiting_node,animation);
-                removeFromContent(exiting_node);
-                if (null!=backdrop) {
-                    removeFromContent(backdrop.backdrop);
-                }
-                consume_after.accept(target);
-            }
-        });
-        RouterAnimation.addPendingAnimation(exiting_node,animation);
-        animation.play();
-    }
 
     private void ensureInTransaction() {
         if (!inTransaction) {
@@ -309,8 +196,6 @@ public class SingleSceneTransaction extends Transaction {
 
         private RouterAnimation cachedAnimation;
 
-        private Backdrop backdrop;
-
         public SingleSceneTarget(String tag, Object controller) {
             super(tag);
             this.controller = Objects.requireNonNull(controller, "controller is null");
@@ -322,14 +207,6 @@ public class SingleSceneTransaction extends Transaction {
 
         public abstract Node getNode();
 
-        public void setBackdrop(Backdrop backdrop) {
-            this.backdrop = backdrop;
-        }
-
-        public Backdrop getBackdrop() {
-            return backdrop;
-        }
-
         public RouterAnimation getCachedAnimation() {
             return cachedAnimation;
         }
@@ -337,30 +214,83 @@ public class SingleSceneTransaction extends Transaction {
         public void setCachedAnimation(RouterAnimation cachedAnimation) {
             this.cachedAnimation = cachedAnimation;
         }
-    }
 
-    public static class Backdrop {
+        public void showInContent(Pane content, RouterAnimation enter_animation) {
+            Node front = getNode();
 
-        private final Node backdrop;
-        private final RouterAnimation enter;
-        private final RouterAnimation exit;
+            RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
+            if (null!=pending) {
+                pending.stop();
+            }
 
-        public Backdrop(Node backdrop, RouterAnimation enter, RouterAnimation exit) {
-            this.backdrop = backdrop;
-            this.enter = null==enter ? RouterAnimation.getNoOpAnimation() : enter;
-            this.exit = null==exit ? RouterAnimation.getNoOpAnimation() : exit;
+            if (!isInContent(content,front)) {
+                addToContent(content,front);
+            }
+
+            setCachedAnimation(enter_animation);
+            enter_animation.setTarget(front);
+            enter_animation.addRouterAnimationCallback(new RouterAnimation.SimpleRouterAnimationCallback(){
+                @Override
+                public void start(RouterAnimation animation) {
+                    onBeforeShow();
+                }
+
+                @Override
+                public void finish(RouterAnimation animation) {
+                    RouterAnimation.removePendingAnimation(front,animation);
+                    onShow();
+                }
+            });
+            RouterAnimation.addPendingAnimation(front,enter_animation);
+            enter_animation.play();
         }
 
-        public Node getBackdrop() {
-            return backdrop;
+        public void hideFromContent(Pane content, RouterAnimation exit_animation) {
+            removeInternal(content,exit_animation,false);
         }
 
-        public RouterAnimation getEnter() {
-            return enter;
+        public void destroyTarget(Pane content, RouterAnimation exit_animation) {
+            removeInternal(content,exit_animation,true);
         }
 
-        public RouterAnimation getExit() {
-            return exit;
+        public void addToContent(Pane content, Node child) {
+            content.getChildren().add(child);
+        }
+
+        public void removeFromContent(Pane content, Node child) {
+            content.getChildren().remove(child);
+        }
+
+        public boolean isInContent(Pane content, Node child) {
+            return content.getChildren().contains(child);
+        }
+
+        protected void removeInternal(Pane content, RouterAnimation exit_animation, boolean destroy) {
+            Node front = getNode();
+
+            RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
+            if (null!=pending) {
+                pending.stop();
+            }
+
+            setCachedAnimation(exit_animation);
+            exit_animation.setTarget(front);
+            exit_animation.setAutoReset(true);
+            exit_animation.addRouterAnimationCallback(new RouterAnimation.SimpleRouterAnimationCallback(){
+                @Override
+                public void finish(RouterAnimation animation) {
+                    RouterAnimation.removePendingAnimation(front,animation);
+                    removeFromContent(content,front);
+                    if (destroy) {
+                        onDestroy();
+                    }
+                    else {
+                        onHide();
+                    }
+                }
+            });
+            RouterAnimation.addPendingAnimation(front,exit_animation);
+            exit_animation.play();
         }
     }
 }

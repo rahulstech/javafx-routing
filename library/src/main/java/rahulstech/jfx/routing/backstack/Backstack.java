@@ -87,17 +87,16 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         return entry;
     }
 
+    public void remove(E entry) {
+        backstack.remove(entry);
+    }
+
     public boolean isEmpty() {
         return size()==0;
     }
 
     public int size() {
         return null==backstack ? 0 : backstack.size();
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    public boolean remove(E entry) {
-        return backstack.remove(entry);
     }
 
     public void clear() {
@@ -111,6 +110,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             consumer.accept(entry);
         }
     }
+
     public Optional<E> findFirst(Predicate<E> predicate) {
         int size = size();
         for (int i=size-1; i>=0; i--) {
