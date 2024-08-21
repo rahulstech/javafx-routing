@@ -27,6 +27,4 @@ public interface RouterPane {
     Router getRouter();
 
     ObservableList<Node> getChildren();
-
-    Pane getPane();
 }

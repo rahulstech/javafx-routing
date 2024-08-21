@@ -7,6 +7,7 @@ import rahulstech.jfx.routing.util.StringUtil;
 
 import java.util.*;
 
+
 @SuppressWarnings("unused")
 public class RouterArgument {
 

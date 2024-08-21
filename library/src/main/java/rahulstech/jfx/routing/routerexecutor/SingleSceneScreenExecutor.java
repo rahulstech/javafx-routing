@@ -22,6 +22,10 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         this.transaction = transaction;
     }
 
+    public SingleSceneTransaction getTransaction() {
+        return transaction;
+    }
+
     @Override
     public void show(Destination destination, RouterOptions options) {
         String enterAnimationId = options.getEnterAnimation();

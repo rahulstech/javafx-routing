@@ -8,8 +8,9 @@ import rahulstech.jfx.routing.backstack.Backstack;
 import rahulstech.jfx.routing.element.RouterAnimation;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
-@SuppressWarnings("unused")
+
 public class SingleSceneTransaction extends Transaction {
 
     private final Pane content;
@@ -53,7 +54,7 @@ public class SingleSceneTransaction extends Transaction {
     public SingleSceneTransaction add(SingleSceneTarget target, RouterAnimation enter_animation) {
         ensureInTransaction();
         enqueueOperation(()->{
-            target.showInContent(getContent(),enter_animation);
+            target.showInContent(getContent(),enter_animation,null);
             getBackstack().pushBackstackEntry(target);
         });
         return this;
@@ -91,8 +92,8 @@ public class SingleSceneTransaction extends Transaction {
             SingleSceneTarget to = (SingleSceneTarget) backstack.findFirst(target -> target.getTag().equals(tag)).get();
 
             // perform the transaction
-            to.showInContent(getContent(),popEnter);
-            from.destroyTarget(getContent(),popExit);
+            to.showInContent(getContent(),popEnter,null);
+            from.hideFromContent(getContent(),popExit, Target::onDestroy);
         });
         return this;
     }
@@ -110,9 +111,9 @@ public class SingleSceneTransaction extends Transaction {
         enqueueOperation(()->{
             if (!getBackstack().isEmpty()) {
                 SingleSceneTarget top = (SingleSceneTarget) getBackstack().peekBackstackEntry();
-                top.hideFromContent(getContent(),exit_animation);
+                top.hideFromContent(getContent(),exit_animation,null);
             }
-            target.showInContent(getContent(),enter_animation);
+            target.showInContent(getContent(),enter_animation,null);
             getBackstack().pushBackstackEntry(target);
         });
         return this;
@@ -134,7 +135,7 @@ public class SingleSceneTransaction extends Transaction {
     @Override
     public void doForcedShow(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
-        sst.showInContent(getContent(),sst.getCachedAnimation());
+        sst.showInContent(getContent(),sst.getCachedAnimation(),null);
     }
 
     /** @InheritDoc */
@@ -215,7 +216,7 @@ public class SingleSceneTransaction extends Transaction {
             this.cachedAnimation = cachedAnimation;
         }
 
-        public void showInContent(Pane content, RouterAnimation enter_animation) {
+        public void showInContent(Pane content, RouterAnimation enter_animation, Consumer<SingleSceneTarget> OnShown) {
             Node front = getNode();
 
             RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
@@ -239,33 +240,16 @@ public class SingleSceneTransaction extends Transaction {
                 public void finish(RouterAnimation animation) {
                     RouterAnimation.removePendingAnimation(front,animation);
                     onShow();
+                    if (null!=OnShown) {
+                        OnShown.accept(SingleSceneTarget.this);
+                    }
                 }
             });
             RouterAnimation.addPendingAnimation(front,enter_animation);
             enter_animation.play();
         }
 
-        public void hideFromContent(Pane content, RouterAnimation exit_animation) {
-            removeInternal(content,exit_animation,false);
-        }
-
-        public void destroyTarget(Pane content, RouterAnimation exit_animation) {
-            removeInternal(content,exit_animation,true);
-        }
-
-        public void addToContent(Pane content, Node child) {
-            content.getChildren().add(child);
-        }
-
-        public void removeFromContent(Pane content, Node child) {
-            content.getChildren().remove(child);
-        }
-
-        public boolean isInContent(Pane content, Node child) {
-            return content.getChildren().contains(child);
-        }
-
-        protected void removeInternal(Pane content, RouterAnimation exit_animation, boolean destroy) {
+        public void hideFromContent(Pane content, RouterAnimation exit_animation, Consumer<SingleSceneTarget> OnHide) {
             Node front = getNode();
 
             RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
@@ -281,16 +265,32 @@ public class SingleSceneTransaction extends Transaction {
                 public void finish(RouterAnimation animation) {
                     RouterAnimation.removePendingAnimation(front,animation);
                     removeFromContent(content,front);
-                    if (destroy) {
-                        onDestroy();
-                    }
-                    else {
-                        onHide();
+                    onHide();
+                    if (null!=OnHide) {
+                        OnHide.accept(SingleSceneTarget.this);
                     }
                 }
             });
             RouterAnimation.addPendingAnimation(front,exit_animation);
             exit_animation.play();
+        }
+
+        public void addToContent(Pane content, Node child) {
+            content.getChildren().add(child);
+            // layout bounds of child node is calculated during layout phase
+            // not just after adding to its parent. it's a drawback for many
+            // animations that use the layout bounds property. that's why
+            // layout() is manually called to calculate its bounds as soon as
+            // it's added to parent
+            content.layout();
+        }
+
+        public void removeFromContent(Pane content, Node child) {
+            content.getChildren().remove(child);
+        }
+
+        public boolean isInContent(Pane content, Node child) {
+            return content.getChildren().contains(child);
         }
     }
 }

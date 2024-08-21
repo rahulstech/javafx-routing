@@ -1,17 +1,72 @@
 package rahulstech.jfx.routing.element;
 
 import rahulstech.jfx.routing.Router;
-import rahulstech.jfx.routing.lifecycle.LifecycleAwareController;
 import rahulstech.jfx.routing.parser.Attribute;
 import rahulstech.jfx.routing.parser.AttributeSet;
 import rahulstech.jfx.routing.util.StringUtil;
 
-@SuppressWarnings({"unused","FieldMayBeFinal"})
+/**
+ * Destination is the basic building block of routing. {@link Router} navigates among
+ * different destinations. Destination defines how the screen will be created but does
+ * not hold the state of the screen. Each destination is identified by its unique id within
+ * the router. Destination must have at least <b>fxml</b> or <b>controllerClass</b> to set
+ * fxml layout resource file location or controller class full name. If both the values available
+ * then what will be prioritized is completely depends on {@link rahulstech.jfx.routing.RouterExecutor RouterExcutor}
+ * implementation. Set the <b>executor</b> the handles a particular type of destination. If executor value
+ * explicitly not set then default executor {@link Router#KEY_DEFAULT_ROUTER_EXECUTOR default executor} will
+ * be used. Sometime destination may require data with certain data type. Set the destination input data rules using
+ * <b>arguments</b>. You are not restricted to set only those data for which rules are defined; but you must set
+ * arguments which are <pre> required = true </pre>.
+ * <p>
+ * <h5>Below is the example of declaring destination in router configuration xml file</h4>
+ * <pre>
+ *     &lt;destination id="screen0"
+ *                     fxml="screen_zero.fxml"
+ *                     controllerClass="com.example.controller.MyController"
+ *                     executor="com.example.executor.MyExecutor"
+ *                     title="This is Screen0"
+ *                     arguments="args0"/&gt;
+ *     <p>or</p>
+ *
+ *    &lt;destination id="screen0"
+ *                    fxml="screen_zero.fxml"
+ *                    controllerClass="com.example.controller.MyController"
+ *                    executor="com.example.executor.MyExecutor"
+ *                    title="This is Screen0"&gt;
+ *
+ *          &lt;!-- arguments defined inside "destination" does not require "id" attribute --&gt;
+ *           &lt;arguments&gt;
+ *              &lt;argument type="string" /&gt;
+ *              &lt;argument type="int" required="true" /&gt;
+ *           &lt/arguments&gt;
+ *    &lt;/destination&gt;
+ * </pre>
+ *
+ * <h5>You can create the same destination using java as below</h5>
+ * <pre>
+ *     Destination destination = new Destination.Builder("screen0")
+ *                               .setFxml("screen_zero.fxml")
+ *                               .setControllerClass(MyController.class)
+ *                               .setExecutor("com.example.executor.MyExecutor")
+ *                               .setTitle("This is screen")
+ *                               .setArgument("args0")
+ *                               .build();
+ * </pre>
+ *
+ * @author  Rahul Bagchi
+ *
+ * @since 1.0
+ *
+ * @see Router
+ * @see rahulstech.jfx.routing.RouterExecutor RouterExecutor
+ * @see RouterArgument
+ */
+@SuppressWarnings("unused")
 public class Destination {
 
     private String id;
     private String fxml;
-    private Class<? extends LifecycleAwareController> controllerClass;
+    private Class<?> controllerClass;
     private String title;
     private String executor;
     private String arguments;
@@ -23,15 +78,6 @@ public class Destination {
         title = builder.title;
         executor = builder.executor;
         arguments = builder.arguments;
-    }
-
-    protected Destination(Destination copy) {
-        id = copy.id;
-        fxml = copy.fxml;
-        controllerClass = copy.controllerClass;
-        title = copy.title;
-        executor = copy.executor;
-        arguments = copy.arguments;
     }
 
     public Destination(AttributeSet attrs) {
@@ -85,7 +131,7 @@ public class Destination {
         return title;
     }
 
-    public Class<? extends LifecycleAwareController> getControllerClass() {
+    public Class<?> getControllerClass() {
         return controllerClass;
     }
 
@@ -112,7 +158,7 @@ public class Destination {
     public static class Builder {
         String id;
         String fxml;
-        Class<? extends LifecycleAwareController> controllerClass;
+        Class<?> controllerClass;
         String title;
         String executor = Router.KEY_DEFAULT_ROUTER_EXECUTOR;
         String arguments;
@@ -129,7 +175,7 @@ public class Destination {
             return this;
         }
 
-        public Builder setControllerClass(Class<? extends LifecycleAwareController> controllerClass) {
+        public Builder setControllerClass(Class<?> controllerClass) {
             this.controllerClass = controllerClass;
             return this;
         }

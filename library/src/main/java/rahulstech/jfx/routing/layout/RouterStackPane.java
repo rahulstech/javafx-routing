@@ -61,9 +61,4 @@ public class RouterStackPane extends StackPane implements RouterPane {
     public Router getRouter() {
         return delegate.getRouter();
     }
-
-    @Override
-    public Pane getPane() {
-        return delegate.getWrapped();
-    }
 }

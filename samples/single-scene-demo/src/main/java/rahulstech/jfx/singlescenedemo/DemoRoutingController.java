@@ -15,7 +15,7 @@ public class DemoRoutingController implements Initializable {
 
     public BorderPane borderPane;
 
-    RouterPane routerPane;
+    RouterStackPane routerPane;
 
     final Label simpleMessage;
 
@@ -34,7 +34,7 @@ public class DemoRoutingController implements Initializable {
     public void handleChangeCenterButtonClick() {
         Node center = borderPane.getCenter();
         if (center==simpleMessage) {
-            borderPane.setCenter(routerPane.getPane());
+            borderPane.setCenter(routerPane);
         }
         else {
             borderPane.setCenter(simpleMessage);

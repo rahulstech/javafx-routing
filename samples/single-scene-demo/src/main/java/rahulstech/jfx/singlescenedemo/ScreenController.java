@@ -7,6 +7,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import rahulstech.jfx.routing.Router;
+import rahulstech.jfx.routing.RouterOptions;
 import rahulstech.jfx.routing.element.Destination;
 import rahulstech.jfx.routing.element.RouterArgument;
 import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
@@ -32,11 +33,11 @@ public class ScreenController extends SimpleLifecycleAwareController {
     public void onLifecycleInitialize() {
         super.onLifecycleInitialize();
         Router router = getRouter();
-        RouterArgument args = (RouterArgument) router.getCurrentData();
-        String message = (String) args.getValue("message");
-        Integer index = (Integer) args.getValue("index");
-        Integer abc = (Integer) args.getValue("abc");
-        int[] xyz = (int[]) args.getValue("xyz");
+        RouterArgument args = router.getCurrentData();
+        String message = args.getValue("message");
+        Integer index = args.getValue("index");
+        Integer abc = args.getValue("abc");
+        int[] xyz = args.getValue("xyz");
         Color color = COLORS[index];
         ((VBox) getRoot()).setBackground(Background.fill(color));
         if (null!=abc) {
@@ -76,6 +77,15 @@ public class ScreenController extends SimpleLifecycleAwareController {
         else if ("screen2".equals(targetDestinationId)) {
             args.addArgument("xyz",new int[]{2,5});
         }
-        router.moveto(targetDestinationId,args);
+
+        if (targetDestinationId.equals("screen3")) {
+            RouterOptions options = new RouterOptions();
+            options.setEnterAnimation(DemoRouterContext.ANIMATION_SCALE_UP_XY_SLIDE_IN_BOTTOM);
+            router.moveto(targetDestinationId,args,options);
+        }
+        else {
+            router.moveto(targetDestinationId,args);
+        }
+
     }
 }
