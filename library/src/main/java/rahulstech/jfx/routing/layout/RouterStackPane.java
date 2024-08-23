@@ -1,7 +1,7 @@
 package rahulstech.jfx.routing.layout;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import rahulstech.jfx.routing.Router;
 import rahulstech.jfx.routing.RouterContext;
@@ -14,7 +14,6 @@ public class RouterStackPane extends StackPane implements RouterPane {
     public RouterStackPane() {
         super();
         delegate = new RouterPaneDelegate(this);
-        delegate.initialize();
     }
 
     @Override
@@ -55,6 +54,11 @@ public class RouterStackPane extends StackPane implements RouterPane {
     @Override
     public String getRouterConfig() {
         return delegate.getRouterConfig();
+    }
+
+    @Override
+    public ObjectProperty<Router> routerProperty() {
+        return delegate.routerProperty();
     }
 
     @Override

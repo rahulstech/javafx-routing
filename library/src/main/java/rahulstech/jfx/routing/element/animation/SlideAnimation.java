@@ -176,7 +176,7 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
     }
 
     @Override
-    public void reset() {
+    public void doReset() {
         Node node = getTarget();
         switch (getName()) {
             case SLIDE_IN_LEFT:
@@ -199,8 +199,6 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
 
     @Override
     protected Animation createAnimation(Node node) {
-
-
         TranslateTransition animation = new TranslateTransition();
         animation.setNode(node);
         animation.setDuration(getDuration());

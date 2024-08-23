@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'java'
+    id "java"
 }
 
 allprojects {
@@ -24,7 +24,7 @@ allprojects {
         mavenCentral()
     }
 
-    group 'rahulstech.javafx'
+    group 'io.github.rahulstech'
     version '1.0'
 
     tasks.withType(JavaCompile).configureEach {

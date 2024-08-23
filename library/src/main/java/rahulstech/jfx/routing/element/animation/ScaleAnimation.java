@@ -171,7 +171,7 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
     }
 
     @Override
-    public void reset() {
+    public void doReset() {
         Node node = getTarget();
         switch (getName()) {
             case SCALE_UP_X:

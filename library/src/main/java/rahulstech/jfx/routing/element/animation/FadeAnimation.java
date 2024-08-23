@@ -84,7 +84,7 @@ public class FadeAnimation extends BaseJavaFxAnimationRouterAnimation {
     }
 
     @Override
-    public void reset() {
+    public void doReset() {
         Node node = getTarget();
         node.setOpacity(fromAlpha);
     }

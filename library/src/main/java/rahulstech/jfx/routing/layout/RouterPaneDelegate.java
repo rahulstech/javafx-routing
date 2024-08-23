@@ -1,5 +1,7 @@
 package rahulstech.jfx.routing.layout;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Parent;
@@ -14,12 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
-@SuppressWarnings("unused")
+/**
+ *
+ */
 public class RouterPaneDelegate {
 
     private final Pane wrapped;
-
-    private Router router;
 
     private RouterContext context;
 
@@ -28,18 +30,27 @@ public class RouterPaneDelegate {
     private WeakReference<Parent> lastParentRef = new WeakReference<>(null);
 
     /*************************************************************
-     *                      Properties                           *
+     *                      Constructor                          *
      ************************************************************/
-
-    private final StringProperty routerConfig = new SimpleStringProperty(null, "routerConfig");
-    private final StringProperty contextClass = new SimpleStringProperty(null, "contextClass");
 
     public RouterPaneDelegate(Pane wrapped) {
         if (null==wrapped) {
             throw new NullPointerException("Pane is null");
         }
         this.wrapped = wrapped;
+        initialize();
     }
+
+    /*************************************************************
+     *                      Properties                           *
+     ************************************************************/
+
+    /**
+     * Set the router configuration xml file path in fxml. The InputStream of the configuration file
+     * will be obtained from {@link RouterContext#getResourceAsStream(String) getResourceAsStrem(String)}.
+     * Therefor you should set a value such that getResourceAsStream(String) method can understand.
+     */
+    private final StringProperty routerConfig = new SimpleStringProperty(this, "routerConfig");
 
     public StringProperty routerConfigProperty() {
         return routerConfig;
@@ -53,6 +64,11 @@ public class RouterPaneDelegate {
         routerConfig.setValue(xml);
     }
 
+    /**
+     * Set the full class name of your {@link RouterContext} implementation.
+     */
+    private final StringProperty contextClass = new SimpleStringProperty(this, "contextClass");
+
     public final StringProperty contextClassProperty() {
         return contextClass;
     }
@@ -65,27 +81,35 @@ public class RouterPaneDelegate {
         return contextClass.getValue();
     }
 
+    /**
+     * The {@link Router} instance currently in used
+     *
+     * @see #begin()
+     */
+    private final ObjectProperty<Router> routerProperty = new SimpleObjectProperty<>(this,"",null);
+
+    public final ObjectProperty<Router> routerProperty() {
+        return routerProperty;
+    }
+
+    public void setRouter(Router router) {
+        routerProperty.setValue(router);
+    }
+
+    public Router getRouter() {
+        return routerProperty.getValue();
+    }
+
     /*************************************************************
      *                    Public Methods                        *
      ************************************************************/
 
-    public void initialize() {
-        wrapped.sceneProperty().addListener((observable, oldValue, newValue) -> begin());
-        contextClass.addListener((observable, oldValue, newValue) -> {
-            if (StringUtil.isEmpty(newValue)) {
-                setContext(null);
-            } else {
-                setContext((RouterContext) ReflectionUtil.newInstance(newValue));
-            }
-        });
-    }
-
+    /**
+     * @return the {@link rahulstech.jfx.routing.RouterPane RouterPane} managed by
+     *          this delegate
+     */
     public Pane getWrapped() {
         return wrapped;
-    }
-
-    public Router getRouter() {
-        return router;
     }
 
     public void setContext(RouterContext context) {
@@ -99,6 +123,17 @@ public class RouterPaneDelegate {
     /*************************************************************
      *                      Private Methods                     *
      ************************************************************/
+
+    private void initialize() {
+        wrapped.sceneProperty().addListener((observable, oldValue, newValue) -> begin());
+        contextClass.addListener((observable, oldValue, newValue) -> {
+            if (StringUtil.isEmpty(newValue)) {
+                setContext(null);
+            } else {
+                setContext((RouterContext) ReflectionUtil.newInstance(newValue));
+            }
+        });
+    }
 
     private Router initRouter() {
         String xml = getRouterConfig();
@@ -115,12 +150,24 @@ public class RouterPaneDelegate {
         return null;
     }
 
+    /**
+     * This method is called in two cases: the {@link  Scene} where it is
+     * attached to changes and its {@link Parent} changes. On detached from
+     * its Scene or Parent triggers {@link Router#doLifecycleHide() Lifecyle Hide}
+     * on old Router. On reattached to the same Scene and Parent simply triggers
+     * {@link Router#doLifecycleShow() Lifecycle Show} on old Router. But
+     * if this RouterPane is attached to a new Scene or Parent then old Router is
+     * disposed and a new Router is created.
+     *
+     * @see Router#doLifecycleHide()
+     * @see Router#doLifecycleShow()
+     */
     private void begin() {
         Scene scene = wrapped.getScene();
         Parent parent = wrapped.getParent();
         Scene oldScene = lastSceneRef.get();
         Parent oldParent = lastParentRef.get();
-        Router old = this.router;
+        Router old = getRouter();
 
         // if it is removed from scene , the trigger lifecycle hide
         if (null == scene) {
@@ -150,6 +197,6 @@ public class RouterPaneDelegate {
         if (null != router) {
             router.begin();
         }
-        this.router = router;
+        setRouter(router);
     }
 }

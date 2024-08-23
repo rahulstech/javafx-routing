@@ -14,6 +14,9 @@ import rahulstech.jfx.routing.util.Disposable;
 import java.io.InputStream;
 import java.util.*;
 
+/**
+ *
+ */
 @SuppressWarnings("unused")
 public class Router implements Disposable {
 
@@ -80,7 +83,7 @@ public class Router implements Disposable {
         return content;
     }
 
-    public void setContent(Pane content) {
+    public void setContentPane(Pane content) {
         this.content = content;
     }
 
@@ -107,7 +110,7 @@ public class Router implements Disposable {
 
     public void setHomeDestination(Destination destination) {
         if (!destinations.containsKey(destination.getId())) {
-            addDestination(destination);
+            addAllDestination(destination);
         }
         homeDestination = destination;
     }
@@ -147,7 +150,7 @@ public class Router implements Disposable {
         return defaultPopExitAnimation;
     }
 
-    public void addDestination(Destination destination) {
+    public void addAllDestination(Destination destination) {
         String id = destination.getId();
         if (destinations.containsKey(id)) {
             throw new IllegalStateException("destination with id "+id+" already added");
@@ -155,8 +158,8 @@ public class Router implements Disposable {
         destinations.put(id,destination);
     }
 
-    public void addDestination(Collection<Destination> destinations) {
-        destinations.forEach(this::addDestination);
+    public void addAllDestination(Collection<Destination> destinations) {
+        destinations.forEach(this::addAllDestination);
     }
 
     public Destination getDestination(String id) {
@@ -164,7 +167,7 @@ public class Router implements Disposable {
     }
 
     public void addDestinationWithArgument(Destination destination, RouterArgument argument) {
-        addDestination(destination);
+        addAllDestination(destination);
         addArgument(destination.getId(),argument);
     }
 
@@ -219,14 +222,35 @@ public class Router implements Disposable {
         return backstack;
     }
 
+    public RouterBackstackEntry getCurrentBackstackEntry() {
+        if (!backstack.isEmpty()) {
+            return backstack.peekBackstackEntry();
+        }
+        return null;
+    }
+
     public RouterArgument getCurrentData() {
-        RouterBackstackEntry topEntry = backstack.peekBackstackEntry();
-        return topEntry.getData();
+        RouterBackstackEntry top = getCurrentBackstackEntry();
+        if (null==top) {
+            return null;
+        }
+        return top.getData();
     }
 
     public Destination getCurrentDestination() {
-        RouterBackstackEntry topEntry = backstack.peekBackstackEntry();
-        return topEntry.getDestination();
+        RouterBackstackEntry top = getCurrentBackstackEntry();
+        if (null==top) {
+            return null;
+        }
+        return top.getDestination();
+    }
+
+    public RouterArgument getCurrentResult() {
+        RouterBackstackEntry top = getCurrentBackstackEntry();
+        if (null==top) {
+            return null;
+        }
+        return top.getResult();
     }
 
     /////////////////////////////////////////////////////////////
@@ -331,7 +355,7 @@ public class Router implements Disposable {
         Collection<AttributeSet> animations = parser.getAnimations();
         Map<String,RouterArgument> arguments = parser.getArguments();
 
-        addDestination(destinations);
+        addAllDestination(destinations);
         addArguments(arguments);
 
         String home = routerAttrs.get(Attribute.HOME).getValue();
@@ -441,6 +465,8 @@ public class Router implements Disposable {
         options.setPopEnterAnimation(top.getPopEnterAnimation());
         options.setPopExitAnimation(top.getPopExitAnimation());
 
+        next.setResult(result);
+
         RouterExecutor poppingExecutor = getRouterExecutorForNameOrDefault(popping.getExecutor());
         RouterExecutor showingExecutor = getRouterExecutorForNameOrDefault(showing.getExecutor());
 
@@ -475,6 +501,8 @@ public class Router implements Disposable {
         private String popExitAnimation;
 
         private String popEnterAnimation;
+
+        private RouterArgument result;
 
         public RouterBackstackEntry(Destination destination) {
             this.destination = destination;
@@ -524,6 +552,15 @@ public class Router implements Disposable {
             this.popEnterAnimation = popEnterAnimation;
         }
 
+        public RouterArgument getResult() {
+            return result;
+        }
+
+        public void setResult(RouterArgument result) {
+            this.result = result;
+        }
+
+        @Override
         public void dispose() {}
 
         @Override
@@ -531,8 +568,11 @@ public class Router implements Disposable {
             return "RouterBackstackEntry{" +
                     "destination=" + destination +
                     ", data=" + data +
+                    ", enterAnimation='" + enterAnimation + '\'' +
+                    ", exitAnimation='" + exitAnimation + '\'' +
                     ", popExitAnimation='" + popExitAnimation + '\'' +
                     ", popEnterAnimation='" + popEnterAnimation + '\'' +
+                    ", result=" + result +
                     '}';
         }
     }

@@ -3,7 +3,9 @@ package rahulstech.jfx.routing;
 import rahulstech.jfx.routing.element.Destination;
 import rahulstech.jfx.routing.util.Disposable;
 
-@SuppressWarnings("unused")
+/**
+ *
+ */
 public abstract class RouterExecutor implements Disposable {
 
     private final Router router;
