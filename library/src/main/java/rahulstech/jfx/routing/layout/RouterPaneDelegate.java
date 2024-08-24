@@ -17,7 +17,20 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 /**
+ * The {@code RouterPaneDelegate} class manages a {@link Pane} within a routing context.
+ * It facilitates the initialization and lifecycle management of a {@link Router} based
+ * on changes in the attached {@link Scene} and {@link Parent} of the wrapped pane.
  *
+ * <p>This class enables configuration of a router using an XML file and a custom
+ * {@link RouterContext} implementation. The router is initialized, and its lifecycle
+ * methods are triggered automatically when the pane's scene or parent changes.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>{@code
+ * RouterPaneDelegate delegate = new RouterPaneDelegate(myPane);
+ * delegate.setRouterConfig("path/to/router-config.xml");
+ * delegate.setContextClass("com.example.MyRouterContext");
+ * }</pre>
  */
 public class RouterPaneDelegate {
 
@@ -33,6 +46,13 @@ public class RouterPaneDelegate {
      *                      Constructor                          *
      ************************************************************/
 
+    /**
+     * Constructs a new {@code RouterPaneDelegate} with the specified {@link Pane}.
+     *
+     * @param wrapped the {@link Pane} to be managed by this delegate
+     *
+     * @throws NullPointerException if the wrapped {@link Pane} is null
+     */
     public RouterPaneDelegate(Pane wrapped) {
         if (null==wrapped) {
             throw new NullPointerException("Pane is null");

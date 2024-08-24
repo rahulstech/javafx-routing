@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/samples" />
             <option value="$PROJECT_DIR$/samples/basic-demo" />
             <option value="$PROJECT_DIR$/samples/single-scene-demo" />
+            <option value="$PROJECT_DIR$/tests" />
           </set>
         </option>
       </GradleProjectSettings>

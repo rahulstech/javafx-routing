@@ -10,16 +10,31 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * 
- * @param <E>
+ * Backstack is a {@link List} based backstack with some special features.
+ * Backstack let you peek and pop item from any inde but item is always pushed
+ * at the top of backstack. Index "0" or the first element in the backstack
+ * is the last element added or the top element. There is another utility
+ * method popBackstackUpTo which let you pop items from top untill a perticular
+ * condition is met. if the condition is never met then no item is popped.
+ * Backstack accepts only {@link BackstackEntry}.
+ *
+ * @param <E> type of backstack entry
+ * @see BackstackEntry
+ *
+ * @author Rahul Bagchi
  */
-@SuppressWarnings("unused")
 public class Backstack<E extends BackstackEntry> implements Disposable {
 
     private ArrayList<E> backstack = new ArrayList<>();
 
     public Backstack() {}
 
+    /**
+     * Add a new entry at the top
+     *
+     * @param entry the new entry to add
+     * @throws NullPointerException if entry is null
+     */
     public void pushBackstackEntry(E entry) {
         if (null==entry) {
             throw new NullPointerException("can not add null entry to backstack");
@@ -27,14 +42,25 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         backstack.add(entry);
     }
 
+    /**
+     * @return get but don't remove the top entry
+     */
     public E peekBackstackEntry() {
         return peekBackstackEntry(0);
     }
 
+    /**
+     * @return get and remove the top entry
+     */
     public E popBackstackEntry() {
         return popBackstackEntry(0);
     }
 
+    /**
+     * @param indexFromTop the index of the target entry from top
+     * @return get but don't remove at the index from the top
+     * @throws IndexOutOfBoundsException if invalid index provided
+     */
     public E peekBackstackEntry(int indexFromTop) {
         int size = size();
         int index = size-1-indexFromTop;
@@ -74,6 +100,11 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         return popentries;
     }
 
+    /**
+     * @param indexFromTop the index of the target entry from the top
+     * @return get and remove the entry at the index from the top
+     * @throws IndexOutOfBoundsException if invalid index provided
+     */
     public E popBackstackEntry(int indexFromTop) {
         int size = size();
         int index = size-1-indexFromTop;
@@ -87,22 +118,44 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         return entry;
     }
 
+    /**
+     * Removes the entry
+     *
+     * @param entry the entry to remove
+     */
     public void remove(E entry) {
         backstack.remove(entry);
     }
 
+    /**
+     * @return {@code true} menas backstack contains no entry,
+     *          {@code false} otherwise
+     */
     public boolean isEmpty() {
         return size()==0;
     }
 
+    /**
+     * @return no. of elntries in the backstack
+     */
     public int size() {
         return null==backstack ? 0 : backstack.size();
     }
 
+    /**
+     * Removes all enetries form backstack; but does not dispose
+     * entries
+     */
     public void clear() {
         backstack.clear();
     }
 
+    /**
+     * Applies the given consumer action to each element in the backstack,
+     * starting from the last element and moving towards the first.
+     *
+     * @param consumer the action to be performed on each element
+     */
     public void forEach(Consumer<E> consumer) {
         int size = size();
         for (int i=size-1; i>=0; i--) {
@@ -111,6 +164,14 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         }
     }
 
+    /**
+     * Finds the first element in the backstack that matches the given predicate.
+     * The search is performed from the end of the backstack towards the beginning.
+     *
+     * @param predicate the condition to match elements against
+     * @return an {@link Optional} containing the first element that matches the
+     *         predicate, or an empty {@link Optional} if no match is found
+     */
     public Optional<E> findFirst(Predicate<E> predicate) {
         int size = size();
         for (int i=size-1; i>=0; i--) {

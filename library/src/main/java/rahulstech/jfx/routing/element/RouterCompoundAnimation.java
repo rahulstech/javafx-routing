@@ -7,7 +7,9 @@ import rahulstech.jfx.routing.parser.AttributeSet;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
+/**
+ *
+ */
 public class RouterCompoundAnimation extends RouterAnimation {
 
     private List<RouterAnimation> children = new ArrayList<>();
@@ -117,6 +119,9 @@ public class RouterCompoundAnimation extends RouterAnimation {
     }
 
     @Override
+    protected void doReset() {}
+
+    @Override
     public void stop() {
         children.forEach(RouterAnimation::stop);
     }
@@ -172,6 +177,9 @@ public class RouterCompoundAnimation extends RouterAnimation {
         first.animate();
     }
 
+    /**
+     *
+     */
     public enum PlayMode {
         SEQUENTIAL,
         PARALLEL,

@@ -44,7 +44,7 @@ import java.util.Objects;
  *  <animation id="exit_animation"
  *              name="slide_out_right"
  *              fromX="0%"
- *              toX="100%"
+ *              toX="95%"
  *              autoReset="true"
  *              duration="280ms"/>
  * }
@@ -56,7 +56,26 @@ import java.util.Objects;
  * of {@link rahulstech.jfx.routing.RouterContext RouterContext}
  * </p>
  * <pre>{@code
- * RouterContext context = ...;
+ * // register animtion in your RouterContext implementation like this
+ * public class MyContext extends BaseRouterContext {
+ *  // other implementations
+ *
+ *   @Override
+ *   protected RouterAnimation getAnimationByName(String name, AttributeSet attrs) {
+ *     if ("my_animation_name".equals(name)) {
+ *         RouterAnimation animation = ...
+ *         if (null!=attrs) {
+ *             animation.initialize(attrs);
+ *         }
+ *         return animation;
+ *     }
+ *     return super.getAnimationByName(name,attrs);
+ *   }
+ * }
+ *
+ * // now to get the animation do this
+ * Router router = ...
+ * RouterContext context = router.getContext();
  * RouterAnimation animation = context.getAnimation(...);
  * }
  * </pre>

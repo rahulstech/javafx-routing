@@ -7,14 +7,40 @@ import rahulstech.jfx.routing.util.StringUtil;
 
 import java.util.*;
 
-
-@SuppressWarnings("unused")
+/**
+ * The {@code RouterArgument} class represents a collection of key-value pairs
+ * (arguments) that can be used within a routing context. Each argument is
+ * represented by a {@link NameValue} pair, where the key is a string name and
+ * the value can be of any object type.
+ *
+ * <p>This class provides methods to add, retrieve, and manage these arguments.
+ * It supports operations such as merging arguments from another {@code RouterArgument},
+ * copying arguments without their values, and accepting the arguments based on
+ * predefined constraints.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>{@code
+ * RouterArgument args = new RouterArgument();
+ * args.addArgument("userId", 123);
+ * args.addArgument("token", "abc123");
+ * args.addArgument(new NameValue("height",156.23));
+ * }</pre>
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
+ */
 public class RouterArgument {
 
     private Map<String,NameValue> map;
 
     public RouterArgument() {}
 
+    /**
+     * Adds or updates an argument with the specified name and value.
+     *
+     * @param name the name of the argument
+     * @param value the value of the argument
+     */
     public void addArgument(String name, Object value) {
         NameValue nv = getArgument(name);
         if (null==nv) {
@@ -25,6 +51,12 @@ public class RouterArgument {
         }
     }
 
+    /**
+     * Adds a {@link NameValue} argument to this {@code RouterArgument}.
+     *
+     * @param nv the {@link NameValue} instance to add
+     * @throws NullPointerException if the {@code NameValue} instance is {@code null}
+     */
     public void addArgument(NameValue nv) {
         if (null==nv) {
             throw new NullPointerException("NameValue must be non null");
@@ -33,10 +65,22 @@ public class RouterArgument {
         map.put(nv.getName(),nv);
     }
 
+    /**
+     * Checks if an argument with the specified name exists.
+     *
+     * @param name the name of the argument to check
+     * @return {@code true} if the argument exists, {@code false} otherwise
+     */
     public boolean contains(String name) {
         return null!=map && map.containsKey(name);
     }
 
+    /**
+     * Retrieves the {@link NameValue} argument associated with the specified name.
+     *
+     * @param name the name of the argument to retrieve
+     * @return the {@link NameValue} instance, or {@code null} if it does not exist
+     */
     public NameValue getArgument(String name) {
         if (null==map) {
             return null;
@@ -44,6 +88,14 @@ public class RouterArgument {
         return map.get(name);
     }
 
+    /**
+     * Retrieves the value associated with the specified argument name, cast to the
+     * desired type.
+     *
+     * @param <T> the desired type of the value
+     * @param name the name of the argument to retrieve the value for
+     * @return the value associated with the argument, or {@code null} if it does not exist
+     */
     public <T> T getValue(String name) {
         NameValue nv = getArgument(name);
         if (null==nv) {
@@ -52,6 +104,12 @@ public class RouterArgument {
         return nv.getValue();
     }
 
+    /**
+     * Removes the argument with the specified name.
+     *
+     * @param name the name of the argument to remove
+     * @return the removed {@link NameValue} instance, or {@code null} if it did not exist
+     */
     public NameValue removeArgument(String name) {
         if (null==map) {
             return null;
@@ -59,6 +117,14 @@ public class RouterArgument {
         return map.remove(name);
     }
 
+    /**
+     * Validates and accepts all the arguments in this {@code RouterArgument}.
+     * If an argument is required but has no value, or if its value does not match
+     * the expected type, an exception is thrown.
+     *
+     * @throws NullPointerException if a required argument has no value
+     * @throws IllegalArgumentException if an argument's value does not match the expected type
+     */
     public void accept() {
         if (null!=map) {
             Collection<NameValue> nvs = map.values();
@@ -68,6 +134,13 @@ public class RouterArgument {
         }
     }
 
+    /**
+     * Merges the arguments from another {@code RouterArgument} into this one.
+     * If an argument with the same name exists in both instances, the value from
+     * the other instance is used.
+     *
+     * @param other the {@code RouterArgument} to merge from
+     */
     public void merge(RouterArgument other) {
         Map<String,NameValue> omap = other.map;
         if (null==omap) {
@@ -83,6 +156,12 @@ public class RouterArgument {
         map.putAll(omap);
     }
 
+    /**
+     * Creates a copy of this {@code RouterArgument} without including the values
+     * of the arguments.
+     *
+     * @return a new {@code RouterArgument} instance with the same argument names but without values
+     */
     public RouterArgument copyWithoutValue() {
         RouterArgument args = new RouterArgument();
         if (map!=null) {
@@ -103,6 +182,11 @@ public class RouterArgument {
         }
     }
 
+    /**
+     * The {@code NameValue} class represents a key-value pair where the key is
+     * a string name and the value can be of any object type. It also contains
+     * metadata such as the value's expected type and whether the value is required.
+     */
     public static class NameValue {
         private final String name;
         private final Type type;
@@ -282,6 +366,11 @@ public class RouterArgument {
         }
     }
 
+    /**
+     * The {@code Type} class represents a data type for {@link NameValue} instances.
+     * It includes predefined types such as {@code BOOLEAN}, {@code STRING}, and
+     * {@code INT}, as well as support for custom types.
+     */
     public static final class Type {
         public static final Type ANY = new Type("any",Object.class);
 
@@ -330,6 +419,12 @@ public class RouterArgument {
             return types;
         }
 
+        /**
+         * @param test the target value for type test
+         * @return checks if the value type is accepted by this {@code Type};
+         *          {@code true} if the value type matches of the accepted types,
+         *          {@code false} otherwise
+         */
         public boolean check(Object test) {
             if (null==test) {
                 return nullTest();
@@ -371,6 +466,13 @@ public class RouterArgument {
             return Objects.hash(name, Arrays.hashCode(types));
         }
 
+        /**
+         * Returns a {@code Type} instance corresponding to the given type name.
+         *
+         * @param type the name of the type
+         * @return the {@code Type} instance
+         * @throws IllegalArgumentException if the type name is unknown
+         */
         public static Type get(String type) {
             switch (type) {
                 case "any": return ANY;
