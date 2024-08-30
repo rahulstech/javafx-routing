@@ -160,7 +160,7 @@ public class RouterPaneDelegate {
         RouterContext context = this.context;
         if (!StringUtil.isEmpty(xml) && null != context) {
             Router router = new Router(context, wrapped);
-            try (InputStream in = context.getResourceAsStream(xml)) {
+            try (InputStream in = context.getRouterConfigurationAsStrem(xml)) {
                 router.parse(in);
                 return router;
             } catch (IOException e) {

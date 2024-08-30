@@ -8,31 +8,86 @@ import rahulstech.jfx.routing.parser.Attribute;
 import rahulstech.jfx.routing.parser.AttributeSet;
 import rahulstech.jfx.routing.util.Size;
 
-@SuppressWarnings("unused")
+/**
+ * The {@code SlideAnimation} class is a {@link rahulstech.jfx.routing.element.RouterAnimation RouterAnimation}
+ * provides predefined slide animations for JavaFX Nodes along x and y axises only.
+ * It supports sliding the node in and out from various directions (left, right, top, bottom).
+ * The sliding effect is achieved by translating the node along the X or Y axis.
+ * <p>
+ * Each animation is defined by a starting and an ending translate value, specified in either
+ * absolute units (pixels) or relative units (percentage of the node's or node parent's dimension).
+ * </p>
+ *
+ * <p>
+ * Predefined animations:
+ * <ul>
+ *     <li>{@link #getSlideInLeft()}</li>
+ *     <li>{@link #getSlideOutLeft()}</li>
+ *     <li>{@link #getSlideInRight()}</li>
+ *     <li>{@link #getSlideOutRight()}</li>
+ *     <li>{@link #getSlideInTop()}</li>
+ *     <li>{@link #getSlideOutTop()}</li>
+ *     <li>{@link #getSlideInBottom()}</li>
+ *     <li>{@link #getSlideOutBottom()}</li>
+ * </ul>
+ * </p>
+ * <p>XML attributes for {@code ScaleAnimations} are
+ * <ul>
+ *     <li>{@code fromXTranslate}: starting translate value along x axis</li>
+ *     <li>{@code fromXTranslate}: final translate value along x axis</li>
+ *     <li>{@code fromYTranslate}: starting translate value along y axisr</li>
+ *    <li>{@code fromYTranslate}: final translate value along y axis</li>
+ * </ul>
+ * </p>
+ * <p>
+ *  Note: units for from and to values must be same along same axis. For example:
+ *  {@code fromXTranslate="2px"} and {@code toXTranslate="100%"} is invalid.
+ * </p>
+ * @author Rahul Bagchi
+ * @since 1.0
+ * @see rahulstech.jfx.routing.element.RouterAnimation RouterAnimation
+ */
 public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
 
 
     /**
-     *  SLIDE_<operation>_<from direction>
-     *  for example:
-     *  SLIDE_IN_TOP => translateY  from -ve value to 0
-     *  SLIDE_OUT_RIGHT => translateX from 0 to +ve value
+     * Slide the node in from the left.
      */
-
     public static final String SLIDE_IN_LEFT = "slide_in_left";
 
+    /**
+     * Slide the node in from the right.
+     */
     public static final String SLIDE_IN_RIGHT = "slide_in_right";
 
+    /**
+     * Slide the node in from the top.
+     */
     public static final String SLIDE_IN_TOP = "slide_in_top";
 
+    /**
+     * Slide the node in from the bottom.
+     */
     public static final String SLIDE_IN_BOTTOM = "slide_in_bottom";
 
+    /**
+     * Slide the node out to the left.
+     */
     public static final String SLIDE_OUT_LEFT = "slide_out_left";
 
+    /**
+     * Slide the node out to the right.
+     */
     public static final String SLIDE_OUT_RIGHT = "slide_out_right";
 
+    /**
+     * Slide the node out to the top.
+     */
     public static final String SLIDE_OUT_TOP = "slide_out_top";
 
+    /**
+     * Slide the node out to the bottom.
+     */
     public static final String SLIDE_OUT_BOTTOM = "slide_out_bottom";
 
     public static SlideAnimation getSlideInLeft() {
@@ -104,10 +159,16 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
     private Size toX;
     private Size toY;
 
+    /**
+     * Constructs a {@code SlideAnimation} with the specified name.
+     *
+     * @param name the name of the animation
+     */
     public SlideAnimation(String name) {
         super(name);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void initialize(AttributeSet attrs) {
         super.initialize(attrs);
@@ -139,42 +200,87 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         }
     }
 
+    /**
+     * Returns the starting X translation value.
+     *
+     * @return the starting X translation value
+     */
     public Size getFromX() {
         return fromX;
     }
 
+    /**
+     * Sets the starting X translation value.
+     *
+     * @param fromX the starting X translation value
+     * @return the {@code SlideAnimation} instance for method chaining
+     */
     public SlideAnimation setFromX(Size fromX) {
         this.fromX = fromX;
         return this;
     }
 
+    /**
+     * Returns the starting Y translation value.
+     *
+     * @return the starting Y translation value
+     */
     public Size getFromY() {
         return fromY;
     }
 
+    /**
+     * Sets the starting Y translation value.
+     *
+     * @param fromY the starting Y translation value
+     * @return the {@code SlideAnimation} instance for method chaining
+     */
     public SlideAnimation setFromY(Size fromY) {
         this.fromY = fromY;
         return this;
     }
 
+    /**
+     * Returns the ending X translation value.
+     *
+     * @return the ending X translation value
+     */
     public Size getToX() {
         return toX;
     }
 
+    /**
+     * Sets the ending X translation value.
+     *
+     * @param toX the ending X translation value
+     * @return the {@code SlideAnimation} instance for method chaining
+     */
     public SlideAnimation setToX(Size toX) {
         this.toX = toX;
         return this;
     }
 
+    /**
+     * Returns the ending Y translation value.
+     *
+     * @return the ending Y translation value
+     */
     public Size getToY() {
         return toY;
     }
 
+    /**
+     * Sets the ending Y translation value.
+     *
+     * @param toY the ending Y translation value
+     * @return the {@code SlideAnimation} instance for method chaining
+     */
     public SlideAnimation setToY(Size toY) {
         this.toY = toY;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void doReset() {
         Node node = getTarget();
@@ -197,6 +303,7 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Animation createAnimation(Node node) {
         TranslateTransition animation = new TranslateTransition();

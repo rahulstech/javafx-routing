@@ -5,6 +5,9 @@ import rahulstech.jfx.routing.Router;
 
 /**
  * A simple implementation of {@link LifecycleAwareController}
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
  */
 public abstract class SimpleLifecycleAwareController implements LifecycleAwareController {
 

@@ -22,6 +22,7 @@ import java.util.function.Predicate;
  * @see BackstackEntry
  *
  * @author Rahul Bagchi
+ * @since 1.0
  */
 public class Backstack<E extends BackstackEntry> implements Disposable {
 

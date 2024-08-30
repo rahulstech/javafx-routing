@@ -10,7 +10,6 @@ import rahulstech.jfx.routing.element.RouterAnimation;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-
 public class SingleSceneTransaction extends Transaction {
 
     private final Pane content;
@@ -61,9 +60,9 @@ public class SingleSceneTransaction extends Transaction {
     }
 
     /**
-     * Removes the top entry till the entry just before the target entry from backstack
-     * and shows the entry with tag. If the top entry is the target entry then does nothing.
-     * Also, if the top entry is not the target but no entry found with the tag then nothing happens.
+     * Removes the top entry from backstack and shows the entry with tag.
+     * If the top entry is the target entry then do nothing.If no entry found
+     * then nothing happens.
      *
      * @param tag tag of the target
      * @param popEnter animation for pop entering target
@@ -85,15 +84,18 @@ public class SingleSceneTransaction extends Transaction {
                 return;
             }
 
-            // remove the top entry from backstack
-            backstack.remove(from);
-
             // peek the Target with the tag to show next
-            SingleSceneTarget to = (SingleSceneTarget) backstack.findFirst(target -> target.getTag().equals(tag)).get();
+            backstack.findFirst(target -> target.getTag().equals(tag))
+                    .ifPresent(target -> {
+                        SingleSceneTarget to = (SingleSceneTarget) target;
 
-            // perform the transaction
-            to.showInContent(getContent(),popEnter,null);
-            from.hideFromContent(getContent(),popExit, Target::onDestroy);
+                        // remove the top entry from backstack
+                        backstack.remove(from);
+
+                        // perform the transaction
+                        to.showInContent(getContent(),popEnter,null);
+                        from.hideFromContent(getContent(),popExit, Target::onDestroy);
+                    });
         });
         return this;
     }
@@ -138,7 +140,7 @@ public class SingleSceneTransaction extends Transaction {
         sst.showInContent(getContent(),sst.getCachedAnimation(),null);
     }
 
-    /** @InheritDoc */
+    /** {@inheritDoc} */
     @Override
     public void doForcedHide(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
@@ -152,7 +154,7 @@ public class SingleSceneTransaction extends Transaction {
         Platform.runLater(sst::onHide);
     }
 
-    /** @InheritDoc */
+    /** {@inheritDoc} */
     @Override
     public void doForcedDestroy(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
@@ -173,6 +175,11 @@ public class SingleSceneTransaction extends Transaction {
     //                          Public Methods                           //
     //////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns {@link Pane} where the screens are added as child
+     *
+     * @return parent to add child screen
+     */
     public Pane getContent() {
         return content;
     }
@@ -191,6 +198,14 @@ public class SingleSceneTransaction extends Transaction {
     //                       Declared Sub Classes                         //
     ///////////////////////////////////////////////////////////////////////
 
+    /**
+     * The {@code SingleSceneTarget} class represents a target in the single scene transaction.
+     * It provides methods to manage the lifecycle, including showing, hiding, and destroying.
+     * It performs the actual adding and remove the node associated the screen to the content pane
+     * with animation. Implementation of the class must handle lifecycle methods on the controller.
+     *
+     * <p>Each target is associated with a controller and has a tag to identify it within the backstack.</p>
+     */
     public static abstract class SingleSceneTarget extends Target {
 
         private final Object controller;
@@ -202,20 +217,49 @@ public class SingleSceneTransaction extends Transaction {
             this.controller = Objects.requireNonNull(controller, "controller is null");
         }
 
+        /**
+         * Returns the controller instance associated with the screen
+         *
+         * @return the controller instance
+         */
         public Object getController() {
             return controller;
         }
 
+        /**
+         * Returns the JavaFx {@link Node} for the screen
+         *
+         * @return JavaFx {@link Node} for the screen
+         */
         public abstract Node getNode();
 
+        /**
+         * Returns the last used {@link RouterAnimation}.
+         * For example: the hide or show animation
+         *
+         * @return last used animation for the screen
+         */
         public RouterAnimation getCachedAnimation() {
             return cachedAnimation;
         }
 
+        /**
+         * Sets last used {@link RouterAnimation} for the screen.
+         * For example: the hide or show animation
+         *
+         * @param cachedAnimation the animation
+         */
         public void setCachedAnimation(RouterAnimation cachedAnimation) {
             this.cachedAnimation = cachedAnimation;
         }
 
+        /**
+         * Adds screen node to the content screen as child, performs animations, handles lifecyle methods
+         *
+         * @param content instnace of {@link Pane} to add the screen node as child
+         * @param enter_animation no null instance of {@link RouterAnimation}
+         * @param OnShown {@link Consumer} to be called when screen is shown
+         */
         public void showInContent(Pane content, RouterAnimation enter_animation, Consumer<SingleSceneTarget> OnShown) {
             Node front = getNode();
 
@@ -249,6 +293,13 @@ public class SingleSceneTransaction extends Transaction {
             enter_animation.play();
         }
 
+        /**
+         * Removes screen node from the content screen, performs animation, handles lifecycle methods
+         *
+         * @param content instance of {@link Pane} to add the screen node as child
+         * @param exit_animation non-null instance of {@link RouterAnimation}
+         * @param OnHide {@link Consumer} to be called when screen is hidden
+         */
         public void hideFromContent(Pane content, RouterAnimation exit_animation, Consumer<SingleSceneTarget> OnHide) {
             Node front = getNode();
 
@@ -275,6 +326,12 @@ public class SingleSceneTransaction extends Transaction {
             exit_animation.play();
         }
 
+        /**
+         * Adds the node to the parent as child
+         *
+         * @param content the parent {@link Pane}
+         * @param child the child {@link Node}
+         */
         public void addToContent(Pane content, Node child) {
             content.getChildren().add(child);
             // layout bounds of child node is calculated during layout phase
@@ -285,10 +342,23 @@ public class SingleSceneTransaction extends Transaction {
             content.layout();
         }
 
+        /**
+         * Removes the node from the parent
+         *
+         * @param content the parent {@link Pane}
+         * @param child the child {@link Node}
+         */
         public void removeFromContent(Pane content, Node child) {
             content.getChildren().remove(child);
         }
 
+        /**
+         * Checkes weather the node is added as child to the parent
+         *
+         * @param content the parent {@link Pane}
+         * @param child the child {@link Node}
+         * @return {@code true} is added as child, {@code false} not added as child
+         */
         public boolean isInContent(Pane content, Node child) {
             return content.getChildren().contains(child);
         }

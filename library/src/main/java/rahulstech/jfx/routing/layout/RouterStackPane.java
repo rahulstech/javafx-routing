@@ -22,10 +22,19 @@ import rahulstech.jfx.routing.RouterPane;
  * RouterStackPane routerPane = new RouterStackPane();
  * routerPane.setContextClass("com.example.MyRouterContext");
  * routerPane.setRouterConfig("path/to/router-config.xml");
+ *
+ * // or
+ * RouterContext context = ...
+ * RouterStackPane routerPane = new RouterStackPane();
+ * routerPane.setContext(context);
+ * routerPane.setRouterConfig("path/to/router-config.xml");
+ *
  * }</pre>
  *
  * <p>Example usage in fxml:</p>
  * <pre>{@code
+ * <?xml version="1.0" encoding="utf-8"?>
+ *
  * <?import rahulstecch.jfx.routing.layout.RouterStackPane; ?>
  *
  * <RouterStackPane xmlns="http://javafx.com/javafx"
@@ -39,6 +48,9 @@ import rahulstech.jfx.routing.RouterPane;
  * @see StackPane
  * @see RouterPane
  * @see RouterPaneDelegate
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
  */
 public class RouterStackPane extends StackPane implements RouterPane {
 

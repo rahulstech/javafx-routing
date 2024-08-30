@@ -6,7 +6,35 @@ import javafx.scene.Node;
 import rahulstech.jfx.routing.parser.Attribute;
 import rahulstech.jfx.routing.parser.AttributeSet;
 
-@SuppressWarnings("unused")
+/**
+ * {@code ScaleAnimation} is a {@link rahulstech.jfx.routing.element.RouterAnimation RouterAnimation} that provides scaling animations
+ * for JavaFX nodes.
+ *
+ * <p>This class supports various scaling effects, such as scaling up or down in the X or Y direction, or both.</p>
+ *
+ * <p>Predefined animations:</p>
+ * <ul>
+ *     <li>{@link #getScaleUpX()}</li>
+ *     <li>{@link #getScaleUpY()}</li>
+ *     <li>{@link #getScaleDownX()}</li>
+ *     <li>{@link #getScaleDownY()}</li>
+ *     <li>{@link #getScaleUpXY()}</li>
+ *     <li>{@link #getScaleDownXY()}</li>
+ * </ul>
+ *
+ * <p>XML attributes for {@code ScaleAnimations} are
+ * <ul>
+ *     <li>{@code fromXScale}: starting scale value along x axis. valid values 0 (zero) or any positive floating point number</li>
+ *     <li>{@code toXScale}: final scale value along x axis. valid values 0 (zero) or any positive floating point number</li>
+ *     <li>{@code fromYScale}: starting scale value along y axis. valid values 0 (zero) or any positive floating point number</li>
+ *    <li>{@code toYScale}: final scale value along y axis. valid values 0 (zero) or any positive floating point number</li>
+ * </ul>
+ * </p>
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
+ * @see rahulstech.jfx.routing.element.RouterAnimation RouterAnimation
+ */
 public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
 
     public static final String SCALE_UP_X = "scale_up_x";

@@ -4,7 +4,15 @@ import javafx.scene.Node;
 import rahulstech.jfx.routing.Router;
 
 /**
+ * The {@code LifecycleAwareController} interface defines a contract for controllers
+ * that need to manage their lifecycle through specific methods. These methods allow
+ * the controller to handle initialization, visibility changes, and resource cleanup.
  *
+ * <p>Implementing classes should use this interface to manage their lifecycle events
+ * effectively in a JavaFX application.</p>
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
  */
 public interface LifecycleAwareController {
 

@@ -6,7 +6,16 @@ import rahulstech.jfx.routing.util.Size;
 
 import java.util.Objects;
 
-@SuppressWarnings("unused")
+/**
+ * The {@code Attribute} class represents an XML attribute in the context of a routing configuration.
+ * It provides methods to retrieve the attribute's value in various formats, such as {@code int}, {@code long},
+ * {@code float}, {@code double}, {@link Duration}, {@link Size}, and {@link Class}.
+ * The class also supports checking the type of the attribute's value and offers several common constants
+ * for attribute names and types.
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
+ */
 public class Attribute {
 
     public static final int TYPE_CLASS = 1;
@@ -62,7 +71,6 @@ public class Attribute {
     public static final  String TITLE = "title";
     public static final String ARGUMENTS = "arguments";
 
-
     // attribute for argument
     public static final String REQUIRED = "required";
 
@@ -72,66 +80,168 @@ public class Attribute {
 
     private final String value;
 
+    /**
+     * Created an {@code Attribute} with the specified name and value, using the default namespace.
+     *
+     * @param name  the name of the attribute
+     * @param value the value of the attribute
+     */
     public Attribute(String name, String value) {
         this(RouterXmlParser.DEFAULT_NAMESPACE,name,value);
     }
 
+    /**
+     * Creates an {@code Attribute} with the specified namespace, name, and value.
+     *
+     * @param namespace the namespace of the attribute
+     * @param name      the name of the attribute
+     * @param value     the value of the attribute
+     */
     public Attribute(String namespace, String name, String value) {
         this.namespace = namespace;
         this.name = name;
         this.value = value;
     }
 
+    /**
+     * Returns the namespace of the attribute.
+     *
+     * @return the namespace of the attribute
+     */
     public String getNamespace() {
         return namespace;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    /**
+     * Checks if the attribute uses the default namespace.
+     *
+     * @return {@code true} if the attribute uses the default namespace, {@code false} otherwise
+     */
     public boolean isDefaultNamespace() {
         return RouterXmlParser.DEFAULT_NAMESPACE.equals(namespace);
     }
 
+    /**
+     * Returns the name of the attribute.
+     *
+     * @return the name of the attribute
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the value of the attribute.
+     *
+     * @return the value of the attribute
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Converts the value of this {@code Attribute} using the provided {@link AttributeValueConverter}.
+     * <p>
+     * This method uses the specified {@code converter} to convert the value of this {@code Attribute}
+     * to the desired type.
+     * </p>
+     *
+     * @param converter the {@link AttributeValueConverter} used to convert the value of this {@code Attribute}
+     * @return the converted value of this {@code Attribute}
+     * @throws ClassCastException if the conversion fails due to a type mismatch
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getConvertedValue(AttributeValueConverter converter) {
+        return (T) converter.convert(this);
+    }
+
+    /**
+     * Converts the attribute value to an {@code int}.
+     *
+     * @return the attribute value as an {@code int}
+     * @throws ConverterException if the value cannot be converted to a number
+     */
     public int getAsInt() {
         return NumberConverter.getInstance().convert(this).intValue();
     }
 
+    /**
+     * Converts the attribute value to a {@code long}.
+     *
+     * @return the attribute value as a {@code long}
+     * @throws ConverterException if the value cannot be converted to a number
+     */
     public long getAsLong() {
         return NumberConverter.getInstance().convert(this).longValue();
     }
 
+    /**
+     * Converts the attribute value to a {@code float}.
+     *
+     * @return the attribute value as a {@code float}
+     * @throws ConverterException if the value cannot be converted to a number
+     */
     public float getAsFloat() {
         return NumberConverter.getInstance().convert(this).floatValue();
     }
 
+    /**
+     * Converts the attribute value to a {@code double}.
+     *
+     * @return the attribute value as a {@code double}
+     * @throws ConverterException if the value cannot be converted to a number
+     */
     public double getAsDouble() {
         return NumberConverter.getInstance().convert(this).doubleValue();
     }
 
+    /**
+     * Converts the attribute value to a {@link Duration}.
+     *
+     * @return the attribute value as a {@link Duration}
+     * @throws ConverterException if the value cannot be converted to a {@link Duration}
+     */
     public Duration getAsDuration() {
         return DurationConverter.getInstance().convert(this);
     }
 
+    /**
+     * Converts the attribute value to a {@link Size}.
+     *
+     * @return the attribute value as a {@link Size}
+     * @throws ConverterException if the value cannot be converted to a {@link Size}
+     */
     public Size getAsSize() {
         return SizeConverter.getInstance().convert(this);
     }
 
+    /**
+     * Converts the attribute value to a {@link Class}.
+     *
+     * @param <T> the type of the class
+     * @return the attribute value as a {@link Class}
+     * @throws ConverterException if the value cannot be converted to a {@link Class}
+     */
     @SuppressWarnings("unchecked")
     public <T> Class<T> getAsClass() {
         return (Class<T>) ClassConverter.getInstance().convert(this);
     }
 
+    /**
+     * Converts the attribute value to a {@code boolean}.
+     *
+     * @return the attribute value as a {@code boolean}
+     * @throws ConverterException if the value cannot be converted to a {@code boolean}
+     */
     public boolean getAsBoolean() {
         return BooleanConverter.getInstance().convert(this);
     }
 
+    /**
+     * Determines the type of the attribute value based on its format.
+     *
+     * @return the type of the attribute value
+     */
     public int getType() {
         int type;
         if (ClassConverter.getInstance().check(value)) {

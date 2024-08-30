@@ -20,10 +20,26 @@ import java.util.ResourceBundle;
 
 import static rahulstech.jfx.routing.Router.KEY_SINGLE_SCENE_SCREEN_EXECUTOR;
 
-@SuppressWarnings("unused")
+/**
+ * The {@code BaseRouterContext} class extends the {@link RouterContext} to provide
+ * concrete implementations for handling animations, resource loading, and managing
+ * router executors and transactions.
+ *
+ * <p>This class also includes caching mechanisms for animations, router executors,
+ * and transactions to optimize performance and resource usage.</p>
+ *
+ * @see RouterContext
+ * @see RouterAnimation
+ * @see RouterExecutor
+ * @see Transaction
+ * @since 1.0
+ * @author Rahul Bagchi
+ */
 public abstract class BaseRouterContext extends RouterContext {
 
-    public BaseRouterContext() {}
+    public BaseRouterContext() {
+        super();
+    }
     
     /////////////////////////////////////////////////////////////////
     //              RouterAnimation Related Methods               //
@@ -49,6 +65,11 @@ public abstract class BaseRouterContext extends RouterContext {
         return (String) getFromCache(PREFIX_ANIMATION_NAME+id);
     }
 
+    /**
+     * Adds an {@link AttributeSet} to the animation attribute set cache.
+     *
+     * @param attrs the attribute set to add
+     */
     public void addAnimationAttributeSet(AttributeSet attrs) {
         Attribute idAttr = attrs.get(Attribute.ID);
         Attribute nameAttr = attrs.get(Attribute.NAME);
@@ -58,11 +79,13 @@ public abstract class BaseRouterContext extends RouterContext {
         cacheAnimationAttributes(id,attrs);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addAllAnimationAttributeSet(Collection<AttributeSet> attrs) {
         attrs.forEach(this::addAnimationAttributeSet);
     }
-    
+
+    /** {@inheritDoc} */
     @Override
     public RouterAnimation getAnimation(String nameOrId) {
         String name = getCachedAnimationName(nameOrId);
@@ -73,6 +96,13 @@ public abstract class BaseRouterContext extends RouterContext {
         return getAnimationByName(name,attrs);
     }
 
+    /**
+     * Retrieves a {@link RouterAnimation} based on its name and initializes it with the provided attributes.
+     *
+     * @param name the name of the animation
+     * @param attrs the attributes to initialize the animation with
+     * @return the corresponding {@link RouterAnimation} instance
+     */
     protected RouterAnimation getAnimationByName(String name, AttributeSet attrs) {
         RouterAnimation animation;
         switch (name) {
@@ -153,6 +183,7 @@ public abstract class BaseRouterContext extends RouterContext {
     //                 FXMLLoader Related Methods                 //
     ///////////////////////////////////////////////////////////////
 
+    /** {@inheritDoc} */
     @Override
     public FXMLLoader getFxmlLoader(String fxml, Class<?> controller, ResourceBundle bundle, Charset charset) {
         URL location = getResource(fxml);
@@ -194,6 +225,7 @@ public abstract class BaseRouterContext extends RouterContext {
         addToCache(PREFIX_ROUTER_EXECUTOR+name,executor);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final RouterExecutor getRouterExecutorForName(String name, Router router) {
         RouterExecutor cached = getCachedRouterExecutor(name);
@@ -205,6 +237,7 @@ public abstract class BaseRouterContext extends RouterContext {
         return executor;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RouterExecutor getDefaultRouterExecutor(Router router) {
         return getRouterExecutorForName(Router.KEY_DEFAULT_ROUTER_EXECUTOR,router);
@@ -230,6 +263,7 @@ public abstract class BaseRouterContext extends RouterContext {
         return (Transaction) getFromCache(clazz);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Transaction getTransaction(Class<? extends Transaction> clazz, Object... args) {
         Transaction cached = getCachedTransaction(clazz);
@@ -256,16 +290,25 @@ public abstract class BaseRouterContext extends RouterContext {
     //             Resource Loading Related Methods               //
     ///////////////////////////////////////////////////////////////
 
+    /** {@inheritDoc} */
     @Override
     public URL getResource(String name) {
         return getResource(name,getResourceType(name));
     }
 
+    /** {@inheritDoc} */
     @Override
     public InputStream getResourceAsStream(String name) {
         return getResourceAsStream(name,getResourceType(name));
     }
 
+    /**
+     * Returns resource type
+     *
+     * @param name resource name
+     * @return non-null {@code String} as resource type name based on the resource extension name,
+     *          or empty string if extension name does not exist
+     */
     public String getResourceType(String name) {
         int extensionStart = name.lastIndexOf(".");
         if (extensionStart>=0){
@@ -274,7 +317,23 @@ public abstract class BaseRouterContext extends RouterContext {
         return "";
     }
 
+    /**
+     * Returns resource location {@link URL}
+     *
+     * @param name resource name
+     * @param type resource type
+     * @return the {@link URL} of the resource associated with the specified name, or {@code null} if not found
+     * @see #getResourceType(String)
+     */
     public abstract URL getResource(String name, String type);
 
+    /**
+     * Returns resource as {@link InputStream}
+     *
+     * @param name resource name
+     * @param type resource type
+     * @return the {@link InputStream} of the resource associated with the specified name, or {@code null} if not found
+     * @see #getResourceType(String)
+     */
     public abstract InputStream getResourceAsStream(String name, String type);
 }

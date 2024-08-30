@@ -91,15 +91,14 @@ import rahulstech.jfx.routing.util.StringUtil;
  *  }
  * </pre>
  *
- * @author  Rahul Bagchi
- *
- * @since 1.0
- *
  * @see Router
  * @see rahulstech.jfx.routing.RouterExecutor RouterExecutor
  * @see RouterArgument
+ *
+ * @author  Rahul Bagchi
+ *
+ * @since 1.0
  */
-@SuppressWarnings("unused")
 public class Destination {
 
     private String id;

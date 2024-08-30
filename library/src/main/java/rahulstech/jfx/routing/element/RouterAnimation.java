@@ -79,6 +79,9 @@ import java.util.Objects;
  * RouterAnimation animation = context.getAnimation(...);
  * }
  * </pre>
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
  */
 // TODO: add interpolator and easing method
 public abstract class RouterAnimation {

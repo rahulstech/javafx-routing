@@ -124,6 +124,7 @@ public class RouterArgument {
      *
      * @throws NullPointerException if a required argument has no value
      * @throws IllegalArgumentException if an argument's value does not match the expected type
+     * @see NameValue#accept()
      */
     public void accept() {
         if (null!=map) {
@@ -183,9 +184,22 @@ public class RouterArgument {
     }
 
     /**
-     * The {@code NameValue} class represents a key-value pair where the key is
-     * a string name and the value can be of any object type. It also contains
-     * metadata such as the value's expected type and whether the value is required.
+     * The {@code NameValue} class represents a named value with a specific type,
+     * and whether it is required or optional.
+     * <p>
+     * Each {@code NameValue} object holds a name, a type, a required flag.
+     * The class provides methods to retrieve the value in various
+     * data types (e.g., {@code int}, {@code boolean}, {@code String}), and to
+     * validate that the value matches the specified type.
+     * </p>
+     * <p>
+     * Usage example:
+     * <pre>{@code
+     *     NameValue param = new NameValue("example", Type.STRING, true, "Sample");
+     *     param.accept(); // Validates the value and type
+     *     String value = param.getAsString();
+     *  }
+     * </pre>
      */
     public static class NameValue {
         private final String name;
@@ -193,18 +207,45 @@ public class RouterArgument {
         private final boolean required;
         private Object value;
 
+        /**
+         * Constructs a {@code NameValue} with the specified name and type. The value is
+         * not required by default.
+         *
+         * @param name the name of the parameter or attribute
+         * @param type the data type of the value
+         */
         public NameValue(String name, Type type) {
             this(name,type,false);
         }
 
+        /**
+         * Constructs a {@code NameValue} with the specified name, type, and required flag.
+         *
+         * @param name     the name of the parameter or attribute
+         * @param type     the data type of the value
+         * @param required whether the value is required
+         */
         public NameValue(String name, Type type, boolean required) {
             this(name,type,required,null);
         }
 
+        /**
+         * Constructs a {@code NameValue} with the specified name and initial value.
+         * The type is inferred as {@code Type.ANY}, and the value is not required by default.
+         *
+         * @param name  the name of the parameter or attribute
+         * @param value the initial value of the parameter
+         */
         public NameValue(String name, Object value) {
             this(name,Type.ANY,false,value);
         }
 
+        /**
+         * Constructs a {@code NameValue} from an {@code AttributeSet}. The name, required
+         * flag, and type are extracted from the set.
+         *
+         * @param set the {@code AttributeSet} containing attributes for name, type, and required flag
+         */
         public NameValue(AttributeSet set) {
             String name = set.get(Attribute.NAME).getValue();
             boolean required = set.getOrDefault(Attribute.REQUIRED,"false").getAsBoolean();
@@ -225,129 +266,359 @@ public class RouterArgument {
             this.value = value;
         }
 
+        /**
+         * Returns the name of the parameter or attribute.
+         *
+         * @return the name
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * Returns the type of the value.
+         *
+         * @return the data type
+         */
         public Type getType() {
             return type;
         }
 
+        /**
+         * Returns whether the value is required.
+         *
+         * @return {@code true} if the value is required; {@code false} otherwise
+         */
         public boolean isRequired() {
             return required;
         }
 
+        /**
+         * Sets the value of the parameter or attribute.
+         *
+         * @param value the value to set
+         */
         public void setValue(Object value) {
             this.value = value;
         }
 
+        /**
+         * Returns the value of the parameter or attribute cast to the specified type.
+         *
+         * @param <T> the expected type of the value
+         * @return the value cast to the specified type
+         */
         @SuppressWarnings("unchecked")
         public <T> T getValue() {
             return (T) value;
         }
 
+        /**
+         * Returns the value as a {@code byte}.
+         *
+         * @return the value as a {@code byte}
+         */
+        public byte getAsByte() {
+            return (byte) value;
+        }
+
+        /**
+         * Returns the value as a {@code byte[]}.
+         *
+         * @return the value as a {@code byte[]}
+         */
+        public char[] getAsByteArray() {
+            return (char[]) value;
+        }
+
+        /**
+         * Returns the value as a {@code char}.
+         *
+         * @return the value as a {@code char}
+         */
         public char getAsChar() {
             return (char) value;
         }
 
+        /**
+         * Returns the value as a {@code char[]}.
+         *
+         * @return the value as a {@code char[]}
+         */
         public char[] getAsCharArray() {
             return (char[]) value;
         }
 
+        /**
+         * Returns the value as a {@code boolean}.
+         *
+         * @return the value as a {@code boolean}
+         */
         public boolean getAsBoolean() {
             return (Boolean) value;
         }
 
+        /**
+         * Returns the value as a {@code boolean[]}.
+         *
+         * @return the value as a {@code boolean[]}
+         */
         public boolean[] getAsBooleanArray() {
             return (boolean[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Boolean}.
+         *
+         * @return the value as a {@code Boolean}
+         */
+        public Boolean getAsBooleanObject() {
+            return (Boolean) value;
+        }
+
+        /**
+         * Returns the value as a {@code Boolean[]}.
+         *
+         * @return the value as a {@code Boolean[]}
+         */
         public Boolean[] getAsBooleanObjectArray() {
             return (Boolean[]) value;
         }
 
+        /**
+         * Returns the value as a {@code short}.
+         *
+         * @return the value as a {@code short}
+         */
         public short getAsShort() {
             return ((Number) value).shortValue();
         }
 
+        /**
+         * Returns the value as a {@code short[]}.
+         *
+         * @return the value as a {@code short[]}
+         */
         public short[] getAsShortArray() {
             return (short[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Short}.
+         *
+         * @return the value as a {@code Short}
+         */
+        public Short getAsShortObject() {
+            return (Short) value;
+        }
+
+        /**
+         * Returns the value as a {@code Short[]}.
+         *
+         * @return the value as a {@code Short[]}
+         */
         public Short[] getAsShortObjectArray() {
             return (Short[]) value;
         }
 
+        /**
+         * Returns the value as an {@code int}.
+         *
+         * @return the value as an {@code int}
+         */
         public int getAsInt() {
             return ((Number) value).intValue();
         }
 
+        /**
+         * Returns the value as an {@code int[]}.
+         *
+         * @return the value as an {@code int[]}
+         */
         public int[] getAsIntArray() {
             return (int[]) value;
         }
 
+        /**
+         * Returns the value as an {@code Integer}.
+         *
+         * @return the value as an {@code Integer}
+         */
+        public Integer getAsInteger() {
+            return (Integer) value;
+        }
+
+        /**
+         * Returns the value as an {@code Integer[]}.
+         *
+         * @return the value as an {@code Integer[]}
+         */
         public Integer[] getAsIntegerArray() {
             return (Integer[]) value;
         }
 
+        /**
+         * Returns the value as a {@code long}.
+         *
+         * @return the value as a {@code long}
+         */
         public long getAsLong() {
             return ((Number) value).longValue();
         }
 
+        /**
+         * Returns the value as a {@code long[]}.
+         *
+         * @return the value as a {@code long[]}
+         */
         public long[] getAsLongArray() {
             return (long[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Long}.
+         *
+         * @return the value as a {@code Long}
+         */
+        public long getAsLongObject() {
+            return (Long) value;
+        }
+
+        /**
+         * Returns the value as a {@code Long[]}.
+         *
+         * @return the value as a {@code Long[]}
+         */
         public Long[] getAsLongObjectArray() {
             return (Long[]) value;
         }
 
+        /**
+         * Returns the value as a {@code float}.
+         *
+         * @return the value as a {@code float}
+         */
         public float getAsFloat() {
             return ((Number) value).floatValue();
         }
 
+        /**
+         * Returns the value as a {@code float[]}.
+         *
+         * @return the value as a {@code float[]}
+         */
         public float[] getAsFloatArray() {
             return (float[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Float}.
+         *
+         * @return the value as a {@code Float}
+         */
+        public Float getAsFloatObject() {
+            return (Float) value;
+        }
+
+        /**
+         * Returns the value as a {@code Float[]}.
+         *
+         * @return the value as a {@code Float[]}
+         */
         public Float[] getAsFloatObjectArray() {
             return (Float[]) value;
         }
 
+        /**
+         * Returns the value as a {@code double}.
+         *
+         * @return the value as a {@code double}
+         */
         public double getAsDouble() {
             return ((Number) value).doubleValue();
         }
 
+        /**
+         * Returns the value as a {@code double[]}.
+         *
+         * @return the value as a {@code double[]}
+         */
         public double[] getAsDoubleArray() {
             return (double[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Double}.
+         *
+         * @return the value as a {@code Double}
+         */
+        public double getAsDoubleObject() {
+            return (Double) value;
+        }
+
+        /**
+         * Returns the value as a {@code Double[]}.
+         *
+         * @return the value as a {@code Double[]}
+         */
         public Double[] getAsDoubleObjectArray() {
             return (Double[]) value;
         }
 
+        /**
+         * Returns the value as a {@code Number}.
+         *
+         * @return the value as a {@code Number}
+         */
         public Number getAsNumber() {
             return (Number) value;
         }
 
-        public String getAsString()  {
+        /**
+         * Returns the value as a {@code String}.
+         *
+         * @return the value as a {@code String}
+         */
+        public String getAsString() {
             return (String) value;
         }
 
+        /**
+         * Returns the value as a {@code String[]}.
+         *
+         * @return the value as a {@code String[]}
+         */
         public String[] getAsStringArray() {
             return (String[]) value;
         }
 
+        /**
+         * Checks if the value matches the specified type.
+         *
+         * @return {@code true} if the value matches the type; {@code false} otherwise
+         */
         public boolean checkType() {
-                return type.check(value);
+            return type.check(value);
         }
 
+        /**
+         * Creates a copy of this {@code NameValue} without the value.
+         *
+         * @return a copy of this {@code NameValue} without the value
+         */
         public NameValue copyWithoutValue() {
-            return new NameValue(name,type,required);
+            return new NameValue(name, type, required);
         }
 
+        /**
+         * Validates the value against the type and required flag. If the value is required
+         * and not provided, or if the value does not match the type, an exception is thrown.
+         *
+         * @throws NullPointerException     if the value is required and not provided
+         * @throws IllegalArgumentException if the value does not match the specified type
+         */
         public void accept() {
-            if (required && null==value) {
+            if (!type.equals(Type.ANY) && required && null==value) {
                 throw new NullPointerException("argument '"+name+"' is required");
             }
             if (!checkType()) {

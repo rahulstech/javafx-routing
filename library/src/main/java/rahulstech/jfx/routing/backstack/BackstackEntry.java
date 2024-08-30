@@ -7,6 +7,7 @@ import rahulstech.jfx.routing.util.Disposable;
  *
  * @see Disposable
  * @author Rahul Bagchi
+ * @since 1.0
  */
 public interface BackstackEntry extends Disposable {
 }
