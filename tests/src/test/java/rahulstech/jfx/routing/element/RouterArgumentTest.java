@@ -73,6 +73,8 @@ class RouterArgumentTest {
             return Stream.of(
                     Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.CHAR, false, 'c'), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsChar),
                     Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.CHAR_ARRAY, false, new char[]{'c'}), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsCharArray),
+                    Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.CHAR, false, 'c'), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsCharacter),
+                    Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.CHAR_ARRAY, false, new Character[]{'c'}), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsCharacterArray),
                     Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.BOOLEAN, false, true), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsBoolean),
                     Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.BOOLEAN_ARRAY, false, new boolean[]{true}), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsBooleanArray),
                     Arguments.arguments(new RouterArgument.NameValue("arg0", RouterArgument.Type.BOOLEAN, false, true), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsBooleanObject),

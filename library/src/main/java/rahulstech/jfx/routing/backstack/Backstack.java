@@ -26,7 +26,7 @@ import java.util.function.Predicate;
  */
 public class Backstack<E extends BackstackEntry> implements Disposable {
 
-    private ArrayList<E> backstack = new ArrayList<>();
+    ArrayList<E> backstack = new ArrayList<>();
 
     /**
      * Creates new {@code Backstack} instance
