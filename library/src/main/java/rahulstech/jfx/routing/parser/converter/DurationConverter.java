@@ -2,6 +2,7 @@ package rahulstech.jfx.routing.parser.converter;
 
 import javafx.util.Duration;
 import rahulstech.jfx.routing.element.RouterAnimation;
+import rahulstech.jfx.routing.parser.AttributeValueConverter;
 import rahulstech.jfx.routing.parser.ConverterException;
 
 import java.util.regex.Matcher;
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * The {@code DurationConverter} class converts attribute values to {@link Duration} objects.
- * It extends {@link BaseAttributeValueConverter} and supports conversion from various formats of duration strings.
+ * It extends {@link AttributeValueConverter} and supports conversion from various formats of duration strings.
  * This includes durations specified in milliseconds, seconds, or named constants like "duration_short" and "duration_long".
  *
  * <p>Valid duration values are:</p>
@@ -67,7 +68,7 @@ public class DurationConverter extends BaseAttributeValueConverter<Duration> {
      * @return the parsed value of type {@code Duration}
      */
     @Override
-    protected Duration parse(String value) {
+    public Duration parse(String value) {
         Matcher matcher = match(DURATION_PATTERN,value, Pattern.CASE_INSENSITIVE);
         if (!matcher.matches()) {
             throw new ConverterException("can not convert "+value+" to number");

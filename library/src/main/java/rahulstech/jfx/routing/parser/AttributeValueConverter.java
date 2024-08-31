@@ -1,5 +1,7 @@
 package rahulstech.jfx.routing.parser;
 
+import rahulstech.jfx.routing.util.StringUtil;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,26 +24,29 @@ public abstract class AttributeValueConverter {
     public AttributeValueConverter() {}
 
     /**
-     * Converts the given {@link Attribute} to an object of the desired type.
+     * Converts the given {@link Attribute} value to an object of the desired type.
      *
-     * <p>Subclasses must provide an implementation for this method to define how attribute values are
-     * converted.</p>
-     *
-     * @param attr the {@link Attribute} to convert
+     * @param attr the {@link Attribute} value to convert
      * @return the converted object
      */
-    public abstract Object convert(Attribute attr);
+    public Object convert(Attribute attr) {
+        String value = attr.getValue();
+        if (StringUtil.isEmpty(value)) {
+            return null;
+        }
+        return parse(value);
+    }
 
     /**
-     * Checks if the given string is empty. A string is considered empty if it is {@code null} or
-     * contains only whitespace characters.
+     * Parses the given {@code String} value to an object
      *
-     * @param text the string to check
-     * @return {@code true} if the string is {@code null} or empty, {@code false} otherwise
+     * <p>This method must be implemented by subclasses to define the specific parsing logic for converting
+     * the string value to the desired type.
+     *
+     * @param value the {@code String} value to parse
+     * @return the parsed value
      */
-    public boolean isEmptyString(String text) {
-        return null==text || text.trim().isEmpty();
-    }
+    public abstract Object parse(String value);
 
     /**
      * Validates the given value. Subclasses must provide an implementation for this method to define

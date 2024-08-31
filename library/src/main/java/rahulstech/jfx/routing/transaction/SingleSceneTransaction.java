@@ -130,7 +130,7 @@ public class SingleSceneTransaction extends Transaction {
                 top.hideFromContent(getContent(),exit_animation,null);
             }
             target.showInContent(getContent(),enter_animation,null);
-            getBackstack().pushBackstackEntry(target);
+            getBackstack().bringToTop(target);
         });
         return this;
     }

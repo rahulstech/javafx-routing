@@ -34,7 +34,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     public Backstack() {}
 
     /**
-     * Add a new entry at the top
+     * Add a new entry to the top
      *
      * @param entry the new entry to add
      * @throws NullPointerException if entry is null
@@ -43,6 +43,20 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (null==entry) {
             throw new NullPointerException("can not add null entry to backstack");
         }
+        backstack.add(entry);
+    }
+
+    /**
+     * First removes the entry if exists then adds to the top.
+     *
+     * @param entry existing or new entry to add to the top
+     * @throws NullPointerException if entry is null
+     */
+    public void bringToTop(E entry) {
+        if (null==entry) {
+            throw new NullPointerException("can not add null entry to backstack");
+        }
+        backstack.remove(entry);
         backstack.add(entry);
     }
 

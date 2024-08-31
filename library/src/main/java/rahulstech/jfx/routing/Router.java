@@ -784,13 +784,22 @@ public class Router implements Disposable {
             hiding = entry.getDestination();
         }
 
-        RouterBackstackEntry entry = new RouterBackstackEntry(showing);
+        RouterBackstackEntry entry;
+        // if destination is single top then find for existing backstack entry, if not found then create a new
+        // if destination is not single top then simplely create a new backstack entry
+        if (showing.isSingleTop()) {
+            entry = backstack.findFirst(e -> e.getDestination().getId().equals(showing.getId()))
+                    .orElse(new RouterBackstackEntry(showing));
+        }
+        else {
+            entry = new RouterBackstackEntry(showing);
+        }
         entry.setData(args);
         entry.setEnterAnimation(options.getEnterAnimation());
         entry.setExitAnimation(options.getExitAnimation());
         entry.setPopEnterAnimation(options.getPopEnterAnimation());
         entry.setPopExitAnimation(options.getPopExitAnimation());
-        backstack.pushBackstackEntry(entry);
+        backstack.bringToTop(entry);
 
         if (null!=hiding) {
             RouterExecutor hideExecutor = getRouterExecutorForNameOrDefault(hiding.getExecutor());

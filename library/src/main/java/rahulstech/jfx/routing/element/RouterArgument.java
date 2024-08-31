@@ -317,24 +317,6 @@ public class RouterArgument {
         }
 
         /**
-         * Returns the value as a {@code byte}.
-         *
-         * @return the value as a {@code byte}
-         */
-        public byte getAsByte() {
-            return (byte) value;
-        }
-
-        /**
-         * Returns the value as a {@code byte[]}.
-         *
-         * @return the value as a {@code byte[]}
-         */
-        public char[] getAsByteArray() {
-            return (char[]) value;
-        }
-
-        /**
          * Returns the value as a {@code char}.
          *
          * @return the value as a {@code char}
@@ -350,6 +332,24 @@ public class RouterArgument {
          */
         public char[] getAsCharArray() {
             return (char[]) value;
+        }
+
+        /**
+         * Returns the value as a {@code Character}.
+         *
+         * @return the value as a {@code Character}
+         */
+        public Character getAsCharacter() {
+            return (Character) value;
+        }
+
+        /**
+         * Returns the value as a {@code Charater[]}.
+         *
+         * @return the value as a {@code Character[]}
+         */
+        public Character[] getAsCharacterArray() {
+            return (Character[]) value;
         }
 
         /**

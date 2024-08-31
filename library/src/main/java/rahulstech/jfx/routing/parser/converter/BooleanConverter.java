@@ -1,16 +1,14 @@
 package rahulstech.jfx.routing.parser.converter;
 
+import rahulstech.jfx.routing.parser.AttributeValueConverter;
 import rahulstech.jfx.routing.parser.ConverterException;
 
 import java.util.regex.Pattern;
 
 
 /**
- * The {@code BooleanConverter} class is a concrete implementation of the {@link BaseAttributeValueConverter}
- * for converting {@link String} values to {@code Boolean} values.
- *
- * <p>This class follows the Singleton design pattern to ensure only one instance is created. It provides
- * methods to convert a string representation of a boolean value and validate it.</p>
+ * The {@code BooleanConverter} class is a concrete implementation of the {@link AttributeValueConverter}
+ * for converting attribute values to {@code Boolean} objects.
  *
  * @author Rahul Bagchi
  * @since 1.0
@@ -43,7 +41,7 @@ public class BooleanConverter extends BaseAttributeValueConverter<Boolean> {
      * @return the parsed value of type {@code Boolean}
      */
     @Override
-    protected Boolean parse(String value) {
+    public Boolean parse(String value) {
         if (!check(value)) {
             throw new ConverterException("can not convert '"+value+"' to boolean");
         }

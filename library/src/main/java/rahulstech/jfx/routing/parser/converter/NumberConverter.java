@@ -1,10 +1,11 @@
 package rahulstech.jfx.routing.parser.converter;
 
+import rahulstech.jfx.routing.parser.AttributeValueConverter;
 import rahulstech.jfx.routing.parser.ConverterException;
 
 /**
  * The {@code NumberConverter} class converts attribute values to {@link Number} objects.
- * It extends {@link BaseAttributeValueConverter} and supports conversion from string representations
+ * It extends {@link AttributeValueConverter} and supports conversion from string representations
  * of numeric values, including integers and floating-point numbers.
  *
  * @author Rahul Bagchi
@@ -46,7 +47,7 @@ public class NumberConverter extends BaseAttributeValueConverter<Number> {
      * @return the parsed value of type {@code Number}
      */
     @Override
-    protected Number parse(String value) {
+    public Number parse(String value) {
         if (!check(value)) {
             throw new ConverterException("can not convert "+value+" to number");
         }

@@ -1,11 +1,11 @@
 package rahulstech.jfx.routing.parser.converter;
 
+import rahulstech.jfx.routing.parser.AttributeValueConverter;
 import rahulstech.jfx.routing.parser.ConverterException;
 
 /**
- * The {@code ClassConverter} class is a singleton converter that converts a {@code String} representing
- * a fully qualified class name into a {@code Class<?>} object. It also provides a method to check
- * whether a given string can be resolved to a valid class.
+ * The {@code ClassConverter} converts a {@code String} representing
+ * a fully qualified class name into a {@code Class<?>} object.
  *
  * @author Rahul Bagchi
  * @since 1.0
@@ -49,7 +49,7 @@ public class ClassConverter extends BaseAttributeValueConverter<Class<?>> {
      * @return the parsed value of type {@code Class}
      */
     @Override
-    protected Class<?> parse(String value) {
+    public Class<?> parse(String value) {
         try {
             return Class.forName(value);
         }

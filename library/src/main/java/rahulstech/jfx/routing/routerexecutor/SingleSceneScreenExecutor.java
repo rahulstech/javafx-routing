@@ -66,7 +66,17 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         String exitAnimationId = options.getExitAnimation();
         RouterAnimation enterAnimation = getAnimation(enterAnimationId);
         RouterAnimation exitAnimation = getAnimation(exitAnimationId);
-        SingleSceneTransaction.SingleSceneTarget target = createTarget(destination,options);
+        SingleSceneTransaction.SingleSceneTarget target;
+        // if destination is single top then find for existing target, if not found then create a new
+        // if destination is not single top then simplely create a new target instance
+        if (destination.isSingleTop()) {
+            target = (SingleSceneTransaction.SingleSceneTarget) transaction.getBackstack()
+                    .findFirst(t -> t.getTag().equals(destination.getId()))
+                    .orElse(createTarget(destination,options));
+        }
+        else {
+            target = createTarget(destination,options);
+        }
         transaction.begin().replace(target,enterAnimation,exitAnimation).commit();
     }
 

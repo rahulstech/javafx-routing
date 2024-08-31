@@ -1,5 +1,6 @@
 package rahulstech.jfx.routing.parser.converter;
 
+import rahulstech.jfx.routing.parser.AttributeValueConverter;
 import rahulstech.jfx.routing.parser.ConverterException;
 import rahulstech.jfx.routing.util.Size;
 
@@ -8,7 +9,7 @@ import java.util.regex.Pattern;
 
 /**
  * The {@code SizeConverter} class converts attribute values to {@link Size} objects.
- * It extends {@link BaseAttributeValueConverter} and supports conversion from string representations
+ * It extends {@link AttributeValueConverter} and supports conversion from string representations
  * of sizes, which may include units such as percentages, percentage relative to parent (%p),
  * pixels, degrees, and radians.
  * <p>Valid values example:
@@ -68,7 +69,7 @@ public class SizeConverter extends BaseAttributeValueConverter<Size> {
      * @return the parsed value of type {@link Size}
      */
     @Override
-    protected Size parse(String value) {
+    public Size parse(String value) {
         Matcher matcher = match(SIZE_PATTERN,value,Pattern.CASE_INSENSITIVE);
         if (!matcher.matches()) {
             throw new ConverterException("can not convert '"+value+"' to Size");

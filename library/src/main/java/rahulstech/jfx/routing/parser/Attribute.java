@@ -189,6 +189,12 @@ public class Attribute {
      */
     public static final String ARGUMENTS = "arguments";
 
+    /**
+     * The boolean flag when set to {@code true} specifies that at most one instance of {@link rahulstech.jfx.routing.element.Destination Destination}
+     * in the backstack at any time.
+     */
+    public static final String SINGLE_TOP = "singleTop";
+
     // attribute for argument
 
     /**

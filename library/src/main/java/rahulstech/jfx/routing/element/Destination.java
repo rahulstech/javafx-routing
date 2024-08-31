@@ -106,6 +106,7 @@ public class Destination {
     private String title;
     private String executor;
     private String arguments;
+    private boolean singleTop;
 
     /**
      * Constructor used by the Builder pattern to create a {@code Destination} instance.
@@ -119,6 +120,7 @@ public class Destination {
         title = builder.title;
         executor = builder.executor;
         arguments = builder.arguments;
+        singleTop = builder.singleTop;
     }
 
     /**
@@ -158,6 +160,10 @@ public class Destination {
                     break;
                     case Attribute.ARGUMENTS: {
                         arguments = attr.getValue();
+                    }
+                    break;
+                    case Attribute.SINGLE_TOP: {
+                        singleTop = attr.getAsBoolean();
                     }
                 }
             }
@@ -221,6 +227,16 @@ public class Destination {
         return arguments;
     }
 
+    /**
+     * Returns weather at most one instance of this {@code Destination} is allowed at any time in backstack
+     *
+     * @return {@code true} means keep at most one instnace of this {@code Destination} in backstack,
+     *          {@code false} if more than one instances allowed at any time
+     */
+    public boolean isSingleTop() {
+        return singleTop;
+    }
+
     @Override
     public String toString() {
         return "Destination{" +
@@ -243,6 +259,7 @@ public class Destination {
         String title;
         String executor = Router.KEY_DEFAULT_ROUTER_EXECUTOR;
         String arguments;
+        boolean singleTop;
 
         /**
          * Constructs a new Builder for a {@code Destination}.
@@ -309,6 +326,17 @@ public class Destination {
          */
         public Builder setArguments(String arguments) {
             this.arguments = arguments;
+            return this;
+        }
+
+        /**
+         * Sets wheather to keep at most one instance in backstack at any time
+         *
+         * @param singleTop {@code true} means keep at most one instance, {@code false} otherwise
+         * @return this Builder instance
+         */
+        public Builder setSingleTop(boolean singleTop) {
+            this.singleTop = singleTop;
             return this;
         }
 
