@@ -19,8 +19,7 @@
                         name="scale_down_xy_fade_out"
                         duration="280ms">
         <animation
-                name="scale_down_xy"
-                fromXScale=".75"/>
+                name="scale_down_xy"/>
         <animation
                 name="fade_out"
                 fromAlpha="1"

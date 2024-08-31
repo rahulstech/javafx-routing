@@ -17,8 +17,8 @@ import rahulstech.jfx.routing.util.StringUtil;
  * be used. Sometime destination may require data with certain data type. Set the destination input data rules using
  * <b>arguments</b>. You are not restricted to set only those data for which rules are defined; but you must set
  * arguments which required is {@code true}.
- * <p>
- * <p>Below is the example of declaring destination in router configuration xml file</p>
+ *
+ * <p>Below is the example of destination in router configuration xml file
  * <pre> {@code
  *     <arguments id="args0">
  *          <argument name="xyz" type="string" />
@@ -68,9 +68,10 @@ import rahulstech.jfx.routing.util.StringUtil;
  *                               .setArgument("args0")
  *                               .build();
  *      router.addDestination(destination);
- *
- *      or
- *
+ * }
+ * </pre>
+ * <p>or</p>
+ * <pre>{@code
  *      Router router = ...
  *
  *      RouterArgument args0 = new RouterArgument();
@@ -87,7 +88,6 @@ import rahulstech.jfx.routing.util.StringUtil;
  *                               .build();
  *
  *      router.addDestinationWithArgument(destination,args0);
- *
  *  }
  * </pre>
  *
@@ -96,7 +96,6 @@ import rahulstech.jfx.routing.util.StringUtil;
  * @see RouterArgument
  *
  * @author  Rahul Bagchi
- *
  * @since 1.0
  */
 public class Destination {
@@ -108,6 +107,11 @@ public class Destination {
     private String executor;
     private String arguments;
 
+    /**
+     * Constructor used by the Builder pattern to create a {@code Destination} instance.
+     *
+     * @param builder the Builder object containing the necessary fields
+     */
     Destination(Builder builder) {
         id = builder.id;
         fxml = builder.fxml;
@@ -117,6 +121,13 @@ public class Destination {
         arguments = builder.arguments;
     }
 
+    /**
+     * Constructs a {@code Destination} from an {@link AttributeSet}.
+     * This constructor is typically used when creating a {@code Destination}
+     * from XML attributes.
+     *
+     * @param attrs the AttributeSet containing the destination's attributes
+     */
     public Destination(AttributeSet attrs) {
         if (attrs.beginIteration()) {
             while (attrs.iterateNext()) {
@@ -156,26 +167,56 @@ public class Destination {
         }
     }
 
+    /**
+     * Gets the ID of the destination.
+     *
+     * @return the destination's ID
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Gets the FXML layout file associated with the destination.
+     *
+     * @return the FXML layout file's path
+     */
     public String getFXML() {
         return fxml;
     }
 
+    /**
+     * Gets the title of the destination.
+     *
+     * @return the title of the destination
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the controller class associated with the destination.
+     *
+     * @return the controller class
+     */
     public Class<?> getControllerClass() {
         return controllerClass;
     }
 
+    /**
+     * Gets the executor responsible for handling the destination.
+     *
+     * @return the executor's full class name
+     */
     public String getExecutor() {
         return executor;
     }
 
+    /**
+     * Gets the arguments associated with the destination.
+     *
+     * @return the arguments identifier or details
+     */
     public String getArguments() {
         return arguments;
     }
@@ -192,6 +233,9 @@ public class Destination {
                 '}';
     }
 
+    /**
+     * A Builder class for constructing {@code Destination} instances.
+     */
     public static class Builder {
         String id;
         String fxml;
@@ -200,6 +244,12 @@ public class Destination {
         String executor = Router.KEY_DEFAULT_ROUTER_EXECUTOR;
         String arguments;
 
+        /**
+         * Constructs a new Builder for a {@code Destination}.
+         *
+         * @param id the unique ID for the destination
+         * @throws IllegalArgumentException if the ID is null or empty
+         */
         public Builder(String id) {
             if (null==id || id.trim().isEmpty()) {
                 throw new IllegalArgumentException("empty destination id is not allowed");
@@ -207,31 +257,66 @@ public class Destination {
             this.id = id;
         }
 
+        /**
+         * Sets the FXML layout file for the destination.
+         *
+         * @param fxml the FXML file's path
+         * @return this Builder instance
+         */
         public Builder setFXML(String fxml) {
             this.fxml = fxml;
             return this;
         }
 
+        /**
+         * Sets the controller class for the destination.
+         *
+         * @param controllerClass the controller class
+         * @return this Builder instance
+         */
         public Builder setControllerClass(Class<?> controllerClass) {
             this.controllerClass = controllerClass;
             return this;
         }
 
+        /**
+         * Sets the title for the destination.
+         *
+         * @param title the destination's title
+         * @return this Builder instance
+         */
         public Builder setTitle(String title) {
             this.title = title;
             return this;
         }
 
+        /**
+         * Sets the executor responsible for handling the destination.
+         *
+         * @param executor the executor's full class name
+         * @return this Builder instance
+         */
         public Builder setExecutor(String executor) {
             this.executor = executor;
             return this;
         }
 
+        /**
+         * Sets the arguments associated with the destination.
+         *
+         * @param arguments the arguments identifier or details
+         * @return this Builder instance
+         */
         public Builder setArguments(String arguments) {
             this.arguments = arguments;
             return this;
         }
 
+        /**
+         * Builds and returns a {@code Destination} instance.
+         *
+         * @return a new {@code Destination} instance
+         */
         public Destination build() {
             return new Destination(this);
         }

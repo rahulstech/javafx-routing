@@ -10,12 +10,23 @@ import rahulstech.jfx.routing.element.RouterAnimation;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * A {@code SingleSceneTransaction} is an implementation of {@link Transaction} that handles single scene screen
+ * transactions. Screens are shown inside the content parent provided via contructor while creating instnace.
+ * {@code SingleSceneTransaction} provides add, replace, pop transactions.
+ */
 public class SingleSceneTransaction extends Transaction {
 
     private final Pane content;
 
     private boolean inTransaction = false;
 
+    /**
+     * Create new {@code SingleSceneTransaction} instance with the {@link Pane}
+     * to use as content parent for all screens handled by this {@code SingleSceneTransaction}
+     *
+     * @param content {@code Pane} as content parent for screens
+     */
     public SingleSceneTransaction(Pane content) {
         this.content = content;
     }
@@ -47,6 +58,7 @@ public class SingleSceneTransaction extends Transaction {
      * necessary. a new backstack entry will be created.
      *
      * @param target new target
+     * @param enter_animation non-null {@link RouterAnimation} instance to apply on entering {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
      */
@@ -65,8 +77,8 @@ public class SingleSceneTransaction extends Transaction {
      * then nothing happens.
      *
      * @param tag tag of the target
-     * @param popEnter animation for pop entering target
-     * @param popExit animation for pop exiting target
+     * @param popEnter non-null {@link RouterAnimation} instance to apply on pop entering {@link Node}
+     * @param popExit non-null {@link RouterAnimation} instance to apply on pop exiting {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
      */
@@ -104,6 +116,8 @@ public class SingleSceneTransaction extends Transaction {
      * remove the current node from the content and adds the new node.a new backstack entry will be created.
      *
      * @param target new target
+     * @param enter_animation non-null {@link RouterAnimation} instance to apply on entering {@link Node}
+     * @param exit_animation non-null {@link RouterAnimation} instance to apply on exiting {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
      */
@@ -133,7 +147,7 @@ public class SingleSceneTransaction extends Transaction {
         return executePendingOperations();
     }
 
-    /** @InheritDoc */
+    /** {@inheritDoc} */
     @Override
     public void doForcedShow(Target target) {
         SingleSceneTarget sst = (SingleSceneTarget) target;
@@ -212,6 +226,13 @@ public class SingleSceneTransaction extends Transaction {
 
         private RouterAnimation cachedAnimation;
 
+        /**
+         * Create new {@code SingleSceneTrget} instnace with {@code tag} and
+         * {@code controller} instance
+         *
+         * @param tag uniquely identify a target in backstack by tag
+         * @param controller controller instnace to handle lifecycle states
+         */
         public SingleSceneTarget(String tag, Object controller) {
             super(tag);
             this.controller = Objects.requireNonNull(controller, "controller is null");

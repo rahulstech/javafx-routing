@@ -18,13 +18,12 @@ import rahulstech.jfx.routing.parser.AttributeSet;
  *     <li>{@link #getFadeOut()} ()}</li>
  *     <li>{@link #getFadeIn()}</li>
  * </ul>
- * </p>
  * <p>XML attributes from {@code FadeAnimation} are
  * <ul>
  *     <li>{@code fromAlpha}: starting opacity. valid values are any floating point number between 0 and 1</li>
  *     <li>{@code toAlpha}: final opacity. valid values are any floating point number between 0 and 1</li>
  * </ul>
- * </p>
+ *
  * @author Rahul Bagchi
  * @since 1.0
  * @see rahulstech.jfx.routing.element.RouterAnimation RouterAnimation

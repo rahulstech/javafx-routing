@@ -3,7 +3,6 @@ package rahulstech.jfx.routing;
 import rahulstech.jfx.routing.util.StringUtil;
 
 import java.nio.charset.Charset;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -67,6 +66,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen enter animation
+     *
      * @return the enter animation setting, or {@code null} if not set
      */
     public String getEnterAnimation() {
@@ -74,6 +75,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen enter animation or the default animation name if not enter animation defined
+     *
      * @param defaultValue the default value to return if enter animation is not set
      * @return the enter animation setting, or {@code defaultValue} if not set
      */
@@ -93,6 +96,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen exit animation
+     *
      * @return the exit animation setting, or {@code null} if not set
      */
     public String getExitAnimation() {
@@ -100,6 +105,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen exit animation or the default animation name if no screen exit animation is defined.
+     *
      * @param defaultValue the default value to return if exit animation is not set
      * @return the exit animation setting, or {@code defaultValue} if not set
      */
@@ -119,6 +126,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen pop enter animation
+     *
      * @return the pop enter animation setting, or {@code null} if not set
      */
     public String getPopEnterAnimation() {
@@ -126,6 +135,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen pop enter animation or default animation name if no screen pop enter animation defined.
+     *
      * @param defaultValue the default value to return if pop enter animation is not set
      * @return the pop enter animation setting, or {@code defaultValue} if not set
      */
@@ -143,7 +154,10 @@ public class RouterOptions {
         this.popEnterAnimation = popEnterAnimation;
         return this;
     }
+
     /**
+     * Returns the name or id of the screen pop exit animation
+     *
      * @return the pop exit animation setting, or {@code null} if not set
      */
     public String getPopExitAnimation() {
@@ -151,6 +165,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns the name or id of the screen pop exit animation or default animation name if no screen pop exit animation is defined
+     *
      * @param defaultValue the default value to return if pop exit animation is not set
      * @return the pop exit animation setting, or {@code defaultValue} if not set
      */
@@ -181,6 +197,7 @@ public class RouterOptions {
     }
 
     /**
+     * Return
      * @return the {@link ResourceBundle}, or {@code null} if not set
      */
     public ResourceBundle getBundle() {
@@ -199,6 +216,8 @@ public class RouterOptions {
     }
 
     /**
+     * Returns {@link Charset}
+     *
      * @return the {@link Charset}, or {@code null} if not set
      */
     public Charset getCharset() {

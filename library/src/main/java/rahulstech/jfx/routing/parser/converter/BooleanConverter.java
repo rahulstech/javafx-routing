@@ -31,6 +31,9 @@ public class BooleanConverter extends BaseAttributeValueConverter<Boolean> {
         return INSTANCE;
     }
 
+    /**
+     * Creates new {@code BooleanConverter} instance
+     */
     public BooleanConverter() {}
 
     /**

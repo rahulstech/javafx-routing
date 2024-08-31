@@ -84,6 +84,11 @@ public class RouterCompoundAnimation extends RouterAnimation {
         setMode(PlayMode.valueOf(mode));
     }
 
+    /**
+     * Returns {@link Collection} of child {@link RouterAnimation}
+     *
+     * @return non-null unmodifiable collection of child animation
+     */
     public Collection<RouterAnimation> getChildren() {
         return Collections.unmodifiableCollection(children);
     }
@@ -91,6 +96,7 @@ public class RouterCompoundAnimation extends RouterAnimation {
     /**
      * Gets the collection of child animations.
      *
+     * @param name name of the child animation
      * @return an unmodifiable collection of child animations
      */
     public RouterAnimation getChildByName(String name) {

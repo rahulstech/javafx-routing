@@ -49,6 +49,9 @@ public class DurationConverter extends BaseAttributeValueConverter<Duration> {
         return INSTANCE;
     }
 
+    /**
+     * Creates new {@code DurationCoverter} instance
+     */
     public DurationConverter() {}
 
     /** {@inheritDoc} */

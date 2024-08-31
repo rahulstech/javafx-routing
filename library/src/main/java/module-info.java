@@ -1,3 +1,9 @@
+/**
+ * module-info declaration for javafx-routing librayr module
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
+ */
 module rahulstech.jfx.routing {
     requires transitive javafx.fxml;
     requires transitive javafx.graphics;

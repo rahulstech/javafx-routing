@@ -17,7 +17,6 @@ import rahulstech.jfx.routing.element.RouterCompoundAnimation;
  *     <li>{@link #getScaleUpXYFadeIn()} ()}</li>
  *     <li>{@link #getScaleDownXYFadeOut()} ()}</li>
  * </ul>
- * </p>
  *
  * @author Rahul Bagchi
  * @since 1.0
@@ -27,8 +26,14 @@ import rahulstech.jfx.routing.element.RouterCompoundAnimation;
  */
 public class ScaleAndFadeAnimation extends RouterCompoundAnimation {
 
+    /**
+     * Animation name for scale up along x-axis and y-axis with fade in
+     */
     public static final String SCALE_UP_XY_FADE_IN = "scale_up_xy_fade_in";
 
+    /**
+     * Animation name for scale down along x-axis and y-axis with fade out
+     */
     public static final String SCALE_DOWN_XY_FADE_OUT = "scale_down_xy_fade_out";
 
     /**

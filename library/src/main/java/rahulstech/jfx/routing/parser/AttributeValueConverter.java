@@ -17,6 +17,11 @@ import java.util.regex.Pattern;
 public abstract class AttributeValueConverter {
 
     /**
+     * Creates new {@code AttributeValueConverter} instance
+     */
+    public AttributeValueConverter() {}
+
+    /**
      * Converts the given {@link Attribute} to an object of the desired type.
      *
      * <p>Subclasses must provide an implementation for this method to define how attribute values are

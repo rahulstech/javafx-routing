@@ -29,11 +29,18 @@ public abstract class RouterExecutor implements Disposable {
 
     private final Router router;
 
+    /**
+     * Creates new instance and associates the {@link Router}
+     *
+     * @param router the associated {@code Router}
+     */
     protected RouterExecutor(Router router) {
         this.router = router;
     }
 
     /**
+     * Returns the {@link Router} associated with this executor
+     *
      * @return the {@link Router} associated with this executor.
      */
     public final Router getRouter() {

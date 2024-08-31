@@ -30,7 +30,7 @@ import rahulstech.jfx.routing.util.Size;
  *     <li>{@link #getSlideInBottom()}</li>
  *     <li>{@link #getSlideOutBottom()}</li>
  * </ul>
- * </p>
+ *
  * <p>XML attributes for {@code ScaleAnimations} are
  * <ul>
  *     <li>{@code fromXTranslate}: starting translate value along x axis</li>
@@ -38,7 +38,7 @@ import rahulstech.jfx.routing.util.Size;
  *     <li>{@code fromYTranslate}: starting translate value along y axisr</li>
  *    <li>{@code fromYTranslate}: final translate value along y axis</li>
  * </ul>
- * </p>
+ *
  * <p>
  *  Note: units for from and to values must be same along same axis. For example:
  *  {@code fromXTranslate="2px"} and {@code toXTranslate="100%"} is invalid.
@@ -90,6 +90,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
      */
     public static final String SLIDE_OUT_BOTTOM = "slide_out_bottom";
 
+    /**
+     * Predefined slide animation where the node slides in from the left.
+     *
+     * @return A {@link SlideAnimation} configured to slide in from the left.
+     */
     public static SlideAnimation getSlideInLeft() {
         SlideAnimation animation = new SlideAnimation(SLIDE_IN_LEFT)
                 .setFromX(new Size(-100,Size.PERCENT))
@@ -98,6 +103,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides out to the left.
+     *
+     * @return A {@link SlideAnimation} configured to slide out to the left.
+     */
     public static SlideAnimation getSlideOutLeft() {
         SlideAnimation animation = new SlideAnimation(SLIDE_OUT_RIGHT)
                 .setFromX(new Size(0,Size.PERCENT))
@@ -106,6 +116,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides in from the right.
+     *
+     * @return A {@link SlideAnimation} configured to slide in from the right.
+     */
     public static SlideAnimation getSlideInRight() {
         SlideAnimation animation = new SlideAnimation(SLIDE_IN_RIGHT)
                 .setFromX(new Size(100,Size.PERCENT))
@@ -114,6 +129,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides out to the right.
+     *
+     * @return A {@link SlideAnimation} configured to slide out to the right.
+     */
     public static SlideAnimation getSlideOutRight() {
         SlideAnimation animation = new SlideAnimation(SLIDE_OUT_RIGHT)
                 .setFromX(new Size(0,Size.PERCENT))
@@ -122,6 +142,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides in from the top.
+     *
+     * @return A {@link SlideAnimation} configured to slide in from the top.
+     */
     public static SlideAnimation getSlideInTop() {
         SlideAnimation animation = new SlideAnimation(SLIDE_IN_TOP)
                 .setFromY(new Size(-100,Size.PERCENT))
@@ -130,6 +155,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides out to the top.
+     *
+     * @return A {@link SlideAnimation} configured to slide out to the top.
+     */
     public static SlideAnimation getSlideOutTop() {
         SlideAnimation animation = new SlideAnimation(SLIDE_OUT_TOP)
                 .setFromY(new Size(0,Size.PERCENT))
@@ -138,6 +168,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides in from the bottom.
+     *
+     * @return A {@link SlideAnimation} configured to slide in from the bottom.
+     */
     public static SlideAnimation getSlideInBottom() {
         SlideAnimation animation = new SlideAnimation(SLIDE_IN_BOTTOM)
                 .setFromY(new Size(100,Size.PERCENT))
@@ -146,6 +181,11 @@ public class SlideAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Predefined slide animation where the node slides out to the bottom.
+     *
+     * @return A {@link SlideAnimation} configured to slide out to the bottom.
+     */
     public static SlideAnimation getSlideOutBottom() {
         SlideAnimation animation = new SlideAnimation(SLIDE_OUT_BOTTOM)
                 .setFromY(new Size(0,Size.PERCENT))

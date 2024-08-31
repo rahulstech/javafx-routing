@@ -42,7 +42,9 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
     }
 
     /**
-     * @return the {@link SingleSceneTransaction} instance associated with this executor
+     * Returns {@link SingleSceneTransaction} associated with this {@code SingleSceneScreenExecutor}
+     *
+     * @return non-null {@code SingleSceneTransaction} instance
      */
     public SingleSceneTransaction getTransaction() {
         return transaction;
@@ -119,13 +121,14 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
      * screen hide transition and transaction is handled by either of the
      * methods {@link #show(Destination, RouterOptions) show}
      * or {@link #popBackstack(Destination, RouterOptions) popBackstack}
-     *
-     * {@inheritDoc}
      */
+    /** {@inheritDoc} */
     @Override
     public void hide(Destination destination, RouterOptions options) {}
 
     /**
+     * Returns {@link RouterAnimation} byt name  or id from {@link RouterContext}
+     *
      * @param id the animation name or id
      * @return {@link RouterAnimation} for the given animation name or id, if
      *          no animation found then {@link RouterAnimation#getNoOpAnimation() NO_OP} animation

@@ -26,6 +26,9 @@ public class ClassConverter extends BaseAttributeValueConverter<Class<?>> {
         return INSTANCE;
     }
 
+    /**
+     * Creates new {@code ClassConverter} instance
+     */
     public ClassConverter() {}
 
     /** {@inheritDoc} */

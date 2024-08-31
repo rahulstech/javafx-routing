@@ -132,6 +132,11 @@ public class RouterXmlParser {
     private Stack<String> elementHierarchy = new Stack<>();
 
     /**
+     * Creates new {@code RouterXmlParser} instance
+     */
+    public RouterXmlParser() {}
+
+    /**
      * Parses the given XML input stream, processing its elements and attributes
      * according to the router configuration schema.
      *

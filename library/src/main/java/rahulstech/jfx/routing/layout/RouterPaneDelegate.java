@@ -23,14 +23,17 @@ import java.lang.ref.WeakReference;
  *
  * <p>This class enables configuration of a router using an XML file and a custom
  * {@link RouterContext} implementation. The router is initialized, and its lifecycle
- * methods are triggered automatically when the pane's scene or parent changes.</p>
+ * methods are triggered automatically when the pane's scene or parent changes.
  *
- * <p>Example usage:</p>
+ * <p>Example usage:
  * <pre>{@code
  * RouterPaneDelegate delegate = new RouterPaneDelegate(myPane);
  * delegate.setRouterConfig("path/to/router-config.xml");
  * delegate.setContextClass("com.example.MyRouterContext");
  * }</pre>
+ *
+ * @author Rahul Bagchi
+ * @since 1.0
  */
 public class RouterPaneDelegate {
 
@@ -66,9 +69,8 @@ public class RouterPaneDelegate {
      ************************************************************/
 
     /**
-     * Set the router configuration xml file path in fxml. The InputStream of the configuration file
-     * will be obtained from {@link RouterContext#getResourceAsStream(String) getResourceAsStrem(String)}.
-     * Therefor you should set a value such that getResourceAsStream(String) method can understand.
+     * The {@code routerConfig} property specifies the path to the XML configuration
+     * file for the {@link Router}.
      */
     private final StringProperty routerConfig = new SimpleStringProperty(this, "routerConfig");
 
@@ -76,16 +78,29 @@ public class RouterPaneDelegate {
         return routerConfig;
     }
 
+    /**
+     * Gets the value of the {@code routerConfig} property, representing the path
+     * to the router configuration XML file.
+     *
+     * @return the router configuration XML file path
+     */
     public String getRouterConfig() {
         return routerConfig.getValue();
     }
 
+    /**
+     * Sets the value of the {@code routerConfig} property, specifying the path
+     * to the router configuration XML file.
+     *
+     * @param xml the path to the router configuration XML file
+     */
     public void setRouterConfig(String xml) {
         routerConfig.setValue(xml);
     }
 
     /**
-     * Set the full class name of your {@link RouterContext} implementation.
+     * The {@code contextClass} property specifies the fully qualified class name
+     * of the {@link RouterContext} implementation to be used.
      */
     private final StringProperty contextClass = new SimpleStringProperty(this, "contextClass");
 
@@ -93,57 +108,102 @@ public class RouterPaneDelegate {
         return contextClass;
     }
 
+    /**
+     * Sets the value of the {@code contextClass} property, specifying the fully
+     * qualified class name of the {@link RouterContext} implementation.
+     *
+     * @param className the fully qualified class name of the {@link RouterContext} implementation
+     */
     public void setContextClass(String className) {
         contextClass.setValue(className);
     }
 
+    /**
+     * Gets the value of the {@code contextClass} property, representing the fully
+     * qualified class name of the {@link RouterContext} implementation.
+     *
+     * @return the fully qualified class name of the {@link RouterContext} implementation
+     */
     public String getContextClass() {
         return contextClass.getValue();
     }
 
     /**
-     * The {@link Router} instance currently in used
+     * The {@code routerProperty} represents the {@link Router} instance currently in use.
+     * This property is updated whenever a new {@link Router} is initialized.
      *
-     * @see #begin()
+     * @return the property representing the current {@link Router} instance
      */
-    private final ObjectProperty<Router> routerProperty = new SimpleObjectProperty<>(this,"",null);
+    private final ObjectProperty<Router> routerProperty = new SimpleObjectProperty<>(this,"router",null);
 
+    /**
+     * Gets the {@code routerProperty}.
+     *
+     * @return the router property
+     */
     public final ObjectProperty<Router> routerProperty() {
         return routerProperty;
     }
 
+    /**
+     * Sets the {@code routerProperty} value, which represents the current {@link Router} instance.
+     *
+     * @param router the {@link Router} instance to set
+     */
     public void setRouter(Router router) {
         routerProperty.setValue(router);
     }
 
+    /**
+     * Gets the {@code Router} instance currently in use.
+     *
+     * @return the current {@link Router} instance
+     */
     public Router getRouter() {
         return routerProperty.getValue();
     }
 
     /*************************************************************
-     *                    Public Methods                        *
+     *                    Public Methods                         *
      ************************************************************/
 
     /**
-     * @return the {@link rahulstech.jfx.routing.RouterPane RouterPane} managed by
-     *          this delegate
+     * Returns the {@link Pane} managed by this {@code RouterPaneDelegate}.
+     *
+     * @return the {@link Pane} managed by this delegate
      */
     public Pane getWrapped() {
         return wrapped;
     }
 
+    /**
+     * Sets the {@link RouterContext} for this {@code RouterPaneDelegate}.
+     *
+     * @param context the {@link RouterContext} to set
+     */
     public void setContext(RouterContext context) {
         this.context = context;
     }
 
+    /**
+     * Gets the {@link RouterContext} used by this {@code RouterPaneDelegate}.
+     *
+     * @return the current {@link RouterContext}
+     */
     public RouterContext getContext() {
         return context;
     }
 
     /*************************************************************
-     *                      Private Methods                     *
+     *                      Private Methods                      *
      ************************************************************/
 
+    /**
+     * Initializes the {@code RouterPaneDelegate}. This method sets up listeners on the
+     * {@link Pane}'s {@link Scene} and {@link Parent} properties to trigger the
+     * router's lifecycle methods when necessary. It also sets up listeners on the
+     * {@code contextClass} property to create a new {@link RouterContext} when the class name changes.
+     */
     private void initialize() {
         wrapped.sceneProperty().addListener((observable, oldValue, newValue) -> begin());
         contextClass.addListener((observable, oldValue, newValue) -> {
@@ -155,6 +215,13 @@ public class RouterPaneDelegate {
         });
     }
 
+    /**
+     * Initializes a new {@link Router} based on the current configuration. The router is
+     * created using the XML configuration file specified by {@link #getRouterConfig()}
+     * and the {@link RouterContext} specified by {@link #getContextClass()}.
+     *
+     * @return the initialized {@link Router}, or {@code null} if initialization fails
+     */
     private Router initRouter() {
         String xml = getRouterConfig();
         RouterContext context = this.context;
@@ -164,20 +231,20 @@ public class RouterPaneDelegate {
                 router.parse(in);
                 return router;
             } catch (IOException e) {
-                throw new RuntimeException("fail to parse router configuration '" + xml + "' with exception " + e.getMessage());
+                throw new RuntimeException("Failed to parse router configuration '" + xml + "' with exception: " + e.getMessage(), e);
             }
         }
         return null;
     }
 
     /**
-     * This method is called in two cases: the {@link  Scene} where it is
-     * attached to changes and its {@link Parent} changes. On detached from
-     * its Scene or Parent triggers {@link Router#doLifecycleHide() Lifecyle Hide}
-     * on old Router. On reattached to the same Scene and Parent simply triggers
-     * {@link Router#doLifecycleShow() Lifecycle Show} on old Router. But
-     * if this RouterPane is attached to a new Scene or Parent then old Router is
-     * disposed and a new Router is created.
+     * Begins the lifecycle of the {@link Router} associated with this {@code RouterPaneDelegate}.
+     * This method is called when the {@link Pane}'s {@link Scene} or {@link Parent} changes.
+     *
+     * <p>If the {@link Pane} is removed from the scene, the router's {@link Router#doLifecycleHide()}
+     * method is called. If the pane is reattached to the same scene and parent, the router's
+     * {@link Router#doLifecycleShow()} method is called. If the pane is attached to a new
+     * scene or parent, the old router is disposed, and a new router is created and initialized.</p>
      *
      * @see Router#doLifecycleHide()
      * @see Router#doLifecycleShow()

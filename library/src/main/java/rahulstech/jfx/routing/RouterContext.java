@@ -28,9 +28,14 @@ import java.util.ResourceBundle;
  */
 public abstract class RouterContext implements Disposable {
 
+    /**
+     * Creates new {@code RouterContext} instance
+     */
     public RouterContext() {}
 
     /**
+     * Returns data for home destination
+     *
      * @return {@link RouterArgument} instance as data for {@link Router#getHomeDestination() Router Home Destination} 
      *          or {@code null}
      */
@@ -39,6 +44,8 @@ public abstract class RouterContext implements Disposable {
     }
 
     /**
+     * Returns router configuration xml resource as {@link InputStream}
+     *
      * @param name the name router configuration xml resource name
      * @return {@link InputStream} of the router configuration xml resource associated with the name or {@code null} if nothing found
      * @see #getResourceAsStream(String) 
@@ -68,6 +75,8 @@ public abstract class RouterContext implements Disposable {
     }
 
     /**
+     * Returns cached value for {@code Key}
+     *
      * @param key the key associated with the cached value
      * @return the cached value, or {@code null} if not found
      */

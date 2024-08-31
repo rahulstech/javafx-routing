@@ -29,7 +29,6 @@ import rahulstech.jfx.routing.parser.AttributeSet;
  *     <li>{@code fromYScale}: starting scale value along y axis. valid values 0 (zero) or any positive floating point number</li>
  *    <li>{@code toYScale}: final scale value along y axis. valid values 0 (zero) or any positive floating point number</li>
  * </ul>
- * </p>
  *
  * @author Rahul Bagchi
  * @since 1.0
@@ -37,18 +36,41 @@ import rahulstech.jfx.routing.parser.AttributeSet;
  */
 public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
 
+    /**
+     * Animation name for scaling up along the X axis.
+     */
     public static final String SCALE_UP_X = "scale_up_x";
 
+    /**
+     * Animation name for scaling up along the Y axis.
+     */
     public static final String SCALE_UP_Y = "scale_up_y";
 
+    /**
+     * Animation name for scaling up along both X and Y axes.
+     */
     public static final String SCALE_UP_XY = "scale_up_xy";
 
+    /**
+     * Animation name for scaling down along the X axis.
+     */
     public static final String SCALE_DOWN_X = "scale_down_x";
 
+    /**
+     * Animation name for scaling down along the Y axis.
+     */
     public static final String SCALE_DOWN_Y = "scale_down_y";
 
+    /**
+     * Animation name for scaling down along both X and Y axes.
+     */
     public static final String SCALE_DOWN_XY = "scale_down_xy";
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales up along the X axis.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales up along the X axis.
+     */
     public static ScaleAnimation getScaleUpX() {
         ScaleAnimation animation = new ScaleAnimation(SCALE_UP_X)
                 .setFromX(1).setToX(0);
@@ -56,6 +78,11 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales up along the Y axis.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales up along the Y axis.
+     */
     public static ScaleAnimation getScaleUpY() {
         ScaleAnimation animation = new ScaleAnimation(SCALE_UP_Y)
                 .setFromY(1).setToY(0);
@@ -63,6 +90,11 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales down along the X axis.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales down along the X axis.
+     */
     public static ScaleAnimation getScaleDownX() {
         ScaleAnimation animation = new ScaleAnimation(SCALE_DOWN_X)
                 .setFromX(0).setToX(1);
@@ -70,6 +102,11 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales down along the Y axis.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales down along the Y axis.
+     */
     public static ScaleAnimation getScaleDownY() {
         ScaleAnimation animation = new ScaleAnimation(SCALE_DOWN_Y)
                 .setFromY(1).setToY(0);
@@ -77,6 +114,11 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales up along both X and Y axes.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales up along both X and Y axes.
+     */
     public static ScaleAnimation getScaleUpXY() {
         ScaleAnimation animation = new ScaleAnimation(SCALE_UP_XY)
                 .setFromX(0).setFromY(0)
@@ -85,8 +127,13 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /**
+     * Returns a predefined {@code ScaleAnimation} that scales down along both X and Y axes.
+     *
+     * @return a predefined {@code ScaleAnimation} that scales down along both X and Y axes.
+     */
     public static ScaleAnimation getScaleDownXY() {
-        ScaleAnimation animation = new ScaleAnimation(SCALE_UP_XY)
+        ScaleAnimation animation = new ScaleAnimation(SCALE_DOWN_XY)
                 .setFromX(1).setFromY(1)
                 .setToX(0).setToY(0);
         animation.setDuration(DEFAULT_DURATION_SHORT);
@@ -98,10 +145,16 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
     private double toX;
     private double toY;
 
+    /**
+     * Creates new {@code ScaleAnimation} instance with name
+     *
+     * @param name animation name
+     */
     public ScaleAnimation(String name) {
         super(name);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void initialize(AttributeSet attrs) {
         super.initialize(attrs);
@@ -133,42 +186,87 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         }
     }
 
+    /**
+     * Returns starting scale along x-axis value
+     *
+     * @return non negative {@code double} value as scale factor
+     */
     public double getFromX() {
         return fromX;
     }
 
+    /**
+     * Sets stating scale along x-axis value
+     *
+     * @param fromX non negative {@code double} value
+     * @return this {@code ScaleAnimation} instance
+     */
     public ScaleAnimation setFromX(double fromX) {
         this.fromX = fromX;
         return this;
     }
 
+    /**
+     * Returns starting scale along y-axis value
+     *
+     * @return non negative {@code double} value as scale factor
+     */
     public double getFromY() {
         return fromY;
     }
 
+    /**
+     * Sets stating scale along y-axis value
+     *
+     * @param fromY non negative {@code double} value
+     * @return this {@code ScaleAnimation} instance
+     */
     public ScaleAnimation setFromY(double fromY) {
         this.fromY = fromY;
         return this;
     }
 
+    /**
+     * Returns final scale along x-axis value
+     *
+     * @return non negative {@code double} value as scale factor
+     */
     public double getToX() {
         return toX;
     }
 
+    /**
+     * Sets final scale along x-axis value
+     *
+     * @param toX non negative {@code double} value
+     * @return this {@code ScaleAnimation} instance
+     */
     public ScaleAnimation setToX(double toX) {
         this.toX = toX;
         return this;
     }
 
+    /**
+     * Returns final scale along y-axis value
+     *
+     * @return non negative {@code double} value as scale factor
+     */
     public double getToY() {
         return toY;
     }
 
+    /**
+     * Sets final scale along y-axis value
+     *
+     * @param toY non negative {@code double} value
+     * @return this {@code ScaleAnimation} instance
+     */
     public ScaleAnimation setToY(double toY) {
         this.toY = toY;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Animation createAnimation(Node node) {
         ScaleTransition animation = new ScaleTransition();
@@ -198,6 +296,7 @@ public class ScaleAnimation extends BaseJavaFxAnimationRouterAnimation {
         return animation;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void doReset() {
         Node node = getTarget();

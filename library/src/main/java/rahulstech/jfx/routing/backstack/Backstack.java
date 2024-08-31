@@ -28,6 +28,9 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
 
     private ArrayList<E> backstack = new ArrayList<>();
 
+    /**
+     * Creates new {@code Backstack} instance
+     */
     public Backstack() {}
 
     /**
@@ -44,20 +47,28 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     }
 
     /**
+     * Returns top entry in backstack without removing
+     *
      * @return get but don't remove the top entry
+     * @throws IndexOutOfBoundsException if backstack is empty
      */
     public E peekBackstackEntry() {
         return peekBackstackEntry(0);
     }
 
     /**
+     * Removes and returns the top entry of the backstack
+     *
      * @return get and remove the top entry
+     * @throws IndexOutOfBoundsException if backstack is empty
      */
     public E popBackstackEntry() {
         return popBackstackEntry(0);
     }
 
     /**
+     * Returns entry at the index from top without removing
+     *
      * @param indexFromTop the index of the target entry from top
      * @return get but don't remove at the index from the top
      * @throws IndexOutOfBoundsException if invalid index provided
@@ -102,6 +113,8 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     }
 
     /**
+     * Removes and returns entry at given index from top
+     *
      * @param indexFromTop the index of the target entry from the top
      * @return get and remove the entry at the index from the top
      * @throws IndexOutOfBoundsException if invalid index provided
@@ -129,6 +142,8 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     }
 
     /**
+     * Checks if backstack is empty
+     *
      * @return {@code true} menas backstack contains no entry,
      *          {@code false} otherwise
      */
@@ -137,6 +152,8 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     }
 
     /**
+     * Returns current no. of entries in backstack
+     *
      * @return no. of elntries in the backstack
      */
     public int size() {

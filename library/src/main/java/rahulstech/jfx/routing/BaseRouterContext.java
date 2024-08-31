@@ -37,6 +37,9 @@ import static rahulstech.jfx.routing.Router.KEY_SINGLE_SCENE_SCREEN_EXECUTOR;
  */
 public abstract class BaseRouterContext extends RouterContext {
 
+    /**
+     * Creates new {@code BaseRouterContext} instance
+     */
     public BaseRouterContext() {
         super();
     }
@@ -211,10 +214,22 @@ public abstract class BaseRouterContext extends RouterContext {
 
     private static final String PREFIX_ROUTER_EXECUTOR = "--router-executor-";
 
+    /**
+     * Returns cached instance of {@link RouterExecutor}
+     *
+     * @param name name of the {@code RouterExecutor}
+     * @return cached {@code RouterExecutor} instance or {@code null}
+     */
     public RouterExecutor getCachedRouterExecutor(String name) {
         return (RouterExecutor) getFromCache(PREFIX_ROUTER_EXECUTOR+name);
     }
 
+    /**
+     * Caches a {@link RouterExecutor} instance
+     *
+     * @param name name of the {@code RouterExecutor}
+     * @param executor instance of {@code RouterExector}
+     */
     public void cacheRouterExecutor(String name, RouterExecutor executor) {
         if (StringUtil.isEmpty(name)) {
             throw new IllegalArgumentException("router executor name can not be empty");
@@ -243,6 +258,13 @@ public abstract class BaseRouterContext extends RouterContext {
         return getRouterExecutorForName(Router.KEY_DEFAULT_ROUTER_EXECUTOR,router);
     }
 
+    /**
+     * Creates new {@link RouterExecutor} for name
+     *
+     * @param name {@code RouterExecutor} name
+     * @param router associated {@code Router}
+     * @return instance of {@code RouterExecutor} or {@code null} for unknown name
+     */
     protected RouterExecutor createRouterExecutor(String name, Router router) {
         if (KEY_SINGLE_SCENE_SCREEN_EXECUTOR.equals(name)) {
             return new SingleSceneScreenExecutor(router,
@@ -278,6 +300,18 @@ public abstract class BaseRouterContext extends RouterContext {
         return transaction;
     }
 
+    /**
+     * Creates a new instance of {@link Transaction}. It uses {@link ReflectionUtil}
+     * to create instance of {@code Transaction} subclass which is not defined in this
+     * framework.
+     *
+     * @param clazz {@code Class} value of {@code Transaction} subclass
+     * @param args constructor arguments
+     * @return new instnace of {@code Transaction}
+     * @throws RuntimeException throwns if instance is not created
+     * @throws IllegalStateException throws if no suitable constructor found
+     * @see ReflectionUtil#newInstance(Class, Object[])
+     */
     protected Transaction createNewTransaction(Class<? extends Transaction> clazz, Object... args) {
         if (clazz==SingleSceneTransaction.class) {
             Pane content = (Pane) args[0];

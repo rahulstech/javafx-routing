@@ -21,7 +21,6 @@ import rahulstech.jfx.routing.element.RouterCompoundAnimation;
  *     <li>{@link #getSlideTopFadeOut()}</li>
  *     <li>{@link #getSlideBottomFadeOut()}</li>
  * </ul>
- * </p>
  *
  * @author Rahul Bagchi
  * @since 1.0

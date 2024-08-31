@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
  * Note: units are case insensative i.e. px, PX, pX, Px all are same.
  * <br/>
  * Note: space between the number and unit is not allowrd. For example 56 px is invalid.
- * </p>
  *
  * @author Rahul Bagchi
  * @since 1.0
@@ -57,6 +56,9 @@ public class SizeConverter extends BaseAttributeValueConverter<Size> {
         return INSTANCE;
     }
 
+    /**
+     * Creates new {@code SizeConverter} instnace
+     */
     public SizeConverter() {}
 
     /**

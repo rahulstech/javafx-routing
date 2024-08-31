@@ -12,7 +12,7 @@ import rahulstech.jfx.routing.parser.ConverterException;
  */
 public class NumberConverter extends BaseAttributeValueConverter<Number> {
 
-    private static final String NUMBER_PATTERN = "(-)?\\d+(\\.\\d+)?";
+    private static final String NUMBER_PATTERN = "(-)?(\\d+|\\d*(\\.\\d+)?)";
 
     private static NumberConverter INSTANCE;
 
@@ -28,6 +28,9 @@ public class NumberConverter extends BaseAttributeValueConverter<Number> {
         return INSTANCE;
     }
 
+    /**
+     * Creates new {@code NumberConverter} instance
+     */
     public NumberConverter() {}
 
     /** {@inheritDoc} */

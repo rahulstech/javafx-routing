@@ -18,7 +18,7 @@ import java.util.Objects;
  * use animation library of your choice and implement the required
  * functionalities in your animation library specific way.
  *
- * <h5>Define animation in router configuration </h5>
+ * <p>Define animation in router configuration </p>
  *
  * <p>each "animation" tag at least provide "id" and "name" attributes.
  * "id" value must be unique among all the animations defined in the current
@@ -50,7 +50,7 @@ import java.util.Objects;
  * }
  * </pre>
  *
- * <h5>How to get animation</h5>
+ * <p>How to get animation</p>
  * <p>to get an animation by name or id use
  * {@link rahulstech.jfx.routing.RouterContext#getAnimation(String) getAnimation(String)}
  * of {@link rahulstech.jfx.routing.RouterContext RouterContext}
@@ -128,6 +128,13 @@ public abstract class RouterAnimation {
      */
     public static final String NO_OP = "no_op";
 
+    /**
+     * Returns a {@code RouterAnimation} that don't perform any animation on
+     * target; but triggers the registered {@link RouterAnimationCallback} methods
+     * and updates its {@link State}. This animation can be used as placeholder animation.
+     *
+     * @return non-null {@code RouterAnimation} instance
+     */
     public static RouterAnimation getNoOpAnimation() {
         return new RouterAnimation(NO_OP) {
             @Override
@@ -166,6 +173,11 @@ public abstract class RouterAnimation {
 
     RouterAnimation nextAnimation;
 
+    /**
+     * Create new {@code RouterAimation} instance with name
+     *
+     * @param name animation name
+     */
     public RouterAnimation(String name) {
         this.name = name;
     }
@@ -262,34 +274,77 @@ public abstract class RouterAnimation {
      *                  Public Methods                      *
      ********************************************************/
 
+    /**
+     * Returns the animation name
+     *
+     * @return non-null {@code String}
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the animation duration
+     *
+     * @return non-null {@link Duration} instnace
+     */
     public Duration getDuration() {
         return duration;
     }
 
+    /**
+     * Sets the animation duration
+     *
+     * @param duration an {@link Duration} instance
+     */
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
+    /**
+     * Sets animation auto reset after finish. If {@code true}
+     * then {@code target} will take the animation start values
+     * when animation finishes
+     *
+     * @param autoReset a {@code boolean} value
+     * @see #doReset()
+     */
     public void setAutoReset(boolean autoReset) {
         this.autoReset = autoReset;
     }
 
+    /**
+     * Returns auto reset value
+     *
+     * @return a {@code boolean} value
+     */
     public boolean isAutoRest() {
         return autoReset;
     }
 
+    /**
+     * Sets target JavaFx {@link Node}
+     *
+     * @param target {@code Node} to apply animation
+     */
     public void setTarget(Node target) {
         this.target = target;
     }
 
+    /**
+     * Returns the target JavaFx {@link Node} to apply animation
+     *
+     * @return non-null JavaFx {@code Node} instance
+     */
     public Node getTarget() {
         return target;
     }
 
+    /**
+     * State property represents the animation current state.
+     *
+     * @see State
+     */
     private final ObjectProperty<State> state = new SimpleObjectProperty<>(State.INITIALIZED);
 
     public final ReadOnlyProperty<State> stateProperty() {
@@ -308,6 +363,12 @@ public abstract class RouterAnimation {
      *                  Callback Methods                    *
      ********************************************************/
 
+    /**
+     * Returns {@link List} of {@link RouterAnimationCallback} attached to
+     * this {@code RouterAnimation}
+     *
+     * @return {@code List} or {@code RouterAnimationCallback} or {@code null}
+     */
     public List<RouterAnimationCallback> getCallbacks() {
         return callbacks;
     }
@@ -473,11 +534,25 @@ public abstract class RouterAnimation {
 
     /**
      * A callback to get notified on animation state change
+     *
+     * @see RouterAnimation#addRouterAnimationCallback(RouterAnimationCallback)
+     * @see RouterAnimation#removeRouterAnimationCallback(RouterAnimationCallback)
+     * @see RouterAnimation#removeAllRouterAnimationCallback()
      */
     public interface RouterAnimationCallback {
 
+        /**
+         * Callback method called when animation starts
+         *
+         * @param animation concerned {@link RouterAnimation}
+         */
         void start(RouterAnimation animation);
 
+        /**
+         * Callback method called when animation finished
+         *
+         * @param animation concerned {@link RouterAnimation}
+         */
         void finish(RouterAnimation animation);
     }
 
@@ -486,6 +561,9 @@ public abstract class RouterAnimation {
      */
     public static class SimpleRouterAnimationCallback implements RouterAnimationCallback {
 
+        /**
+         * Creates new {@code SimpleRouterAnimationCallback} instance
+         */
         public SimpleRouterAnimationCallback() {}
 
         @Override

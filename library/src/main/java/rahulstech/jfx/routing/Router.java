@@ -105,10 +105,22 @@ public class Router implements Disposable {
     //                     Constructors                       //
     ///////////////////////////////////////////////////////////
 
+    /**
+     * Create new {@code Router} instnace with associated {@link RouterContext}
+     *
+     * @param context associated {@code RouterContext}
+     */
     public Router(RouterContext context) {
         this(context,null);
     }
 
+    /**
+     * Creates new {@code Router} instance with {@link RouterContext} and
+     * {@link Pane} as content parent for single scene screens
+     *
+     * @param context associated {@code RouterContext}
+     * @param content {@code Pane} as content parent
+     */
     public Router(RouterContext context, Pane content) {
         if (null==context) {
             throw new NullPointerException("context is null");
@@ -125,20 +137,26 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * @return get the {@link RouterContext} instance, always non-null
+     * Returns {@link RouterContext} instance associated with this {@code Router}
+     *
+     * @return non-null {@code RouterContext} instance
      */
     public RouterContext getContext() {
         return context;
     }
 
     /**
-     * @return get the root pane for single scene screens
+     * Returns {@link Pane} to use as content parent for single scene screens
+     *
+     * @return {@code Pane} to use as content parent
      */
     public Pane getContentPane() {
         return content;
     }
 
     /**
+     * Sets {@link Pane} as content parent for single scene screens
+     *
      * @param content set the root pane for single scene screens
      */
     public void setContentPane(Pane content) {
@@ -146,18 +164,24 @@ public class Router implements Disposable {
     }
 
     /**
+     * Returns registered {@link RouterExecutor} for given {@code name} from the
+     * {@link RouterContext}
+     *
      * @param name the name of the executor
-     * @return get the registered {@link RouterExecutor} by name or null if nothing is registered
+     * @return registered {@code RouterExecutor} for name or {@code null}
      */
     public RouterExecutor getRouterExecutorForName(String name) {
         return context.getRouterExecutorForName(name,this);
     }
 
     /**
+     * Returns registered {@link RouterExecutor} instnace for {@code name} from {@link RouterContext} or
+     * the default {@code RouterExecutor} is nothing found for the {@code name}
      *
      * @param name the name of the executor
-     * @return get the registered {@link RouterExecutor} by name or {@link RouterContext#getDefaultRouterExecutor(Router)}
-     *          if no executor is registered for name. Returned value is always non-null.
+     * @return registered {@code RouterExecutor} for name or the default executor. always non-null.
+     * @see RouterContext#getRouterExecutorForName(String, Router)
+     * @see RouterContext#getDefaultRouterExecutor(Router)
      */
     public RouterExecutor getRouterExecutorForNameOrDefault(String name) {
         RouterExecutor executor = getRouterExecutorForName(name);
@@ -197,8 +221,11 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get the destination registered as home destination
-     *          or null if nothing is registered
+     * Returns {@link Destination} set as home. Home destination is the
+     * destionation which is shown by the {@code Router} at start.
+     *
+     * @return {@code Destination} registered as home destination
+     *          or {@code null}
      */
     public Destination getHomeDestination() {
         return homeDestination;
@@ -215,8 +242,12 @@ public class Router implements Disposable {
     }
 
     /**
+     * Returns name or id of the animation specified as home destination enter animation.
+     * If no such animation is spedified then default enter animation is used.
+     *
      * @return get the home destination enter animation id or name or null if
      *          nothing is set
+     * @see #getDefaultEnterAnimation()
      */
     public String getHomeEnterAnimation() {
         return homeEnterAnimation;
@@ -245,28 +276,36 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get the defaule enter animation
+     * Returns name or id of the {@link RouterAnimation} to use as screen enter animation.
+     *
+     * @return name or id of the screen enter aimation
      */
     public String getDefaultEnterAnimation() {
         return defaultEnterAnimation;
     }
 
     /**
-     * @return get the default exit animation
+     * Returns name or id of the {@link RouterAnimation} to use as screen exit animation.
+     *
+     * @return name or id of the screen exit aimation
      */
     public String getDefaultExitAnimation() {
         return defaultExitAnimation;
     }
 
     /**
-     * @return get the default pop enter animation
+     * Returns name or id of the {@link RouterAnimation} to use as screen pop enter animation.
+     *
+     * @return name or id of the screen pop enter aimation
      */
     public String getDefaultPopEnterAnimation() {
         return defaultPopEnterAnimation;
     }
 
     /**
-     * @return get the default pop exit animation
+     * Returns name or id of the {@link RouterAnimation} to use as screen pop exit animation.
+     *
+     * @return name or id of the screen pop exit aimation
      */
     public String getDefaultPopExitAnimation() {
         return defaultPopExitAnimation;
@@ -299,8 +338,10 @@ public class Router implements Disposable {
     }
 
     /**
+     * Returns {@link Destination} by destination id
+     *
      * @param id the destination id
-     * @return get the destination by id or null if nothing found
+     * @return  {@code Destination} instance or {@code null}
      */
     public Destination getDestination(String id) {
         return destinations.get(id);
@@ -358,8 +399,10 @@ public class Router implements Disposable {
     }
 
     /**
+     * Returns {@link RouterArgument} registered for destination with given id
+     *
      * @param destinationId the destination id
-     * @return get the arguments for the destination or null
+     * @return {@code RouterArgument} instance or {@code null}
      * @throws IllegalArgumentException if no destination found for id
      */
     public RouterArgument getArgumentForDestination(String destinationId) {
@@ -375,8 +418,10 @@ public class Router implements Disposable {
     }
 
     /**
+     * Returns {@link RouterArgument} by id
+     *
      * @param id the argument id
-     * @return get the {@link RouterArgument} by id or null
+     * @return {@code RouterArgument} instance or {@code null};
      */
     public RouterArgument getArgument(String id) {
         RouterArgument args = arguments.get(id);
@@ -396,10 +441,13 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get home destination data
+     * Returns {@link RouterArgument} set as home data from {@link RouterContext}
+     *
+     * @return {@code RouterArgument} instance or {@code null}
+     * @see RouterContext#getHomeData()
      */
     public RouterArgument getHomeData() {
-        return homeData;
+        return context.getHomeData();
     }
 
     /////////////////////////////////////////////////////////////
@@ -407,14 +455,20 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * @return get the {@link Backstack} used by this Router
+     * Returns {@link Backstack} used by this {@code Router}
+     *
+     * @return non-null {@code Backstack} instance
      */
     public Backstack<RouterBackstackEntry> getBackstack() {
         return backstack;
     }
 
     /**
-     * @return get the top entry in the backstack or null if the backstack is empty
+     * Returns top {@link RouterBackstackEntry} without removing from backstack
+     *
+     * @return {@code RouterBackstackEntry} instance or {@code null}
+     *
+     * @see Backstack#peekBackstackEntry()
      */
     public RouterBackstackEntry getCurrentBackstackEntry() {
         if (!backstack.isEmpty()) {
@@ -424,8 +478,9 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get the data from the backstack top entry
-     *          or null if the backstack is empty or no data found
+     * Returns data for the destination at the backstack top
+     *
+     * @return {@link RouterArgument} instance or {@code null}
      * @see RouterBackstackEntry#getData()
      */
     public RouterArgument getCurrentData() {
@@ -437,7 +492,9 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get the {@link Destination} of the backstack top entry or null if backstack is empty
+     * Returns {@link Destination} at the backstack top
+     *
+     * @return {@code Destination} instnac or {@code null}
      * @see RouterBackstackEntry#getDestination()
      */
     public Destination getCurrentDestination() {
@@ -449,8 +506,9 @@ public class Router implements Disposable {
     }
 
     /**
-     * @return get the result  set by the popped entry
-     *           or null if backstack is empty or no result found
+     * Returns result data for the destination at the backstack top.
+     *
+     * @return {@link RouterArgument} instnace or {@code null}
      * @see RouterBackstackEntry#getResult()
      */
     public RouterArgument getCurrentResult() {
@@ -598,7 +656,9 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
+     * Shows the backstack top destination again.
      *
+     * @see #getCurrentDestination()
      */
     public void doLifecycleShow() {
         if (backstack.isEmpty()) {
@@ -610,7 +670,9 @@ public class Router implements Disposable {
     }
 
     /**
+     * Hides the backstack top destination
      *
+     * @see #getCurrentDestination()
      */
     public void doLifecycleHide() {
         if (backstack.isEmpty()) {
@@ -806,62 +868,133 @@ public class Router implements Disposable {
 
         private RouterArgument result;
 
+        /**
+         * Creates new {@code RouterBackstackEntry} instance for {@link Destination}
+         *
+         * @param destination {@code Destination} in the backstack entry
+         */
         public RouterBackstackEntry(Destination destination) {
             this.destination = destination;
         }
 
+        /**
+         * Returns the {@link Destination} of the backstack entry
+         *
+         * @return non-null {@code Destination} instance
+         */
         public Destination getDestination() {
             return destination;
         }
 
+        /**
+         * Returns the destination data
+         *
+         * @return a {@link RouterArgument} instance or {@code null}
+         */
         public RouterArgument getData() {
             return data;
         }
 
+        /**
+         * Sets destination data
+         *
+         * @param data a {@link RouterArgument} instance
+         */
         public void setData(RouterArgument data) {
             this.data = data;
         }
 
+        /**
+         * Returns screen enter animation name or id
+         *
+         * @return name or id of the animation
+         */
         public String getEnterAnimation() {
             return enterAnimation;
         }
 
+        /**
+         * Sets the screen enter animation name or id
+         *
+         * @param enterAnimation name or id of the animation
+         */
         public void setEnterAnimation(String enterAnimation) {
             this.enterAnimation = enterAnimation;
         }
 
+        /**
+         * Returns screen exit animation name or id
+         *
+         * @return name or id of the animation
+         */
         public String getExitAnimation() {
             return exitAnimation;
         }
 
+        /**
+         * Sets the screen exit animation name or id
+         *
+         * @param exitAnimation name or id of the animation
+         */
         public void setExitAnimation(String exitAnimation) {
             this.exitAnimation = exitAnimation;
         }
 
+        /**
+         * Returns screen pop exit animation name or id
+         *
+         * @return name or id of the animation
+         */
         public String getPopExitAnimation() {
             return popExitAnimation;
         }
 
+        /**
+         * Sets the screen pop exit animation name or id
+         *
+         * @param popExitAnimation name or id of the animation
+         */
         public void setPopExitAnimation(String popExitAnimation) {
             this.popExitAnimation = popExitAnimation;
         }
 
+        /**
+         * Returns screen pop enter animation name or id
+         *
+         * @return name or id of the animation
+         */
         public String getPopEnterAnimation() {
             return popEnterAnimation;
         }
 
+        /**
+         * Sets the screen pop enter animation name or id
+         *
+         * @param popEnterAnimation name or id of the animation
+         */
         public void setPopEnterAnimation(String popEnterAnimation) {
             this.popEnterAnimation = popEnterAnimation;
         }
 
+        /**
+         * Returns the destination result
+         *
+         * @return a {@link RouterArgument} instance or {@code null}
+         */
         public RouterArgument getResult() {
             return result;
         }
 
+        /**
+         * Sets result for the destination
+         *
+         * @param result a {@link RouterArgument} instance
+         */
         public void setResult(RouterArgument result) {
             this.result = result;
         }
 
+        /** {@inheritDoc} */
         @Override
         public void dispose() {}
 

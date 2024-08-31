@@ -33,6 +33,9 @@ public class RouterArgument {
 
     private Map<String,NameValue> map;
 
+    /**
+     * Creates new instance of {@code RouterArgument}
+     */
     public RouterArgument() {}
 
     /**
@@ -640,57 +643,127 @@ public class RouterArgument {
     /**
      * The {@code Type} class represents a data type for {@link NameValue} instances.
      * It includes predefined types such as {@code BOOLEAN}, {@code STRING}, and
-     * {@code INT}, as well as support for custom types.
+     * {@code INT}, as well as support for custom types. Also supports combination of
+     * multiple types. To define combination of multiple types in xml use {@code |} syntax like below:
+     * <pre>{@code
+     * int|int_array|string
+     * }
+     * </pre>
      */
     public static final class Type {
+
+        /**
+         * Accept any type including {@code null}
+         */
         public static final Type ANY = new Type("any",Object.class);
 
+        /**
+         * Accept only {@code boolean} or {@code Boolean}
+         */
         public static final Type BOOLEAN = new Type("boolean",boolean.class,Boolean.class);
 
+        /**
+         * Accept only {@code boolean[]} or {@code Boolean[]}
+         */
         public static final Type BOOLEAN_ARRAY = new Type("boolean_array",boolean[].class,Boolean[].class);
 
+        /**
+         * Accept only {@code char} or {@code Character}
+         */
         public static final Type CHAR = new Type("char",char.class,Character.class);
 
+        /**
+         * Accept only {@code char[]} or {@code Character[]}
+         */
         public static final Type CHAR_ARRAY = new Type("char_array",char[].class,Character[].class);
 
+        /**
+         * Accept only {@code short} or {@code Short}
+         */
         public static final Type SHORT = new Type("short",short.class,Short.class);
 
+        /**
+         * Accept only {@code short[]} or {@code Short[]}
+         */
         public static final Type SHORT_ARRAY = new Type("short_array",short[].class,Short[].class);
 
+        /**
+         * Accept only {@code int} or {@code Integer}
+         */
         public static final Type INT = new Type("int",int.class, Integer.class);
 
+        /**
+         * Accept only {@code int[]} or {@code Integer[]}
+         */
         public static final Type INT_ARRAY = new Type("int_array",int[].class,Integer[].class);
 
+        /**
+         * Accept only {@code long} or {@code Long}
+         */
         public static final Type LONG = new Type("long",long.class,Long.class);
 
+        /**
+         * Accept only {@code long[]} or {@code Long[]}
+         */
         public static final Type LONG_ARRAY = new Type("long_array",long[].class,Long[].class);
 
+        /**
+         * Accept only {@code float} or {@code Float}
+         */
         public static final Type FLOAT = new Type("float",float.class,Float.class);
 
+        /**
+         * Accept only {@code float[]} or {@code Float[]}
+         */
         public static final Type FLOAT_ARRAY = new Type("float_array",float[].class,Float[].class);
 
+        /**
+         * Accept only {@code double} or {@code Double}
+         */
         public static final Type DOUBLE = new Type("double",double.class,Double.class);
 
+        /**
+         * Accept only {@code double[]} or {@code Double[]}
+         */
         public static final Type DOUBLE_ARRAY = new Type("double_array",double[].class,Double[].class);
 
+        /**
+         * Accept only {@code String}
+         */
         public static final Type STRING = new Type("string",String.class);
 
+        /**
+         * Accept only {@code String[]}
+         */
         public static final Type STRING_ARRAY = new Type("string_array",String[].class);
 
         private final String name;
 
         private final Class<?>[] types;
 
+        /**
+         * Creates new instance of {@code Type} with name and accepted {@link Class}s
+         *
+         * @param name name of the type
+         * @param types one or more accepted {@code Class}s
+         */
         public Type(String name, Class<?>... types) {
             this.name = name;
             this.types = types;
         }
 
+        /**
+         * Returns {@link Class}s accepted by this {@code Type}
+         *
+         * @return non-null array of one or more accepted {@code Class}s
+         */
         public Class<?>[] getTypes() {
             return types;
         }
 
         /**
+         * Checkes if the {@code value} object type is accepted by this {@code NameValue}
+         *
          * @param test the target value for type test
          * @return checks if the value type is accepted by this {@code Type};
          *          {@code true} if the value type matches of the accepted types,

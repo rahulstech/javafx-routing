@@ -32,6 +32,11 @@ public abstract class Transaction implements Disposable {
     private boolean disposed = false;
 
     /**
+     * Creates new {@code Transaction} instance
+     */
+    public Transaction() {}
+
+    /**
      * Enqueues an operation to be executed later as part of the transaction.
      *
      * @param operation the operation to be enqueued
@@ -128,6 +133,11 @@ public abstract class Transaction implements Disposable {
 
         private final String tag;
 
+        /**
+         * Creates new {@code Target} instance with tag
+         *
+         * @param tag uniquely ideantif a {@code Target} in backstack by tag
+         */
         public Target(String tag) {
             if (StringUtil.isEmpty(tag)) {
                 throw new IllegalArgumentException("tag can not be empty");
