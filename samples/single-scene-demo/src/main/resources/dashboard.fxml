@@ -17,7 +17,10 @@
     <Label text="Screen Number" />
     <Spinner fx:id="spinner" editable="true" min="0" max="9" initialValue="0" amountToStepBy="1" />
 
+    <Label fx:id="message" />
+
     <Button onAction="#handleGoToScreenButtonClick" text="Goto Screen" />
-    <Button onAction="#handleOpenDialogButtonClick" text="Open Dialog" />
+
+    <Button onAction="#handleGoToConsumerButtonClick" text="Go To Consumer"/>
 
 </VBox>

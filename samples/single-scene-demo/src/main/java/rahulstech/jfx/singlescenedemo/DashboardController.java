@@ -1,16 +1,44 @@
 package rahulstech.jfx.singlescenedemo;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import rahulstech.jfx.routing.Router;
 import rahulstech.jfx.routing.element.RouterArgument;
 import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
 
-@SuppressWarnings("unused")
+import java.util.Arrays;
+
 public class DashboardController extends SimpleLifecycleAwareController {
 
     @FXML
+    private Label message;
+
+    @FXML
     private Spinner<Integer> spinner;
+
+    @Override
+    public void onLifecycleShow() {
+        super.onLifecycleShow();
+        RouterArgument data = getRouter().getCurrentData();
+        if (null!=data) {
+            String arg0 = data.getValue("arg0");
+            Object arg1 = data.getValue("arg1");
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("arg0=").append(arg0).append("\n");
+            if (null!=arg1) {
+                builder.append("args1=");
+                if (arg1 instanceof Integer) {
+                    builder.append(arg1);
+                }
+                else {
+                    builder.append(Arrays.toString((int[]) arg1));
+                }
+            }
+            message.setText(builder.toString());
+        }
+    }
 
     @FXML
     private void handleGoToScreenButtonClick() {
@@ -34,14 +62,7 @@ public class DashboardController extends SimpleLifecycleAwareController {
     }
 
     @FXML
-    private void handleOpenDialogButtonClick() {
-        Router router = getRouter();
-        router.moveto("simple_dialog");
-    }
-
-    @Override
-    public void onLifecycleDestroy() {
-        super.onLifecycleDestroy();
-        System.out.println("onDestroy");
+    private void handleGoToConsumerButtonClick() {
+        getRouter().moveto("consumer");
     }
 }

@@ -75,8 +75,6 @@ public class Router implements Disposable {
      */
     private String homeEnterAnimation;
 
-    private RouterArgument homeData;
-
     /**
      * Name or id of animation for a new screen enter
      */
@@ -432,18 +430,9 @@ public class Router implements Disposable {
     }
 
     /**
-     * Set the data for home destination
+     * Returns home data from {@link RouterContext}
      *
-     * @param data the home destination data
-     */
-    public void setHomeData(RouterArgument data) {
-        this.homeData = data;
-    }
-
-    /**
-     * Returns {@link RouterArgument} set as home data from {@link RouterContext}
-     *
-     * @return {@code RouterArgument} instance or {@code null}
+     * @return {@link RouterArgument} instance or {@code null}
      * @see RouterContext#getHomeData()
      */
     public RouterArgument getHomeData() {
@@ -560,7 +549,7 @@ public class Router implements Disposable {
      *
      * @param id the target destination id
      * @param data the destination data
-     * @param options options for navigations
+     * @param options options for navigation
      * @throws IllegalStateException if no destination found for id
      * @see #moveto(Destination, RouterArgument, RouterOptions)
      */
@@ -593,7 +582,7 @@ public class Router implements Disposable {
      * @return  {@code true} if backstack popped succefully, {@code false} otherwise
      */
     public boolean popBackStack() {
-        return moveBackward(getCurrentDestination().getId(),null,true);
+        return moveBackward(getCurrentDestination().getId(),null,null,true);
     }
 
     /**
@@ -603,7 +592,18 @@ public class Router implements Disposable {
      * @return {@code true} if backstack popped successfully, {@code false} otherwise
      */
     public boolean popBackstack(RouterArgument result) {
-        return moveBackward(getCurrentDestination().getId(),result,true);
+        return moveBackward(getCurrentDestination().getId(),null,result,true);
+    }
+
+    /**
+     * Pop the top backstack entry and set result for the next destination with options for navigation
+     *
+     * @param result the result to set to the next destination
+     * @param options options for navigation
+     * @return {@code true} if backstack popped successfully, {@code false} otherwise
+     */
+    public boolean popBackstack(RouterArgument result, RouterOptions options) {
+        return moveBackward(getCurrentDestination().getId(),options,result,true);
     }
 
     /**
@@ -618,7 +618,7 @@ public class Router implements Disposable {
      * @return {@code true} if succesfully popped, {@code false} otherwise
      */
     public boolean popBackstackUpTo(String targetId, boolean inclusive) {
-        return moveBackward(targetId,null,inclusive);
+        return moveBackward(targetId,null,null,inclusive);
     }
 
     /**
@@ -635,7 +635,25 @@ public class Router implements Disposable {
      * @return {@code true} if succesfully popped, {@code false} otherwise
      */
     public boolean popBackstackUpTo(String targetId,boolean inclusive, RouterArgument result) {
-        return moveBackward(targetId,result,inclusive);
+        return moveBackward(targetId,null,result,inclusive);
+    }
+
+    /**
+     * Pop the destinations from top upto destination with the given id from the backstack
+     * and send the result to next destination with options for navigation.
+     * The target destination will be popped if inclusive is {@code true}.If inclusive is {@code false}
+     * then destinations till just previous to the target is popped. If destination with
+     * the given id is not found in the <strong>backstack</strong> then the pop is canceled.
+     * <p>Note: if target is the home destination then even inclusive is {@code true} it is not popped.
+     *
+     * @param targetId the target destination id
+     * @param inclusive {@code true} means pop the target, {@code false} don't pop the target
+     * @param result the result for the next destination
+     * @param options options for navigation
+     * @return {@code true} if succesfully popped, {@code false} otherwise
+     */
+    public boolean popBackstackUpTo(String targetId,boolean inclusive, RouterArgument result, RouterOptions options) {
+        return moveBackward(targetId,options,result,inclusive);
     }
 
     /**
@@ -648,7 +666,7 @@ public class Router implements Disposable {
         }
         RouterOptions options = new RouterOptions();
         options.setEnterAnimation(homeEnterAnimation);
-        moveForward(homeDestination,options,homeData);
+        moveForward(homeDestination,options,getHomeData());
     }
 
     /////////////////////////////////////////////////////////////
@@ -756,7 +774,10 @@ public class Router implements Disposable {
     //                Private Related Methods                 //
     ///////////////////////////////////////////////////////////
 
-    private void moveForward(Destination showing, RouterOptions options, RouterArgument data) {
+    private void moveForward(Destination showing, RouterOptions apply, RouterArgument data) {
+
+        RouterBackstackEntry singleTopEntry = backstack.findFirst(e -> e.getDestination().getId().equals(showing.getId()))
+                    .orElse(null);
 
         RouterArgument args = getArgumentForDestination(showing.getId());
         if (null!=data) {
@@ -767,10 +788,24 @@ public class Router implements Disposable {
                 args.merge(data);
             }
         }
+        else if (null!=singleTopEntry) {
+            // in case of single top if no data provided then use the old data as saved in the basckstack
+            RouterArgument oldData = singleTopEntry.getData();
+            if (null==args) {
+                args = oldData;
+            }
+            else {
+                args.merge(oldData);
+            }
+        }
         if (null!=args) {
             args.accept();
         }
 
+        RouterOptions options = new RouterOptions();
+        if (null!=apply) {
+            options.apply(apply);
+        }
         options.setEnterAnimation(options.getEnterAnimation(getDefaultEnterAnimation()));
         options.setExitAnimation(options.getExitAnimation(getDefaultExitAnimation()));
         options.setPopEnterAnimation(options.getPopEnterAnimation(getDefaultPopEnterAnimation()));
@@ -785,11 +820,10 @@ public class Router implements Disposable {
         }
 
         RouterBackstackEntry entry;
-        // if destination is single top then find for existing backstack entry, if not found then create a new
+        // if destination is single top then use existing backstack entry, if old entry does not exit then create a new
         // if destination is not single top then simplely create a new backstack entry
-        if (showing.isSingleTop()) {
-            entry = backstack.findFirst(e -> e.getDestination().getId().equals(showing.getId()))
-                    .orElse(new RouterBackstackEntry(showing));
+        if (showing.isSingleTop() && null!=singleTopEntry) {
+            entry = singleTopEntry;
         }
         else {
             entry = new RouterBackstackEntry(showing);
@@ -808,7 +842,7 @@ public class Router implements Disposable {
         showExecutor.show(showing,options);
     }
 
-    private boolean moveBackward(String targetId, RouterArgument result, boolean inclusive) {
+    private boolean moveBackward(String targetId, RouterOptions apply, RouterArgument result, boolean inclusive) {
         if (backstack.size()==1) {
             // backstack contains single entry so can not perform pop
             return false;
@@ -830,8 +864,13 @@ public class Router implements Disposable {
         Destination showing = next.getDestination();
 
         RouterOptions options = new RouterOptions();
-        options.setPopEnterAnimation(top.getPopEnterAnimation());
-        options.setPopExitAnimation(top.getPopExitAnimation());
+        if (null!=apply) {
+            options.apply(apply);
+        }
+        options.setEnterAnimation(options.getEnterAnimation(top.getEnterAnimation()));
+        options.setExitAnimation(options.getExitAnimation(top.getExitAnimation()));
+        options.setPopEnterAnimation(options.getPopEnterAnimation(top.getPopEnterAnimation()));
+        options.setPopExitAnimation(options.getPopExitAnimation(top.getPopExitAnimation()));
 
         next.setResult(result);
 

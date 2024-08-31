@@ -152,7 +152,7 @@ public class RouterArgument {
         }
         createStorage();
         map.forEach((k,v)->{
-            NameValue nv = omap.remove(k);
+            NameValue nv = omap.get(k);
             if (null!=nv) {
                 v.setValue(nv.getValue());
             }
@@ -621,9 +621,13 @@ public class RouterArgument {
          * @throws IllegalArgumentException if the value does not match the specified type
          */
         public void accept() {
-            if (!type.equals(Type.ANY) && required && null==value) {
+            if (type.equals(Type.ANY) || !required) {
+                return;
+            }
+            if (null==value) {
                 throw new NullPointerException("argument '"+name+"' is required");
             }
+
             if (!checkType()) {
                 throw new IllegalArgumentException(name+" requires type '"+type.name+"' but found "+(null==value ? "null" : value.getClass().getName()));
             }

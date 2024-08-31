@@ -22,4 +22,6 @@
 
     <Button fx:id="nextDestinationButton" text="Go To" onAction="#handleNextDestinationButtonClick"/>
 
+    <Button fx:id="homeButton" text="Go To Home" onAction="#handleHomeButtonClick"/>
+
 </VBox>

@@ -4,6 +4,7 @@ import rahulstech.jfx.routing.BaseRouterContext;
 import rahulstech.jfx.routing.Router;
 import rahulstech.jfx.routing.RouterExecutor;
 import rahulstech.jfx.routing.element.RouterAnimation;
+import rahulstech.jfx.routing.element.RouterArgument;
 import rahulstech.jfx.routing.element.RouterCompoundAnimation;
 import rahulstech.jfx.routing.element.animation.ScaleAnimation;
 import rahulstech.jfx.routing.element.animation.SlideAnimation;
@@ -20,6 +21,18 @@ public class DemoRouterContext extends BaseRouterContext {
     public static final String ANIMATION_SCALE_DOWN_XY_SLIDE_OUT_BOTTOM = "scale_down_xy_slide_out_bottom";
 
     public static final String DEMO_EXECUTOR = "rahulstech.jfx.singlescenedemo.DemoRouterExecutor";
+
+    private RouterArgument mHomeData;
+
+    public DemoRouterContext() {
+        mHomeData = new RouterArgument();
+        mHomeData.addArgument("arg0","hello home data");
+    }
+
+    @Override
+    public RouterArgument getHomeData() {
+        return mHomeData;
+    }
 
     @Override
     protected RouterExecutor createRouterExecutor(String name, Router router) {

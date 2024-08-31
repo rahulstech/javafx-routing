@@ -1,10 +1,14 @@
 package rahulstech.jfx.routing.element;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import rahulstech.jfx.routing.parser.Attribute;
+import rahulstech.jfx.routing.parser.AttributeSet;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -26,6 +30,33 @@ class RouterArgumentTest {
     @ArgumentsSource(NameValueTestArgumentProvider.class)
     public void nameValueGetterMethodTest(RouterArgument.NameValue nv, Consumer<RouterArgument.NameValue> consumer) {
         consumer.accept(nv);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AcceptTestArgumentsProvider.class)
+    public void acceptTest(RouterArgument.NameValue arg, Class<? extends Exception> exception) {
+        String message = "argument type="+arg.getType()+" required="+arg.isRequired()+" value="+arg.getValue()+" fails accept test";
+        if (null==exception) {
+            assertDoesNotThrow(arg::accept,message);
+        }
+        else {
+            assertThrows(exception,arg::accept,message);
+        }
+    }
+
+    @Test
+    public void nameValueContructorTest() {
+
+        AttributeSet attrs = new AttributeSet();
+        attrs.add(new Attribute("name","arg"));
+        attrs.add(new Attribute("required","true"));
+        attrs.add(new Attribute("type","string"));
+
+        RouterArgument.NameValue arg = new RouterArgument.NameValue(attrs);
+
+        assertEquals("arg",arg.getName(),"name-value name mismatch");
+        assertEquals(true,arg.isRequired(),"name-value required mismatch");
+        assertEquals(RouterArgument.Type.STRING,arg.getType(),"name-value type mismatch");
     }
 
     static class TypeTestArgumentProvider implements ArgumentsProvider {
@@ -106,6 +137,18 @@ class RouterArgumentTest {
                     Arguments.arguments(new RouterArgument.NameValue("arg0", compount_type,false, "string"), (Consumer<RouterArgument.NameValue>) RouterArgument.NameValue::getAsString)
 
                     );
+        }
+    }
+
+    static class AcceptTestArgumentsProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            return Stream.of(
+                    Arguments.arguments(new RouterArgument.NameValue("arg", RouterArgument.Type.STRING,false,null),null),
+                    Arguments.arguments(new RouterArgument.NameValue("arg", RouterArgument.Type.STRING,true,null),NullPointerException.class),
+                    Arguments.arguments(new RouterArgument.NameValue("arg", RouterArgument.Type.STRING,true,1),IllegalArgumentException.class)
+            );
         }
     }
 }

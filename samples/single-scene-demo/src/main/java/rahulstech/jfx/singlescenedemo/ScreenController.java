@@ -14,7 +14,6 @@ import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
 
 import java.util.Arrays;
 
-@SuppressWarnings("unused")
 public class ScreenController extends SimpleLifecycleAwareController {
 
     static final Color[] COLORS = new Color[]{
@@ -86,6 +85,26 @@ public class ScreenController extends SimpleLifecycleAwareController {
         else {
             router.moveto(targetDestinationId,args);
         }
+    }
 
+    @FXML
+    private void handleHomeButtonClick() {
+        Router router = getRouter();
+        String currentScreen = router.getCurrentDestination().getId();
+        if (currentScreen.equals("screen1")) {
+            RouterArgument data = new RouterArgument();
+            data.addArgument("arg0","data from screen1");
+            data.addArgument("arg1",55);
+            router.moveto("dashboard",data);
+        }
+        else if (currentScreen.equals("screen3")) {
+            RouterArgument data = new RouterArgument();
+            data.addArgument("arg0","data from screen3");
+            data.addArgument("arg1",new int[]{51,52});
+            router.moveto("dashboard",data);
+        }
+        else {
+            getRouter().moveto("dashboard");
+        }
     }
 }

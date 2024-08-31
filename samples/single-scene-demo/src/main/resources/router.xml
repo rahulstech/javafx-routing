@@ -30,7 +30,9 @@
 
     <destination
             id="dashboard"
-            fxml="dashboard.fxml"/>
+            fxml="dashboard.fxml"
+            singleTop="true"
+            arguments="home_data"/>
 
     <destination
             id="screen1"
@@ -64,13 +66,26 @@
                  fxml="screen.fxml"
                  controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
 
+    <!-- screen with custom RouterExecutor -->
     <destination id="screen5"
                  executor="rahulstech.jfx.singlescenedemo.DemoRouterExecutor"
                  controllerClass="rahulstech.jfx.singlescenedemo.DemoCustomLifecycleController"/>
 
+    <!-- destinations for example of result passing -->
+    <destination id="producer"
+                 fxml="producer.fxml"/>
+
+    <destination id="consumer"
+                 fxml="consumer.fxml"/>
+
     <!-- define arguments -->
     <arguments id="mnp">
         <argument name="xyz" type="int_array" required="true"/>
+    </arguments>
+
+    <arguments id="home_data">
+        <argument name="arg0" type="string" required="true"/>
+        <argument name="arg1" type="int|int_array"/>
     </arguments>
 
 </router>
