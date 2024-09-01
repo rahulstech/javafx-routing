@@ -7,6 +7,8 @@
 
     <TextField fx:id="input" layoutX="215.0" layoutY="23.0" />
 
-    <Button layoutX="252.0" layoutY="66.0" onAction="#handleSendResultButtonClick" text="Send Result" />
+    <Button layoutX="252.0" layoutY="66.0" onAction="#handleGoToProducerTwoButtonClick" text="Go To Producer Two" />
+
+    <Button layoutX="252.0" layoutY="100.0" onAction="#handleSendResultButtonClick" text="Send Result" />
 
 </AnchorPane>

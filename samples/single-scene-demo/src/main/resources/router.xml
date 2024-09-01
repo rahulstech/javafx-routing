@@ -7,6 +7,7 @@
         popEnterAnimation="slide_right_fade_in"
         popExitAnimation="pop_exit_animation">
 
+    <!-- customize animations -->
     <animation id="pop_exit_animation"
                name="slide_left_fade_out"
                duration="duration_long"/>
@@ -26,39 +27,22 @@
                 toAlpha="0.3"/>
     </compound-animation>
 
-    <!-- adding some destinations -->
-
-    <destination
-            id="dashboard"
-            fxml="dashboard.fxml"
-            singleTop="true"
-            arguments="home_data"/>
+    <!-- add destinations -->
 
     <destination
             id="screen1"
             fxml="screen.fxml"
             controllerClass="rahulstech.jfx.singlescenedemo.ScreenController">
 
+        <!-- "arguments" inside "destination" tag does not require "id" -->
         <arguments>
-            <argument name="abc" type="int" required="false"/>
+            <argument name="abc" type="int" required="true"/>
         </arguments>
 
     </destination>
 
     <destination
             id="screen2"
-            arguments="mnp"
-            fxml="screen.fxml"
-            controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
-
-
-    <destination
-            id="screen3"
-            fxml="screen.fxml"
-            controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
-
-    <destination
-            id="screen4"
             fxml="screen.fxml"
             controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
 
@@ -66,21 +50,47 @@
                  fxml="screen.fxml"
                  controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
 
-    <!-- screen with custom RouterExecutor -->
-    <destination id="screen5"
-                 executor="rahulstech.jfx.singlescenedemo.DemoRouterExecutor"
-                 controllerClass="rahulstech.jfx.singlescenedemo.DemoCustomLifecycleController"/>
+    <!-- using global arguments "mnp" for multiple destinations -->
+    <destination
+            id="screen3"
+            arguments="mnp"
+            fxml="screen.fxml"
+            controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
 
-    <!-- destinations for example of result passing -->
+    <destination
+            id="screen4"
+            arguments="mnp"
+            fxml="screen.fxml"
+            controllerClass="rahulstech.jfx.singlescenedemo.ScreenController"/>
+
+    <!-- single top destination -->
+    <destination
+            id="dashboard"
+            fxml="dashboard.fxml"
+            singleTop="true"
+            arguments="home_data"/>
+
+    <!-- no fxml destination -->
+    <destination id="screen5"
+                 controllerClass="rahulstech.jfx.singlescenedemo.NoFxmlController"/>
+
+    <!-- destination for result passing and mutiple popping -->
     <destination id="producer"
+                 title="Producer One"
                  fxml="producer.fxml"/>
 
     <destination id="consumer"
+                 title="Consumer"
                  fxml="consumer.fxml"/>
 
+    <destination id="producer_two"
+                 title="Producer Two"
+                 fxml="producer_two.fxml"/>
+
     <!-- define arguments -->
+
     <arguments id="mnp">
-        <argument name="xyz" type="int_array" required="true"/>
+        <argument name="xyz" type="int_array"/>
     </arguments>
 
     <arguments id="home_data">

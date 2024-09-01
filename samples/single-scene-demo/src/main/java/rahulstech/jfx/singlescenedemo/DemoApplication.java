@@ -13,7 +13,7 @@ public class DemoApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(ResourceLoader.getLayoutResourceURL("demo_routing.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/demo_routing.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
 

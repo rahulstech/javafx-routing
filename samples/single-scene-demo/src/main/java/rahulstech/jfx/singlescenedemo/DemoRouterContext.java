@@ -16,11 +16,11 @@ import java.net.URL;
 
 public class DemoRouterContext extends BaseRouterContext {
 
+    public static final String RESOURCE_ROOT = "/";
+
     public static final String ANIMATION_SCALE_UP_XY_SLIDE_IN_BOTTOM = "scale_up_xy_slide_in_bottom";
 
     public static final String ANIMATION_SCALE_DOWN_XY_SLIDE_OUT_BOTTOM = "scale_down_xy_slide_out_bottom";
-
-    public static final String DEMO_EXECUTOR = "rahulstech.jfx.singlescenedemo.DemoRouterExecutor";
 
     private RouterArgument mHomeData;
 
@@ -32,14 +32,6 @@ public class DemoRouterContext extends BaseRouterContext {
     @Override
     public RouterArgument getHomeData() {
         return mHomeData;
-    }
-
-    @Override
-    protected RouterExecutor createRouterExecutor(String name, Router router) {
-        if (DEMO_EXECUTOR.equals(name)) {
-            return new DemoRouterExecutor(router,(SingleSceneTransaction) getTransaction(SingleSceneTransaction.class,router.getContentPane()));
-        }
-        return super.createRouterExecutor(name, router);
     }
 
     @Override
@@ -66,7 +58,7 @@ public class DemoRouterContext extends BaseRouterContext {
     @Override
     public URL getResource(String name, String type) {
         if ("fxml".equals(type)) {
-            return ResourceLoader.getLayoutResourceURL(name);
+            return getClass().getResource(RESOURCE_ROOT+name);
         }
         return null;
     }
@@ -74,7 +66,7 @@ public class DemoRouterContext extends BaseRouterContext {
     @Override
     public InputStream getResourceAsStream(String name, String type) {
         if ("xml".equals(type)) {
-            return ResourceLoader.getRouterConfigInputStream(name);
+            return getClass().getResourceAsStream(RESOURCE_ROOT+name);
         }
         return null;
     }

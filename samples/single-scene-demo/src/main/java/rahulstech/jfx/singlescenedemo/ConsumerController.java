@@ -3,11 +3,12 @@ package rahulstech.jfx.singlescenedemo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import rahulstech.jfx.routing.element.RouterArgument;
-import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
 
-public class ConsumerController extends SimpleLifecycleAwareController {
+public class ConsumerController extends DemoBaseController {
 
     public static final String KEY_RESULT = "result";
+
+    public static final String KEY_RESULT_TWO = "result2";
 
     @FXML
     private Label message;
@@ -18,7 +19,9 @@ public class ConsumerController extends SimpleLifecycleAwareController {
         RouterArgument result = getRouter().getCurrentResult();
         if (null!=result) {
             String result_data = result.getValue(KEY_RESULT);
-            message.setText(result_data);
+            String result2_data = result.getValue(KEY_RESULT_TWO);
+            String data = "result1="+result_data+"\nresult2="+result2_data;
+            message.setText(data);
         }
     }
 
@@ -28,7 +31,7 @@ public class ConsumerController extends SimpleLifecycleAwareController {
     }
 
     @FXML
-    private void handleGoToHomeButtonClick() {
-        getRouter().moveto("dashboard");
+    private void handleBackButtonClick() {
+        getRouter().popBackStack();
     }
 }

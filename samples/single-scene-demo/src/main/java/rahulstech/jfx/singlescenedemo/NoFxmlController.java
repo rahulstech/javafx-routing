@@ -1,7 +1,6 @@
 package rahulstech.jfx.singlescenedemo;
 
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -9,15 +8,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import rahulstech.jfx.routing.Router;
 
-public class DemoCustomLifecycleController {
+public class NoFxmlController extends DemoBaseController {
 
-    private Router router;
+    @Override
+    public void onLifecycleCreate() {
+        super.onLifecycleCreate();
 
-    private final VBox root;
-
-    public DemoCustomLifecycleController() {
-
-        Label title = new Label("Custom RouterExecutor Example");
+        Label title = new Label("No Fxml Controller Example");
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e->handleBackButtonClick());
@@ -30,26 +27,15 @@ public class DemoCustomLifecycleController {
         content.setBackground(Background.fill(Color.BURLYWOOD));
         content.setSpacing(10);
 
-        this.root = content;
+        setRoot(content);
     }
-
-    public Node getRootNode() {
-        return root;
-    }
-
-    public void setRouter(Router router) {
-        this.router = router;
-    }
-
-    public void onShow() {}
-
-    public void onHide() {}
 
     private void handleBackButtonClick() {
-        router.popBackStack();
+        getRouter().popBackStack();
     }
 
     private void handleGotoHomeButtonClick() {
+        Router router = getRouter();
         router.moveto(router.getHomeDestination(),null,null);
     }
 }

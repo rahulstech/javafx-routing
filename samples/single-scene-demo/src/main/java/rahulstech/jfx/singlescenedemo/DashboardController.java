@@ -5,11 +5,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import rahulstech.jfx.routing.Router;
 import rahulstech.jfx.routing.element.RouterArgument;
-import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
 
 import java.util.Arrays;
 
-public class DashboardController extends SimpleLifecycleAwareController {
+public class DashboardController extends DemoBaseController {
 
     @FXML
     private Label message;
@@ -28,6 +27,9 @@ public class DashboardController extends SimpleLifecycleAwareController {
             StringBuilder builder = new StringBuilder();
             builder.append("arg0=").append(arg0).append("\n");
             if (null!=arg1) {
+                // arg1 is a compound type either "int" or "int_array"
+                // value of arg1 can be any of "int" "Integer" "int[]" and "Integer[]"
+                // value type should be checked before casting otherwise class cast exception may occure
                 builder.append("args1=");
                 if (arg1 instanceof Integer) {
                     builder.append(arg1);
@@ -58,7 +60,13 @@ public class DashboardController extends SimpleLifecycleAwareController {
         else if ("screen2".equals(targetDestinationId)) {
             args.addArgument("xyz",new int[]{7,9});
         }
-        router.moveto(targetDestinationId,args);
+        try {
+            router.moveto(targetDestinationId, args);
+        }
+        catch (Exception ex) {
+            // handles execption during moveto
+            System.out.println("handleGoToScreenButtonClick: "+ex.getMessage());
+        }
     }
 
     @FXML
