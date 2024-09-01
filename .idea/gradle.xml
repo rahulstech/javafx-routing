@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/samples" />
             <option value="$PROJECT_DIR$/samples/basic-demo" />
+            <option value="$PROJECT_DIR$/samples/nested-router-demo" />
             <option value="$PROJECT_DIR$/samples/single-scene-demo" />
             <option value="$PROJECT_DIR$/tests" />
           </set>

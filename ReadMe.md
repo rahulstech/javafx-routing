@@ -30,7 +30,7 @@ This abstraction covers layout controller creation, animation creation, and scre
 **Getting Started:**
 
 ```groovy
-implementation "com.github.rahulstech:javafx-routing:1.0.0"
+implementation "io.github.rahulstech:javafx-routing:1.0.0"
 ```
 
 **Benefits:**
@@ -43,6 +43,7 @@ implementation "com.github.rahulstech:javafx-routing:1.0.0"
 ### Example ###  
 1. [Basic Demo](./samples/basic-demo/ReadMe.md)
 2. [Advance Demo](./samples/single-scene-demo/ReadMe.md)
+3. [Nester Router Demo](./samples/nested-router-demo/ReadMe.md)
 
 **Contributing:**
 

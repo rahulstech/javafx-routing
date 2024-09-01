@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<router xmlns="https://github.com/rahulstech/javafx-routing"
+        home="screen0"
+        enterAnimation="fade_in"
+        exitAnimation="fade_out">
+
+    <destination id="screen0"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.ScreenZeroController"/>
+
+    <destination id="screen1"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.NestedContentController"/>
+
+    <destination id="screen2"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.ScreenTwoController"/>
+
+</router>

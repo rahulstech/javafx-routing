@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    sub screens are inside a screen of main router which provides animations for screen enter.
+    therefore both enter animations, enter animtion of screen containing sub screen and home enter animation of home sub screen,
+    will run simultenously which does not feel good. so the home enter animation is disabled for home sub screen using no_op
+    animation. this is not a rule but a guideline.
+ -->
+<router xmlns="https://github.com/rahulstech/javafx-routing"
+        home="sub_screen0"
+        homeEnterAnimation="no_op"
+        enterAnimation="scale_up_xy"
+        exitAnimation="scale_down_xy">
+
+    <destination id="sub_screen0"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.SubScreenController"/>
+
+    <destination id="sub_screen1"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.SubScreenController"/>
+
+    <destination id="sub_screen2"
+                 controllerClass="rahulstech.jfx.nestedrouterdemo.SubScreenController"/>
+
+</router>

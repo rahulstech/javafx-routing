@@ -29,7 +29,7 @@ This advanced demo unlocks the full potential of JFX Routing, empowering you to 
 
 Fire up the sample by executing the following command in your terminal from the root project directory:
 
-```bash
+```shell
 ./gradlew :samples:single-scene-demo:run
 ```
 

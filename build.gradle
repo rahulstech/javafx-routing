@@ -36,3 +36,13 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_1_9
     }
 }
+
+subprojects {
+    def sample_projects = Arrays.asList("basic-demo","single-scene-demo","nested-router-demo")
+    if (sample_projects.contains(project.name)) {
+        javafx {
+            version = '21'
+            modules = ['javafx.fxml','javafx.controls']
+        }
+    }
+}
