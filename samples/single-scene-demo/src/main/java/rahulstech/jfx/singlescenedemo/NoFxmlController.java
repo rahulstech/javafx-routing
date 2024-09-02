@@ -3,7 +3,6 @@ package rahulstech.jfx.singlescenedemo;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import rahulstech.jfx.routing.Router;
@@ -24,7 +23,7 @@ public class NoFxmlController extends DemoBaseController {
 
         VBox content =  new VBox(title,backButton,gotoHome);
         content.setPadding(new Insets(10,10,10,10));
-        content.setBackground(Background.fill(Color.BURLYWOOD));
+        content.setBackground(Utils.colorFillBackground(Color.BURLYWOOD));
         content.setSpacing(10);
 
         setRoot(content);

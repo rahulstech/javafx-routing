@@ -1,12 +1,9 @@
 plugins {
-  id 'application'
+  id "application"
 }
+
 
 application {
   mainModule = 'basicdemo'
   mainClass = 'rahulstech.jfx.routing.demo.MyApplication'
-}
-
-dependencies {
-  implementation project(":library")
 }

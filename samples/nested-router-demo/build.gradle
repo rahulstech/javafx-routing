@@ -1,12 +1,8 @@
 plugins {
-    id 'application'
+    id "application"
 }
 
 application {
     mainModule = 'nestedrouterdemo'
     mainClass = 'rahulstech.jfx.nestedrouterdemo.NestesRouterDemoApplication'
-}
-
-dependencies {
-    implementation project(':library')
 }

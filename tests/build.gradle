@@ -1,7 +1,6 @@
 def vJUnit = '5.10.0'
 
 dependencies {
-    implementation project(":library")
 
     testImplementation "org.junit.jupiter:junit-jupiter:${vJUnit}"
 

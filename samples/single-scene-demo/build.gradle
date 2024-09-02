@@ -1,12 +1,8 @@
 plugins {
-    id 'application'
+    id "application"
 }
 
 application {
     mainModule = "singlescenedemo"
     mainClass = "rahulstech.jfx.singlescenedemo.DemoApplication"
-}
-
-dependencies {
-    implementation project(":library")
 }

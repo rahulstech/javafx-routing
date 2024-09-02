@@ -3,7 +3,6 @@ package rahulstech.jfx.singlescenedemo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import rahulstech.jfx.routing.Router;
@@ -40,7 +39,7 @@ public class ScreenController extends DemoBaseController {
 
         // setting the background accoring to the passed screen index passed via data
         // this is done in lifecycle initilization therefore it is executed every time before showing
-        ((VBox) getRoot()).setBackground(Background.fill(color));
+        ((VBox) getRoot()).setBackground(Utils.colorFillBackground(color));
         if (null!=abc) {
             label.setText(message+" "+abc);
         }

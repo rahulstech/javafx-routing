@@ -16,7 +16,7 @@ public class ScreenOneController extends SimpleLifecycleAwareController {
     @Override
     public void onLifecycleInitialize() {
         RouterArgument args = getRouter().getCurrentData();
-        counter = (int) args.getValue("counter");
+        counter = args.getValue("counter");
         label.setText("Screen 1 (counter "+counter+")");
     }
 

@@ -19,4 +19,4 @@ Fire up the sample by executing the following command in your terminal from the 
 ./gradlew :samples:basic-demo:run
 ```
 
-Get your hands dirty with JFX Routing and witness the potential to create dynamic and engaging single-scene applications!
+Get your hands dirty with JavaFx-Routing and witness the potential to create dynamic and engaging single-scene applications!

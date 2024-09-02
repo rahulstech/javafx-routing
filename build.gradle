@@ -1,31 +1,17 @@
-buildscript {
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'org.javamodularity:moduleplugin:1.8.12'
-        classpath 'org.openjfx:javafx-plugin:0.0.13'
-    }
-}
-
 plugins {
     id "java"
+    id "org.javamodularity.moduleplugin" version '1.8.12'
+    id "org.openjfx.javafxplugin" version '0.0.13'
 }
 
 allprojects {
-
-    apply plugin: 'java'
-    apply plugin: 'org.javamodularity.moduleplugin'
-    apply plugin: 'org.openjfx.javafxplugin'
 
     repositories {
         mavenCentral()
     }
 
     group 'io.github.rahulstech'
-    version '1.0'
+    version '1.0.0'
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
@@ -38,11 +24,21 @@ allprojects {
 }
 
 subprojects {
-    def sample_projects = Arrays.asList("basic-demo","single-scene-demo","nested-router-demo")
-    if (sample_projects.contains(project.name)) {
-        javafx {
-            version = '21'
-            modules = ['javafx.fxml','javafx.controls']
+
+    apply plugin: 'java'
+    apply plugin: 'org.javamodularity.moduleplugin'
+    apply plugin: 'org.openjfx.javafxplugin'
+
+    javafx {
+        version = '11'
+        modules = ['javafx.fxml','javafx.controls']
+    }
+
+    if (project.name != "library") {
+        // all the subproject will use 'library' project,
+        // so add it from root build.gradle
+        dependencies {
+            implementation project(":library")
         }
     }
 }

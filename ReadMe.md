@@ -55,8 +55,4 @@ We welcome contributions to the `javafx-routing` project!
 
 This project is licensed under the `MIT` license. See the [LICENSE](LICENSE.txt) file for more information.
 
-**Community:**
-
-(Include links to your project's communication channels, if applicable)
-
 **Happy Routing with javafx-routing!**

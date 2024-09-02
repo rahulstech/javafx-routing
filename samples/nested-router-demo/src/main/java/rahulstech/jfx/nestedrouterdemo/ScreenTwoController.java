@@ -3,7 +3,6 @@ package rahulstech.jfx.nestedrouterdemo;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import rahulstech.jfx.routing.lifecycle.SimpleLifecycleAwareController;
 
@@ -19,7 +18,7 @@ public class ScreenTwoController extends SimpleLifecycleAwareController {
         button0.setOnAction(e->handleButton0Click());
 
         VBox root = new VBox(message,button0);
-        root.setBackground(Background.fill(Utils.getRandomColor()));
+        root.setBackground(Utils.colorFillBackground(Utils.getRandomColor()));
         root.setSpacing(12);
         root.setPadding(new Insets(12,12,12,12));
 

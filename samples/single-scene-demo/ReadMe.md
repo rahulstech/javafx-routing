@@ -2,7 +2,7 @@
 
 ---
 
-This advanced demo unlocks the full potential of JFX Routing, empowering you to craft dynamic and user-friendly single-scene applications. Dive into the heart of these capabilities and discover how to:
+This advanced demo unlocks the full potential of JavaFx-Routing, empowering you to craft dynamic and user-friendly single-scene applications. Dive into the heart of these capabilities and discover how to:
 
 * **Effortlessly Design FXML Layouts with RouterStackPane:**
     - Master the declaration of `RouterStackPane` within FXML, seamlessly integrating its properties for a streamlined development workflow.
@@ -33,4 +33,4 @@ Fire up the sample by executing the following command in your terminal from the 
 ./gradlew :samples:single-scene-demo:run
 ```
 
-Embrace the world of JFX Routing and create exceptional single-scene applications that are both visually captivating and functionally superior!
+Embrace the world of JavaFx-Routing and create exceptional single-scene applications that are both visually captivating and functionally superior!

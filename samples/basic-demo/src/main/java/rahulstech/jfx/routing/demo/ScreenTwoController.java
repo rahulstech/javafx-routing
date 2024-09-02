@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import rahulstech.jfx.routing.element.RouterArgument;
@@ -39,7 +40,7 @@ public class ScreenTwoController extends SimpleLifecycleAwareController {
 
         VBox root = new VBox(label,backButton,button);
         root.setSpacing(10);
-        root.setBackground(Background.fill(Color.BURLYWOOD));
+        root.setBackground(new Background(new BackgroundFill(Color.BURLYWOOD,null,null)));
 
         this.root = root;
         this.label = label;
@@ -48,7 +49,7 @@ public class ScreenTwoController extends SimpleLifecycleAwareController {
     @Override
     public void onLifecycleInitialize() {
         RouterArgument data = getRouter().getCurrentData();
-        counter = (int) data.getValue("counter");
+        counter = data.getValue("counter");
         label.setText("Screen 2 (Counter "+counter+")");
     }
 
