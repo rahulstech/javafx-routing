@@ -6,3 +6,7 @@ application {
     mainModule = 'nestedrouterdemo'
     mainClass = 'rahulstech.jfx.nestedrouterdemo.NestesRouterDemoApplication'
 }
+
+dependencies {
+    implementation project(":library")
+}

@@ -2,6 +2,8 @@ plugins {
     id "java"
     id "org.javamodularity.moduleplugin" version '1.8.12'
     id "org.openjfx.javafxplugin" version '0.0.13'
+    id "maven-publish"
+    id "signing"
 }
 
 allprojects {
@@ -29,16 +31,81 @@ subprojects {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.openjfx.javafxplugin'
 
+    if (project.name == 'library') {
+        apply plugin: 'maven-publish'
+        apply plugin: 'signing'
+
+        tasks.register('sourcesJar', Jar) {
+            archiveClassifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        tasks.register('javadocJar', Jar) {
+            archiveClassifier = 'javadoc'
+            from tasks.javadoc
+        }
+
+        signing {
+            useGpgCmd()
+            sign publishing.publications
+        }
+
+        publishing {
+            publications {
+                create('javafxRouting',MavenPublication) {
+                    from components.java
+
+                    artifact(tasks.named('sourcesJar'))
+                    artifact(tasks.named('javadocJar'))
+
+                    groupId = project.group
+                    artifactId = 'javafx-routing'
+                    version = project.version
+
+                    pom {
+                        name = "JavaFx Routing"
+                        description = "Efficiently navigate between JavaFX screens with animated transitions, backstack, controller lifecycle management, argument passing, and validation. Enjoy a declarative configuration approach or customize in code. Simplifies navigation and enhances user experience. Currently supports single scene navigation."
+                        url = "https://github.com/rahulstech/javafx-routing"
+
+                        licenses {
+                            license {
+                                name = 'MIT'
+                                url = 'https://opensource.org/licenses/MIT'
+                                distribution = 'bundle'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id = 'rahulstech'
+                                name = 'Rahul Bagchi'
+                                email = 'rahulstech18@gmail.com'
+                            }
+                        }
+
+                        scm {
+                            connection = 'scm:git:git://github.com/rahulstech/javafx-routing.git'
+                            developerConnection = 'scm:git:git@github.com:rahulstech/javafx-routing.git'
+                            url = 'https://github.com/rahulstechh/javafx-routing'
+                        }
+                    }
+                }
+            }
+
+            repositories {
+                maven {
+                    url = uri('https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/')
+                    credentials {
+                        username = project.property("OSSRH_USERNAME") ?: ""
+                        password = project.property("OSSRH_PASSWORD") ?: ""
+                    }
+                }
+            }
+        }
+    }
+
     javafx {
         version = '11'
         modules = ['javafx.fxml','javafx.controls']
-    }
-
-    if (project.name != "library") {
-        // all the subproject will use 'library' project,
-        // so add it from root build.gradle
-        dependencies {
-            implementation project(":library")
-        }
     }
 }
