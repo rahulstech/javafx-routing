@@ -33,7 +33,7 @@
 **Getting Started:**
 
 ```groovy
-implementation "io.github.rahulstech:javafx-routing:1.0.0"
+implementation "com.github.rahulstech:javafx-routing:1.0.0"
 ```
 
 **Benefits:**

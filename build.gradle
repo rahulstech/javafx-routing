@@ -12,7 +12,7 @@ allprojects {
         mavenCentral()
     }
 
-    group 'io.github.rahulstech'
+    group 'com.github.rahulstech'
     version '1.0.0'
 
     tasks.withType(JavaCompile).configureEach {
