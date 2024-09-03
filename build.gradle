@@ -38,11 +38,6 @@ subprojects {
             from sourceSets.main.allSource
         }
 
-        tasks.register('javadocJar',Jar) {
-            archiveClassifier = 'javadoc'
-            from tasks.javadoc
-        }
-
         publishing {
             publications {
                 create('javafxRouting',MavenPublication) {
@@ -53,7 +48,6 @@ subprojects {
                     version = project.version
 
                     artifact(tasks.named('sourcesJar'))
-                    artifact(tasks.named('javadocJar'))
 
                     pom {
                         name = 'javafx routing'

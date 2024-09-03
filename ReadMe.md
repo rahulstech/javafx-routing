@@ -3,7 +3,6 @@
 ---
 
 [![](https://jitpack.io/v/rahulstech/javafx-routing.svg)](https://jitpack.io/#rahulstech/javafx-routing)
-[![Javadoc](https://img.shields.io/badge/javadoc-API-blue)](https://jitpack.io/com/github/rahulstech/javafx-routing/latest/javadoc/)
 [![](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 **javafx-routing** is an open-source library designed to simplify and enhance navigation within your JavaFX applications. It provides a user-friendly and flexible approach to switching between different screens with smooth animations and seamless integration with existing development practices.
