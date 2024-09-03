@@ -2,6 +2,8 @@ plugins {
     id "java"
     id "org.javamodularity.moduleplugin" version '1.8.12'
     id "org.openjfx.javafxplugin" version '0.0.13'
+    id 'maven-publish'
+    id 'signing'
 }
 
 allprojects {
@@ -28,6 +30,75 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.openjfx.javafxplugin'
+
+    if (project.name == 'library') {
+        apply plugin: 'maven-publish'
+        apply plugin: 'signing'
+
+        tasks.register('sourcesJar',Jar) {
+            archiveClassifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        tasks.register('javadocJar',Jar) {
+            archiveClassifier = 'javadoc'
+            from tasks.javadoc
+        }
+
+        publishing {
+            publications {
+                create('javafxRouting',MavenPublication) {
+                    from components.java
+
+                    groupId = project.group
+                    artifactId = 'javafx-routing'
+                    version = project.version
+
+                    artifact(tasks.named('sourcesJar'))
+                    artifact(tasks.named('javadocJar'))
+
+                    pom {
+                        name = 'javafx routing'
+                        description = 'Efficiently navigate between JavaFX screens with animated transitions, backstack, controller lifecycle management, argument passing, and validation. Enjoy a declarative configuration approach or customize in code. Simplifies navigation and enhances user experience. Currently supports single scene navigation.'
+                        url = 'https://github.com/rahulstech/javafx-routing'
+
+                        developers {
+                            developer {
+                                id = 'rahulstech'
+                                name = 'Rahul Bagchi'
+                                email = 'rahulstech18@gmail.com'
+                            }
+                        }
+
+                        licenses {
+                            license {
+                                name = 'MIT'
+                                url = 'https://opensource.org/licenses/MIT'
+                                distribution = 'bundle'
+                            }
+                        }
+
+                        scm {
+                            connection = 'scm:git:git://github.com/rahulstech/javafx-routing.git'
+                            developerConnection = 'scm:git:git@github.com:rahulstech/javafx-routing.git'
+                            url = 'https://github.com/rahulstech/javafx-routing'
+                        }
+                    }
+                }
+            }
+
+            repositories {
+                maven {
+                    url = uri('file://home/acer/coding/maven-repos')
+                }
+            }
+        }
+
+        signing {
+            useGpgCmd()
+            sign publishing.publications.named('javafxRouting').get()
+        }
+    }
 
     javafx {
         version = '11'
