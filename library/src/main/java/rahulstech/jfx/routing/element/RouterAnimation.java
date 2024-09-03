@@ -56,7 +56,7 @@ import java.util.Objects;
  * of {@link rahulstech.jfx.routing.RouterContext RouterContext}
  * </p>
  * <pre>{@code
- * // register animtion in your RouterContext implementation like this
+ * // register animation in your RouterContext implementation like this
  * public class MyContext extends BaseRouterContext {
  *  // other implementations
  *
@@ -108,7 +108,7 @@ public abstract class RouterAnimation {
     public static final long DEFAULT_DURATION_MILLIS = DEFAULT_DURATION_SHORT_MILLIS;
 
     /**
-     * a {@link Duration} instance for {@link RouterAnimation#DEFAULT_DURATION_SHORT}
+     * a {@link Duration} instance for {@link #DEFAULT_DURATION_SHORT}
      */
     public static final Duration DEFAULT_DURATION_SHORT = Duration.millis(DEFAULT_DURATION_SHORT_MILLIS);
 
@@ -174,7 +174,7 @@ public abstract class RouterAnimation {
     RouterAnimation nextAnimation;
 
     /**
-     * Create new {@code RouterAimation} instance with name
+     * Create new {@code RouterAnimation} instance with name
      *
      * @param name animation name
      */
@@ -286,7 +286,7 @@ public abstract class RouterAnimation {
     /**
      * Returns the animation duration
      *
-     * @return non-null {@link Duration} instnace
+     * @return non-null {@link Duration} instance
      */
     public Duration getDuration() {
         return duration;
