@@ -70,13 +70,13 @@ import java.util.Objects;
  *         return animation;
  *     }
  *     return super.getAnimationByName(name,attrs);
- *   }
- * }
+ *  }
  *
  * // now to get the animation do this
  * Router router = ...
  * RouterContext context = router.getContext();
  * RouterAnimation animation = context.getAnimation(...);
+ * }
  * }
  * </pre>
  *

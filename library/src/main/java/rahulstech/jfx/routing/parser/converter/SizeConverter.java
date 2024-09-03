@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  *     <li>.56rad</li>
  * </ul>
  * Note: units are case insensative i.e. px, PX, pX, Px all are same.
- * <br/>
+ * <br>
  * Note: space between the number and unit is not allowrd. For example 56 px is invalid.
  *
  * @author Rahul Bagchi
