@@ -3,12 +3,15 @@
 ---
 
 [![](https://jitpack.io/v/rahulstech/javafx-routing.svg)](https://jitpack.io/#rahulstech/javafx-routing)
+[![Javadoc](https://img.shields.io/badge/javadoc-API-blue)](https://jitpack.io/com/github/rahulstech/javafx-routing/latest/javadoc/)
 [![](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-
-**javafx-routing: Elegant Navigation for JavaFX Applications**
-
 **javafx-routing** is an open-source library designed to simplify and enhance navigation within your JavaFX applications. It provides a user-friendly and flexible approach to switching between different screens with smooth animations and seamless integration with existing development practices.
+
+**Requirments:**  
+Minimum requirements to run `javafx-routing` are
+- jdk 11 or later
+- openjavafx 11 or later
 
 **Key Features:**
 
@@ -25,15 +28,24 @@
     - Handle resource management (e.g., database connections) efficiently during the `destroy` phase.
 * **Flexible Layout and Controller Creation:** Leverage the [`RouterExecutor`](./library/src/main/java/rahulstech/jfx/routing/RouterExecutor.java) to define your layouts and controllers in a way that works best for your project.
 * **Transaction Mechanism:** The screen transitions are performed by [`Transaction`](./library/src/main/java/rahulstech/jfx/routing/Transaction.java) abstraction layer. Screen with state is called `Target`.
-  `Transaction` stores multiple `Target`s in its own `Backstack`.
+  `Transaction` stores multiple [`Target`](./library/src/main/java/rahulstech/jfx/routing/Transaction.java)s in its own backstack.
 * **Flexible Configuration:** Configure routing effortlessly using a routing configuration XML file or Java code which even suits for you.
 * **Type-Safe Argument Passing:** [`RouterArgument`](./library/src/main/java/rahulstech/jfx/routing/element/RouterArgument.java) ensures type-safe argument passing and automatic validation before displaying a screen. It raises exceptions for missing or invalid arguments.
   Also pass result to a previous screen while navigating back to a previous screen.
 
 **Getting Started:**
 
+To use `javafx-routing` just add the following two lines in yout `build.gradle`.
+
 ```groovy
-implementation "com.github.rahulstech:javafx-routing:1.0.0"
+repositories {
+  // other repositories
+  maven { url 'https://jitpack.io'}
+}
+
+dependencies {
+  implementation "com.github.rahulstech:javafx-routing:<latest version>"
+}
 ```
 
 **Benefits:**

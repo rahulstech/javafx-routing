@@ -12,7 +12,7 @@ import rahulstech.jfx.routing.parser.converter.SizeConverter;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AttributeValueConverterTest {
 

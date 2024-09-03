@@ -3,4 +3,7 @@ include ":library"
 include ":samples:basic-demo"
 include ":samples:single-scene-demo"
 include ":samples:nested-router-demo"
-include ":tests"
+
+// test modules, contributer may add their test modules below this
+
+include ":tests:library-tests"

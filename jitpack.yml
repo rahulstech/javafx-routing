@@ -1,2 +1,16 @@
+# DO NOT MODIFY THIS FILE
+# THIS FILE CONTAINS CONFIGURATION RELATED TO JITPACK PUBLISHING
 jdk:
   - openjdk11
+
+gradle:
+  tasks:
+    - clean
+    - publishToMavenLocal
+
+notifications:
+  email:
+    recipients:
+      - rahulstech18@gmail.com
+    on_success: always
+    on_failure: always

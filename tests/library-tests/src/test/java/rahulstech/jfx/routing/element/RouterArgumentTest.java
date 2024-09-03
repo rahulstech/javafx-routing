@@ -3,12 +3,13 @@ package rahulstech.jfx.routing.element;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import rahulstech.jfx.routing.parser.Attribute;
 import rahulstech.jfx.routing.parser.AttributeSet;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
