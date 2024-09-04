@@ -58,9 +58,9 @@ import java.util.Objects;
  * <pre>{@code
  * // register animation in your RouterContext implementation like this
  * public class MyContext extends BaseRouterContext {
+ *
  *  // other implementations
  *
- *   @Override
  *   protected RouterAnimation getAnimationByName(String name, AttributeSet attrs) {
  *     if ("my_animation_name".equals(name)) {
  *         RouterAnimation animation = ...
@@ -83,7 +83,6 @@ import java.util.Objects;
  * @author Rahul Bagchi
  * @since 1.0
  */
-// TODO: add interpolator and easing method
 public abstract class RouterAnimation {
 
     /**
