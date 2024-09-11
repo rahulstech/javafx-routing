@@ -107,6 +107,7 @@ public class Destination {
     private String executor;
     private String arguments;
     private boolean singleTop;
+    private boolean removeHistory;
 
     /**
      * Constructor used by the Builder pattern to create a {@code Destination} instance.
@@ -121,6 +122,7 @@ public class Destination {
         executor = builder.executor;
         arguments = builder.arguments;
         singleTop = builder.singleTop;
+        removeHistory = builder.removeHistory;
     }
 
     /**
@@ -165,6 +167,11 @@ public class Destination {
                     case Attribute.SINGLE_TOP: {
                         singleTop = attr.getAsBoolean();
                     }
+                    break;
+                    case Attribute.REMOVE_HISTORY: {
+                        removeHistory = attr.getAsBoolean();
+                    }
+                    break;
                 }
             }
         }
@@ -230,11 +237,22 @@ public class Destination {
     /**
      * Returns weather at most one instance of this {@code Destination} is allowed at any time in backstack
      *
-     * @return {@code true} means keep at most one instnace of this {@code Destination} in backstack,
+     * @return {@code true} means keep at most one instance of this {@code Destination} in backstack,
      *          {@code false} if more than one instances allowed at any time
      */
     public boolean isSingleTop() {
         return singleTop;
+    }
+
+    /**
+     * Returns remove history flag for this destination
+     *
+     * @return {@code true} means remove history, {@code false} keep history
+     * @see Attribute#REMOVE_HISTORY
+     * @since 2.0
+     */
+    public boolean isRemoveHistory() {
+        return removeHistory;
     }
 
     @Override
@@ -246,6 +264,8 @@ public class Destination {
                 ", title='" + title + '\'' +
                 ", executor='" + executor + '\'' +
                 ", arguments='" + arguments + '\'' +
+                ", singleTop=" + singleTop +
+                ", removeHistory=" + removeHistory +
                 '}';
     }
 
@@ -260,6 +280,7 @@ public class Destination {
         String executor = Router.KEY_DEFAULT_ROUTER_EXECUTOR;
         String arguments;
         boolean singleTop;
+        boolean removeHistory;
 
         /**
          * Constructs a new Builder for a {@code Destination}.
@@ -330,13 +351,26 @@ public class Destination {
         }
 
         /**
-         * Sets wheather to keep at most one instance in backstack at any time
+         * Sets whether to keep at most one instance in backstack at any time
          *
          * @param singleTop {@code true} means keep at most one instance, {@code false} otherwise
          * @return this Builder instance
          */
         public Builder setSingleTop(boolean singleTop) {
             this.singleTop = singleTop;
+            return this;
+        }
+
+        /**
+         * Sets remove history flag for the destination
+         *
+         * @param remove {@code boolean}
+         * @return this {@code Builder} instance
+         * @since 2.0.0
+         * @see Attribute#REMOVE_HISTORY
+         */
+        public Builder setRemoveHistory(boolean remove) {
+            this.removeHistory = remove;
             return this;
         }
 

@@ -1,7 +1,7 @@
 package rahulstech.jfx.routing.util;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * Utility class providing methods for dynamic class loading and instance creation using reflection.
@@ -105,31 +105,43 @@ public class ReflectionUtil {
      */
     public static Object newInstance(Class<?> clazz, Object[] args) {
         try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor(getTypes(args));
+            Constructor<?> constructor = findConstructor(clazz,args);
             if (constructor.trySetAccessible()) {
                 return constructor.newInstance(args);
             }
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Creating a new instance of class " + clazz.getName() + " failed with an exception", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Can not create a new instance of class '" + clazz + "'", e);
         }
-        throw new IllegalStateException("No suitable constructor found for class " + clazz.getName());
+        throw new IllegalStateException("No accessible constructor found for class '" + clazz +"'");
     }
 
-    /**
-     * Returns an array of {@code Class} objects that match the types of the given arguments.
-     *
-     * @param args the arguments to determine the types of, or {@code null} if no arguments
-     * @return an array of {@code Class} objects representing the types of the arguments
-     */
-    static Class<?>[] getTypes(Object[] args) {
-        if (args == null || args.length == 0) {
-            return new Class<?>[0];
+    static Constructor<?> findConstructor(Class<?> clazz, Object[] args) throws NoSuchMethodException {
+        int argsCount = null==args ? 0 : args.length;
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        for (Constructor<?> constructor : constructors) {
+            if (argsCount != constructor.getParameterCount()) {
+                continue;
+            }
+            if (argsCount==0) {
+                return constructor;
+            }
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+            boolean matched = true;
+            for (int i=0; i<argsCount; i++) {
+                if (!parameterTypes[i].isAssignableFrom(args[i].getClass())) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) {
+                return constructor;
+            }
         }
-        int count = args.length;
-        Class<?>[] types = new Class<?>[count];
-        for (int i = 0; i < count; i++) {
-            types[i] = args[i].getClass();
-        }
-        return types;
+
+        String[] argTypeNames = null==args ? new String[0]
+                : Arrays.stream(args).map(arg->arg.getClass().getName()).toArray(String[]::new);
+
+        throw new NoSuchMethodException("no suitable constructor found for class '"+clazz+"'" +
+                " with parameter types "+Arrays.toString(argTypeNames));
     }
 }

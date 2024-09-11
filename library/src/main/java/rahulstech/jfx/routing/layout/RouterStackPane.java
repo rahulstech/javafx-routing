@@ -57,7 +57,7 @@ public class RouterStackPane extends StackPane implements RouterPane {
     private final RouterPaneDelegate delegate;
 
     /**
-     * Creates a new instnace of {@code RouterStackPane}
+     * Creates a new instance of {@code RouterStackPane}
      */
     public RouterStackPane() {
         super();

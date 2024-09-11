@@ -344,7 +344,7 @@ public class RouterArgument {
         }
 
         /**
-         * Returns the value as a {@code Charater[]}.
+         * Returns the value as a {@code Character[]}.
          *
          * @return the value as a {@code Character[]}
          */
@@ -766,7 +766,7 @@ public class RouterArgument {
         }
 
         /**
-         * Checkes if the {@code value} object type is accepted by this {@code NameValue}
+         * Checks if the {@code value} object type is accepted by this {@code NameValue}
          *
          * @param test the target value for type test
          * @return checks if the value type is accepted by this {@code Type};

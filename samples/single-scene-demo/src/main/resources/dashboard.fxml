@@ -22,5 +22,4 @@
     <Button onAction="#handleGoToScreenButtonClick" text="Goto Screen" />
 
     <Button onAction="#handleGoToConsumerButtonClick" text="Go To Consumer"/>
-
 </VBox>

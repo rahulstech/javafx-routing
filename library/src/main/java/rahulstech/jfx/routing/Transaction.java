@@ -31,26 +31,53 @@ public abstract class Transaction implements Disposable {
 
     private boolean disposed = false;
 
+    private RouterContext context;
+
     /**
      * Creates new {@code Transaction} instance
      */
     public Transaction() {}
 
     /**
+     * Sets the associated {@link RouterContext}.
+     *
+     * @param context associated router context
+     */
+    public void setRouterContext(RouterContext context) {
+        if (null==context) {
+            throw new NullPointerException("context is null");
+        }
+        this.context = context;
+    }
+
+    /**
+     * Returns the associated {@link RouterContext}.
+     *
+     * @return associated router context
+     */
+    public RouterContext getRouterContext() {
+        return context;
+    }
+
+    /**
      * Enqueues an operation to be executed later as part of the transaction.
      *
      * @param operation the operation to be enqueued
+     * @deprecated since 1.1.0
      */
-    protected void enqueueOperation(Runnable operation) {
-        operations.add(operation);
+    @Deprecated
+    public void enqueueOperation(Runnable operation) {
+        operations.push(operation);
     }
 
     /**
      * Returns {@link Queue} of {@link Runnable} of operations
      *
      * @return the queue of operations to be executed.
+     * @deprecated since 1.1.0
      */
-    protected Queue<Runnable> getOperationsQueue() {
+    @Deprecated
+    public Queue<Runnable> getOperationsQueue() {
         return operations;
     }
 
@@ -59,12 +86,14 @@ public abstract class Transaction implements Disposable {
      * sequentially until the queue is empty.
      *
      * @return {@code true} if any operations were executed, {@code false} otherwise
+     * @deprecated since 1.1.0
      */
-    protected boolean executePendingOperations() {
-        if (operations.isEmpty()) {
+    @Deprecated
+    public boolean executePendingOperations() {
+        if (null==operations || operations.isEmpty()) {
             return false;
         }
-        while (!operations.isEmpty()) {
+        while (null!=operations && !operations.isEmpty()) {
             operations.pop().run();
         }
         return true;
@@ -136,7 +165,7 @@ public abstract class Transaction implements Disposable {
         /**
          * Creates new {@code Target} instance with tag
          *
-         * @param tag uniquely ideantif a {@code Target} in backstack by tag
+         * @param tag uniquely identify a {@code Target} in backstack by tag
          */
         public Target(String tag) {
             if (StringUtil.isEmpty(tag)) {
@@ -185,9 +214,5 @@ public abstract class Transaction implements Disposable {
          * to release resources associated with the target.
          */
         public void onDestroy() {}
-
-        /** {@inheritDoc} */
-        @Override
-        public void dispose() {}
     }
 }

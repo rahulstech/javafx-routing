@@ -33,7 +33,7 @@ import java.lang.ref.WeakReference;
  * }</pre>
  *
  * @author Rahul Bagchi
- * @since 1.0
+ * @since 1.0.0
  */
 public class RouterPaneDelegate {
 
@@ -225,13 +225,18 @@ public class RouterPaneDelegate {
     private Router initRouter() {
         String xml = getRouterConfig();
         RouterContext context = this.context;
-        if (!StringUtil.isEmpty(xml) && null != context) {
-            Router router = new Router(context, wrapped);
-            try (InputStream in = context.getRouterConfigurationAsStrem(xml)) {
-                router.parse(in);
-                return router;
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to parse router configuration '" + xml + "' with exception: " + e.getMessage(), e);
+        if (null!=context) {
+            if (!StringUtil.isEmpty(xml)) {
+                Router router = new Router(context, wrapped);
+                try (InputStream in = context.getRouterConfigurationAsStrem(xml)) {
+                    router.parse(in);
+                    return router;
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to parse router configuration '" + xml + "' with exception: " + e.getMessage(), e);
+                }
+            }
+            else {
+                return new Router(context,getWrapped());
             }
         }
         return null;
@@ -281,9 +286,9 @@ public class RouterPaneDelegate {
             old.dispose();
         }
         Router router = initRouter();
+        setRouter(router);
         if (null != router) {
             router.begin();
         }
-        setRouter(router);
     }
 }

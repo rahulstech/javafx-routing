@@ -24,7 +24,7 @@ public class Attribute {
 
     /**
      * Set id for {@link rahulstech.jfx.routing.element.Destination Destination}, {@link rahulstech.jfx.routing.element.RouterAnimation RouterAnimation}
-     * {@link rahulstech.jfx.routing.element.RouterCompoundAnimation RouterCompoundAnimation} etc. {@code id} for a perticular type must be unique in
+     * {@link rahulstech.jfx.routing.element.RouterCompoundAnimation RouterCompoundAnimation} etc. {@code id} for a particular type must be unique in
      * {@link rahulstech.jfx.routing.Router Router}. For example: there must be only one {@code Destination} with id "screen1". Though you can use same id
      * for different type; but it's not recommended. For example: you can use id "screen1" for {@code Destination} as well as {@code RouterAnimation}
      * or anything else other than {@code Destination} is valid
@@ -45,7 +45,7 @@ public class Attribute {
     // attributes for Router
 
     /**
-     * Set the destion id to use as home destination
+     * Set the destination id to use as home destination
      */
     public static final  String HOME = "home";
 
@@ -194,6 +194,13 @@ public class Attribute {
      * in the backstack at any time.
      */
     public static final String SINGLE_TOP = "singleTop";
+
+    /**
+     * This attribute of {@link rahulstech.jfx.routing.element.Destination} when set to {@code true}, the {@code Destination} is popped as soon as navigating
+     * to other {@code Destination}. By default, this value is {@code false}.
+     * @since 2.0
+     */
+    public static final String REMOVE_HISTORY = "removeHistory";
 
     // attribute for argument
 

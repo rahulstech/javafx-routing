@@ -1,15 +1,12 @@
 package rahulstech.jfx.singlescenedemo;
 
 import rahulstech.jfx.routing.BaseRouterContext;
-import rahulstech.jfx.routing.Router;
-import rahulstech.jfx.routing.RouterExecutor;
 import rahulstech.jfx.routing.element.RouterAnimation;
 import rahulstech.jfx.routing.element.RouterArgument;
 import rahulstech.jfx.routing.element.RouterCompoundAnimation;
 import rahulstech.jfx.routing.element.animation.ScaleAnimation;
 import rahulstech.jfx.routing.element.animation.SlideAnimation;
 import rahulstech.jfx.routing.parser.AttributeSet;
-import rahulstech.jfx.routing.transaction.SingleSceneTransaction;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -22,7 +19,7 @@ public class DemoRouterContext extends BaseRouterContext {
 
     public static final String ANIMATION_SCALE_DOWN_XY_SLIDE_OUT_BOTTOM = "scale_down_xy_slide_out_bottom";
 
-    private RouterArgument mHomeData;
+    private final RouterArgument mHomeData;
 
     public DemoRouterContext() {
         mHomeData = new RouterArgument();

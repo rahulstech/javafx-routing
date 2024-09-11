@@ -9,7 +9,7 @@ import rahulstech.jfx.routing.parser.AttributeSet;
 
 /**
  * The {@code FadeAnimation} class is an implementation of {@link rahulstech.jfx.routing.element.RouterAnimation RouterAnimation}
- * that performs fade-in and fade-out animations using JavaFX's {@link FadeTransition}.
+ * that performs fade-in and fade-out animations using {@link FadeTransition} of JavaFx
  *
  * <p>This animation class allows for creating fade-in and fade-out effects on a {@link Node}.</p>
  * <p>

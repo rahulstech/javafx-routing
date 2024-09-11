@@ -13,11 +13,11 @@ import java.util.*;
  *
  * <p>This class supports both parallel and sequential play modes for its child animations.
  * In sequential mode each child animation will be played one after another in the same sequence
- * they are added to this compound animation. In parallet mode all the children animation will be
+ * they are added to this compound animation. In parallel mode all the children animation will be
  * played together. Default {@code PlayMode} is {@link PlayMode#PARALLEL PARALLEL}.
  * </p>
  *
- * <p>To set playmode in router configuration xml file use {@code playMode} attribute in {@code compound-animation}
+ * <p>To set play mode in router configuration xml file use {@code playMode} attribute in {@code compound-animation}
  * element. {@code playMode} attribute takes either of the values "PARALLEL" or "SEQUENTIAL".
  * </p>
  *

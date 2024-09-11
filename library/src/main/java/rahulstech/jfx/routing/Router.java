@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Rahul Bagchi
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class Router implements Disposable {
 
@@ -52,9 +52,12 @@ public class Router implements Disposable {
     public static final String KEY_SINGLE_SCENE_SCREEN_EXECUTOR = "rahulstech.jfx.routing.routerexecutor.SingleSceneScreenExecutor";
 
     /**
-     * Name of the executor to use if nothing explicitly defined
+     * A flag that indicates the default router executor instance should be used
+     * for destinations that do not have an explicitly defined executor.
+     * <p>
+     * <strong>Note:</strong> This is not the name of any router executor.
      */
-    public static final String KEY_DEFAULT_ROUTER_EXECUTOR = KEY_SINGLE_SCENE_SCREEN_EXECUTOR;
+    public static final String KEY_DEFAULT_ROUTER_EXECUTOR = "DEFAULT_ROUTER_EXECUTOR";
 
     /**
      * The root pane to use for single scene screes
@@ -86,7 +89,7 @@ public class Router implements Disposable {
     private String defaultExitAnimation;
 
     /**
-     * Name or id of animation for backstacked screen entering
+     * Name or id of enter animation for screen in backstack
      */
     private String defaultPopEnterAnimation;
 
@@ -104,7 +107,7 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * Create new {@code Router} instnace with associated {@link RouterContext}
+     * Create new {@code Router} instance with associated {@link RouterContext}
      *
      * @param context associated {@code RouterContext}
      */
@@ -173,7 +176,7 @@ public class Router implements Disposable {
     }
 
     /**
-     * Returns registered {@link RouterExecutor} instnace for {@code name} from {@link RouterContext} or
+     * Returns registered {@link RouterExecutor} instance for {@code name} from {@link RouterContext} or
      * the default {@code RouterExecutor} is nothing found for the {@code name}
      *
      * @param name the name of the executor
@@ -192,7 +195,7 @@ public class Router implements Disposable {
     /**
      * Set a destination as home destination. Home destination is first destination
      * to show automatically on first start. Call this method when all the destinations
-     * are registered otherwise it will throw an exeception.
+     * are registered otherwise it will throw an exception.
      *
      * @param id the destination id
      * @throws IllegalArgumentException if no destination found for the id
@@ -220,7 +223,7 @@ public class Router implements Disposable {
 
     /**
      * Returns {@link Destination} set as home. Home destination is the
-     * destionation which is shown by the {@code Router} at start.
+     * destination which is shown by the {@code Router} at start.
      *
      * @return {@code Destination} registered as home destination
      *          or {@code null}
@@ -230,7 +233,7 @@ public class Router implements Disposable {
     }
 
     /**
-     * Set the enter animation for home destination. Set the aimation name or id
+     * Set the enter animation for home destination. Set the animation name or id
      * to be used as home enter animation.
      *
      * @param homeEnterAnimation the id or name of the animation
@@ -241,7 +244,7 @@ public class Router implements Disposable {
 
     /**
      * Returns name or id of the animation specified as home destination enter animation.
-     * If no such animation is spedified then default enter animation is used.
+     * If no such animation is specified then default enter animation is used.
      *
      * @return get the home destination enter animation id or name or null if
      *          nothing is set
@@ -260,7 +263,7 @@ public class Router implements Disposable {
      * @param enterAnimation animation used for new screen enter
      * @param exitAnimation animation used for exiting screen
      * @param popEnterAnimation animation used for screen entering from backstack
-     * @param popExitAnimation aniamtion for screen pop exiting from backstack. after pop exiting
+     * @param popExitAnimation animation for screen pop exiting from backstack. after pop exiting
      *                         screen will no longer be available in backstack
      * @see RouterOptions
      * @see #moveto(String, RouterArgument, RouterOptions)
@@ -276,7 +279,7 @@ public class Router implements Disposable {
     /**
      * Returns name or id of the {@link RouterAnimation} to use as screen enter animation.
      *
-     * @return name or id of the screen enter aimation
+     * @return name or id of the screen enter animation
      */
     public String getDefaultEnterAnimation() {
         return defaultEnterAnimation;
@@ -285,7 +288,7 @@ public class Router implements Disposable {
     /**
      * Returns name or id of the {@link RouterAnimation} to use as screen exit animation.
      *
-     * @return name or id of the screen exit aimation
+     * @return name or id of the screen exit animation
      */
     public String getDefaultExitAnimation() {
         return defaultExitAnimation;
@@ -294,7 +297,7 @@ public class Router implements Disposable {
     /**
      * Returns name or id of the {@link RouterAnimation} to use as screen pop enter animation.
      *
-     * @return name or id of the screen pop enter aimation
+     * @return name or id of the screen pop enter animation
      */
     public String getDefaultPopEnterAnimation() {
         return defaultPopEnterAnimation;
@@ -303,7 +306,7 @@ public class Router implements Disposable {
     /**
      * Returns name or id of the {@link RouterAnimation} to use as screen pop exit animation.
      *
-     * @return name or id of the screen pop exit aimation
+     * @return name or id of the screen pop exit animation
      */
     public String getDefaultPopExitAnimation() {
         return defaultPopExitAnimation;
@@ -386,7 +389,7 @@ public class Router implements Disposable {
 
     /**
      * Register multiple {@link RouterArgument}s with id. Ids must be unique in Router
-     * otherwise it will throw execption
+     * otherwise it will throw execution
      *
      * @param arguments {@link Map} of argument id and argument
      * @throws IllegalStateException if id is not unique
@@ -483,7 +486,7 @@ public class Router implements Disposable {
     /**
      * Returns {@link Destination} at the backstack top
      *
-     * @return {@code Destination} instnac or {@code null}
+     * @return {@code Destination} isnan or {@code null}
      * @see RouterBackstackEntry#getDestination()
      */
     public Destination getCurrentDestination() {
@@ -497,7 +500,7 @@ public class Router implements Disposable {
     /**
      * Returns result data for the destination at the backstack top.
      *
-     * @return {@link RouterArgument} instnace or {@code null}
+     * @return {@link RouterArgument} instance or {@code null}
      * @see RouterBackstackEntry#getResult()
      */
     public RouterArgument getCurrentResult() {
@@ -513,22 +516,18 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * Navigate to the destination or throws execption if no destination found for id
+     * Navigate to the destination or throws execution if no destination found for id
      *
      * @param id the target destination id
      * @throws IllegalStateException if no destination found for id
      * @see #moveto(Destination, RouterArgument, RouterOptions)
      */
     public void moveto(String id) {
-        Destination dest = getDestination(id);
-        if (null==dest) {
-            throw new IllegalStateException("no destination found with id '"+id+"'");
-        }
-        moveto(dest,null,null);
+        moveto(id,null,null);
     }
 
     /**
-     * Navigate to the destination with data or throws execption if not destination found for id
+     * Navigate to the destination with data or throws execution if not destination found for id
      *
      * @param id the target destination id
      * @param data the destination data
@@ -536,11 +535,7 @@ public class Router implements Disposable {
      * @see #moveto(Destination, RouterArgument, RouterOptions)
      */
     public void moveto(String id, RouterArgument data) {
-        Destination dest = getDestination(id);
-        if (null==dest) {
-            throw new IllegalStateException("no destination found with id '"+id+"'");
-        }
-        moveto(dest,data,null);
+        moveto(id,data,null);
     }
 
     /**
@@ -554,11 +549,8 @@ public class Router implements Disposable {
      * @see #moveto(Destination, RouterArgument, RouterOptions)
      */
     public void moveto(String id, RouterArgument data, RouterOptions options) {
-        Destination dest = getDestination(id);
-        if (null==dest) {
-            throw new IllegalStateException("no destination found with id '"+id+"'");
-        }
-        moveto(dest,data,options);
+        Destination dest = getDestinationOrThrow(id);
+        moveForward(dest,options,data);
     }
 
     /**
@@ -569,20 +561,16 @@ public class Router implements Disposable {
      * @param apply an {@link RouterOptions} for navigation options, may be null
      */
     public void moveto(Destination target, RouterArgument data, RouterOptions apply) {
-        RouterOptions options = new RouterOptions();
-        if (null!=apply) {
-            options.apply(apply);
-        }
-        moveForward(target,options,data);
+        moveForward(target,apply,data);
     }
 
     /**
      * Pop the top entry from a non-empty backstack.
      *
-     * @return  {@code true} if backstack popped succefully, {@code false} otherwise
+     * @return  {@code true} if backstack popped successfully, {@code false} otherwise
      */
     public boolean popBackStack() {
-        return moveBackward(getCurrentDestination().getId(),null,null,true);
+        return popBackstack(null,null);
     }
 
     /**
@@ -592,7 +580,7 @@ public class Router implements Disposable {
      * @return {@code true} if backstack popped successfully, {@code false} otherwise
      */
     public boolean popBackstack(RouterArgument result) {
-        return moveBackward(getCurrentDestination().getId(),null,result,true);
+        return popBackstack(result,null);
     }
 
     /**
@@ -603,11 +591,12 @@ public class Router implements Disposable {
      * @return {@code true} if backstack popped successfully, {@code false} otherwise
      */
     public boolean popBackstack(RouterArgument result, RouterOptions options) {
-        return moveBackward(getCurrentDestination().getId(),options,result,true);
+        String targetId = getCurrentDestination().getId();
+        return popBackstackUpTo(targetId,true,result,options);
     }
 
     /**
-     * Pop the destinations from top upto destination with the given id from the backstack. The target
+     * Pop the destinations from top up to destination with the given id from the backstack. The target
      * destination will be popped if inclusive is {@code true}.If inclusive is {@code false}
      * then destinations till just previous to the target is popped. If destination with
      * the given id is not found in the <strong>backstack</strong> then the pop is canceled.
@@ -615,14 +604,14 @@ public class Router implements Disposable {
      *
      * @param targetId the target destination id
      * @param inclusive {@code true} means pop the target, {@code false} don't pop the target
-     * @return {@code true} if succesfully popped, {@code false} otherwise
+     * @return {@code true} if successfully popped, {@code false} otherwise
      */
     public boolean popBackstackUpTo(String targetId, boolean inclusive) {
-        return moveBackward(targetId,null,null,inclusive);
+        return popBackstackUpTo(targetId,inclusive,null,null);
     }
 
     /**
-     * Pop the destinations from top upto destination with the given id from the backstack
+     * Pop the destinations from top up to destination with the given id from the backstack
      * and send the result to next destination.
      * The target destination will be popped if inclusive is {@code true}.If inclusive is {@code false}
      * then destinations till just previous to the target is popped. If destination with
@@ -632,14 +621,14 @@ public class Router implements Disposable {
      * @param targetId the target destination id
      * @param inclusive {@code true} means pop the target, {@code false} don't pop the target
      * @param result the result for the next destination
-     * @return {@code true} if succesfully popped, {@code false} otherwise
+     * @return {@code true} if successfully popped, {@code false} otherwise
      */
     public boolean popBackstackUpTo(String targetId,boolean inclusive, RouterArgument result) {
-        return moveBackward(targetId,null,result,inclusive);
+        return popBackstackUpTo(targetId,inclusive,result,null);
     }
 
     /**
-     * Pop the destinations from top upto destination with the given id from the backstack
+     * Pop the destinations from top up to destination with the given id from the backstack
      * and send the result to next destination with options for navigation.
      * The target destination will be popped if inclusive is {@code true}.If inclusive is {@code false}
      * then destinations till just previous to the target is popped. If destination with
@@ -650,10 +639,86 @@ public class Router implements Disposable {
      * @param inclusive {@code true} means pop the target, {@code false} don't pop the target
      * @param result the result for the next destination
      * @param options options for navigation
-     * @return {@code true} if succesfully popped, {@code false} otherwise
+     * @return {@code true} if successfully popped, {@code false} otherwise
      */
     public boolean popBackstackUpTo(String targetId,boolean inclusive, RouterArgument result, RouterOptions options) {
-        return moveBackward(targetId,options,result,inclusive);
+        return moveBackward(targetId,inclusive,result,options);
+    }
+
+    /**
+     * Move to the {@link Destination} with {@code targetId} and pop backstack just before
+     * the {@code Destination} with id {@code popuptoTargetId}. If the {@code popuptoTargetId} does not
+     * exist then no popping takes place; but destination with targetId is shown.
+     *
+     * @param targetId id of {@code Destination} to show
+     * @param popuptoTargetId id of {@code Destination} to pop up to, if exists, excluding it
+     */
+    public void movePoppingUpto(String targetId, String popuptoTargetId) {
+        movePoppingUpto(targetId,popuptoTargetId,false,null,null);
+    }
+
+    /**
+     * Move to the {@link Destination} with {@code targetId} and pop backstack up to
+     * the {@code Destination} with id {@code popuptoTargetId}. The popping of destination
+     * with popuptoTargetId depends on {@code popuptoInclusive} value  If the {@code popuptoTargetId} does not
+     * exist then no popping takes place; but destination with targetId is shown.
+     *
+     * @param targetId id of {@code Destination} to show
+     * @param popuptoTargetId id of {@code Destination} to pop up to, if exists
+     * @param popuptoInclusive {@code  true} means pop {@code popuptoTargetId}, {@code false} otherwise
+     */
+    public void movePoppingUpto(String targetId, String popuptoTargetId, boolean popuptoInclusive) {
+        movePoppingUpto(targetId,popuptoTargetId,popuptoInclusive,null,null);
+    }
+
+    /**
+     * Move to the {@link Destination} with {@code targetId} and pass optional {@link RouterArgument} data, popping backstack up to
+     * the {@code Destination} with id {@code popuptoTargetId}. The popping of destination
+     * with popuptoTargetId depends on {@code popuptoInclusive} value  If the {@code popuptoTargetId} does not
+     * exist then no popping takes place; but destination with targetId is shown.
+     *
+     * @param targetId id of {@code Destination} to show
+     * @param popuptoTargetId id of {@code Destination} to pop up to, if exists
+     * @param popuptoInclusive {@code  true} means pop {@code popuptoTargetId}, {@code false} otherwise
+     * @param data destination data as {@code RouterArgument} or {@code null}
+     */
+    public void movePoppingUpto(String targetId, String popuptoTargetId, boolean popuptoInclusive, RouterArgument data) {
+        movePoppingUpto(targetId,popuptoTargetId,popuptoInclusive,data,null);
+    }
+
+    /**
+     * Move to the {@link Destination} with {@code targetId} and pass optional {@link RouterArgument} data, popping backstack up to
+     * the {@code Destination} with id {@code popuptoTargetId}. The popping of destination
+     * with popuptoTargetId depends on {@code popuptoInclusive} value  If the {@code popuptoTargetId} does not
+     * exist then no popping takes place; but destination with targetId is shown. Pass optional {@link RouterOptions} to perform
+     * the navigation.
+     *
+     * @param targetId id of {@code Destination} to show
+     * @param popuptoTargetId id of {@code Destination} to pop up to, if exists
+     * @param popuptoInclusive {@code  true} means pop {@code popuptoTargetId}, {@code false} otherwise
+     * @param data destination data as {@code RouterArgument} or {@code null}
+     * @param options navigation extras as {@code RouterOptions} or {@code null}
+     */
+    public void movePoppingUpto(String targetId, String popuptoTargetId, boolean popuptoInclusive, RouterArgument data, RouterOptions options) {
+        Destination target = getDestinationOrThrow(targetId);
+        movePoppingUpto(target,popuptoTargetId,popuptoInclusive,data,options);
+    }
+
+    /**
+     * Move to the {@link Destination} and pass optional {@link RouterArgument} data, popping backstack up to
+     * the {@code Destination} with id {@code popuptoTargetId}. The popping of destination
+     * with popuptoTargetId depends on {@code popuptoInclusive} value  If the {@code popuptoTargetId} does not
+     * exist then no popping takes place; but destination with target is shown. Pass optional {@link RouterOptions} to perform
+     * the navigation.
+     *
+     * @param target {@code Destination} to show
+     * @param popuptoTargetId id of {@code Destination} to pop up to, if exists
+     * @param popuptoInclusive {@code  true} means pop {@code popuptoTargetId}, {@code false} otherwise
+     * @param data destination data as {@code RouterArgument} or {@code null}
+     * @param options navigation extras as {@code RouterOptions} or {@code null}
+     */
+    public void movePoppingUpto(Destination target, String popuptoTargetId, boolean popuptoInclusive, RouterArgument data, RouterOptions options) {
+        moveForwardPoppingUpto(target,data,options,popuptoTargetId,popuptoInclusive);
     }
 
     /**
@@ -706,7 +771,7 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * Parse the router confiuration xml file
+     * Parse the router configuration xml file
      *
      * @param xml resource path of the xml file
      * @see #parse(InputStream)
@@ -716,9 +781,9 @@ public class Router implements Disposable {
     }
 
     /**
-     * Parse the router configuration from inputstream
+     * Parse the router configuration from input stream
      *
-     * @param in the inputstream of the configuration file resource
+     * @param in the input stream of the configuration file resource
      */
     public void parse(InputStream in) {
         RouterXmlParser parser = new RouterXmlParser();
@@ -774,12 +839,25 @@ public class Router implements Disposable {
     //                Private Related Methods                 //
     ///////////////////////////////////////////////////////////
 
-    private void moveForward(Destination showing, RouterOptions apply, RouterArgument data) {
+    private Destination getDestinationOrThrow(String id) {
+        Destination destination = getDestination(id);
+        if (null==destination) {
+            throw new NullPointerException("no destination found for id '"+id+"'");
+        }
+        return destination;
+    }
 
-        RouterBackstackEntry singleTopEntry = backstack.findFirst(e -> e.getDestination().getId().equals(showing.getId()))
-                    .orElse(null);
+    private void moveForward(Destination target, RouterOptions apply, RouterArgument data) {
+        moveForwardPoppingUpto(target,data,apply,null,false);
+    }
 
-        RouterArgument args = getArgumentForDestination(showing.getId());
+    private void moveForwardPoppingUpto(Destination target, RouterArgument data, RouterOptions apply,
+                                        String popuptoTargetId, boolean popuptoInclusive) {
+        String targetId = target.getId();
+
+        Optional<RouterBackstackEntry> optional = backstack.findFirst(e -> e.getDestination().getId().equals(targetId));
+
+        RouterArgument args = getArgumentForDestination(targetId);
         if (null!=data) {
             if (null==args) {
                 args = data;
@@ -788,9 +866,9 @@ public class Router implements Disposable {
                 args.merge(data);
             }
         }
-        else if (null!=singleTopEntry) {
-            // in case of single top if no data provided then use the old data as saved in the basckstack
-            RouterArgument oldData = singleTopEntry.getData();
+        else if (optional.isPresent()) {
+            // in case of single top if no data provided then use the old data as saved in the backstack
+            RouterArgument oldData = optional.get().getData();
             if (null==args) {
                 args = oldData;
             }
@@ -802,90 +880,82 @@ public class Router implements Disposable {
             args.accept();
         }
 
-        RouterOptions options = new RouterOptions();
-        if (null!=apply) {
-            options.apply(apply);
+        if (null!=popuptoTargetId) {
+            popBackstackInternal(popuptoTargetId,popuptoInclusive,apply);
         }
-        options.setEnterAnimation(options.getEnterAnimation(getDefaultEnterAnimation()));
-        options.setExitAnimation(options.getExitAnimation(getDefaultExitAnimation()));
-        options.setPopEnterAnimation(options.getPopEnterAnimation(getDefaultPopEnterAnimation()));
-        options.setPopExitAnimation(options.getPopExitAnimation(getDefaultPopExitAnimation()));
-
-        RouterExecutor showExecutor = getRouterExecutorForNameOrDefault(showing.getExecutor());
-
-        Destination hiding = null;
-        if (!backstack.isEmpty()) {
+        else if (!backstack.isEmpty()) {
             RouterBackstackEntry entry = backstack.peekBackstackEntry();
-            hiding = entry.getDestination();
+            Destination exiting = entry.getDestination();
+            RouterExecutor executor = getRouterExecutorForNameOrDefault(exiting.getExecutor());
+            RouterOptions options = new RouterOptions(apply);
+            if (exiting.isRemoveHistory()) {
+                backstack.popBackstackEntry();
+                options.setPopExitAnimation(options.getPopExitAnimation(getDefaultPopExitAnimation()));
+                executor.popBackstack(exiting,options);
+            }
+            else {
+                options.setExitAnimation(options.getExitAnimation(getDefaultExitAnimation()));
+                executor.hide(exiting,options);
+            }
         }
 
         RouterBackstackEntry entry;
-        // if destination is single top then use existing backstack entry, if old entry does not exit then create a new
-        // if destination is not single top then simplely create a new backstack entry
-        if (showing.isSingleTop() && null!=singleTopEntry) {
-            entry = singleTopEntry;
+        if (target.isSingleTop() && optional.isPresent()) {
+            entry = optional.get();
+            backstack.bringToTop(entry);
         }
         else {
-            entry = new RouterBackstackEntry(showing);
+            entry = new RouterBackstackEntry(target);
+            backstack.pushBackstackEntry(entry);
         }
         entry.setData(args);
-        entry.setEnterAnimation(options.getEnterAnimation());
-        entry.setExitAnimation(options.getExitAnimation());
-        entry.setPopEnterAnimation(options.getPopEnterAnimation());
-        entry.setPopExitAnimation(options.getPopExitAnimation());
-        backstack.bringToTop(entry);
 
-        if (null!=hiding) {
-            RouterExecutor hideExecutor = getRouterExecutorForNameOrDefault(hiding.getExecutor());
-            hideExecutor.hide(hiding,options);
-        }
-        showExecutor.show(showing,options);
+        RouterExecutor executor = getRouterExecutorForNameOrDefault(target.getExecutor());
+        RouterOptions options = new RouterOptions(apply);
+        options.setEnterAnimation(options.getEnterAnimation(getDefaultEnterAnimation()));
+        executor.show(target,options);
     }
 
-    private boolean moveBackward(String targetId, RouterOptions apply, RouterArgument result, boolean inclusive) {
+    private boolean moveBackward(String targetId, boolean inclusive, RouterArgument result, RouterOptions apply) {
         if (backstack.size()==1) {
             // backstack contains single entry so can not perform pop
             return false;
         }
 
-        // get the popped entries
-        List<RouterBackstackEntry> popentries = backstack
-                .popBackstackEntriesUpTo(entry-> targetId.equals(entry.getDestination().getId()),inclusive);
-
-        // popentries will be empty if target not found
-        if (popentries.isEmpty()) {
+        if (!popBackstackInternal(targetId,inclusive,apply)) {
             return false;
         }
 
-        RouterBackstackEntry top = popentries.remove(0);
         RouterBackstackEntry next = backstack.peekBackstackEntry();
-
-        Destination popping = top.getDestination();
         Destination showing = next.getDestination();
-
-        RouterOptions options = new RouterOptions();
-        if (null!=apply) {
-            options.apply(apply);
-        }
-        options.setEnterAnimation(options.getEnterAnimation(top.getEnterAnimation()));
-        options.setExitAnimation(options.getExitAnimation(top.getExitAnimation()));
-        options.setPopEnterAnimation(options.getPopEnterAnimation(top.getPopEnterAnimation()));
-        options.setPopExitAnimation(options.getPopExitAnimation(top.getPopExitAnimation()));
-
-        next.setResult(result);
-
-        RouterExecutor poppingExecutor = getRouterExecutorForNameOrDefault(popping.getExecutor());
         RouterExecutor showingExecutor = getRouterExecutorForNameOrDefault(showing.getExecutor());
+        RouterOptions options = new RouterOptions(apply);
+        options.setPopBackstack(true);
+        options.setPopEnterAnimation(options.getPopEnterAnimation(getDefaultPopEnterAnimation()));
+        next.setResult(result);
+        showingExecutor.show(showing,options);
 
-        showingExecutor.popBackstack(showing,options);
-        poppingExecutor.hide(popping,options);
+        return true;
+    }
 
-        // destroying all intermediate backstack entries
-        popentries.forEach(entry->{
-            Destination d = entry.getDestination();
-            RouterExecutor executor = getRouterExecutorForNameOrDefault(d.getExecutor());
-            executor.doLifecycleDestroy(d);
-        });
+    private boolean popBackstackInternal(String targetId, boolean inclusive, RouterOptions apply) {
+        if (backstack.isEmpty()) {
+            return false;
+        }
+
+        List<RouterBackstackEntry> popEntries = backstack.popBackstackEntriesUpTo(entry->entry.getDestination().getId().equals(targetId),inclusive);
+
+        if (popEntries.isEmpty()) {
+            return false;
+        }
+
+        for (RouterBackstackEntry entry : popEntries) {
+            Destination destination = entry.getDestination();
+            RouterExecutor executor = getRouterExecutorForNameOrDefault(destination.getExecutor());
+            RouterOptions options = new RouterOptions(apply);
+            options.setPopExitAnimation(options.getPopExitAnimation(getDefaultPopExitAnimation()));
+            executor.popBackstack(destination,options);
+        }
 
         return true;
     }
@@ -895,14 +965,13 @@ public class Router implements Disposable {
     ///////////////////////////////////////////////////////////
 
     /**
-     * Represents a sigle entry in backstack
+     * Represents a single entry in backstack
      *
      * @see BackstackEntry
      */
     public static class RouterBackstackEntry implements BackstackEntry {
 
-        @SuppressWarnings("FieldMayBeFinal")
-        private Destination destination;
+        private final Destination destination;
 
         private RouterArgument data;
 
@@ -956,7 +1025,9 @@ public class Router implements Disposable {
          * Returns screen enter animation name or id
          *
          * @return name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public String getEnterAnimation() {
             return enterAnimation;
         }
@@ -965,7 +1036,9 @@ public class Router implements Disposable {
          * Sets the screen enter animation name or id
          *
          * @param enterAnimation name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public void setEnterAnimation(String enterAnimation) {
             this.enterAnimation = enterAnimation;
         }
@@ -974,7 +1047,9 @@ public class Router implements Disposable {
          * Returns screen exit animation name or id
          *
          * @return name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public String getExitAnimation() {
             return exitAnimation;
         }
@@ -983,7 +1058,9 @@ public class Router implements Disposable {
          * Sets the screen exit animation name or id
          *
          * @param exitAnimation name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public void setExitAnimation(String exitAnimation) {
             this.exitAnimation = exitAnimation;
         }
@@ -992,7 +1069,9 @@ public class Router implements Disposable {
          * Returns screen pop exit animation name or id
          *
          * @return name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public String getPopExitAnimation() {
             return popExitAnimation;
         }
@@ -1001,7 +1080,9 @@ public class Router implements Disposable {
          * Sets the screen pop exit animation name or id
          *
          * @param popExitAnimation name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public void setPopExitAnimation(String popExitAnimation) {
             this.popExitAnimation = popExitAnimation;
         }
@@ -1010,7 +1091,9 @@ public class Router implements Disposable {
          * Returns screen pop enter animation name or id
          *
          * @return name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public String getPopEnterAnimation() {
             return popEnterAnimation;
         }
@@ -1019,7 +1102,9 @@ public class Router implements Disposable {
          * Sets the screen pop enter animation name or id
          *
          * @param popEnterAnimation name or id of the animation
+         * @deprecated since 1.1.0
          */
+        @Deprecated
         public void setPopEnterAnimation(String popEnterAnimation) {
             this.popEnterAnimation = popEnterAnimation;
         }
@@ -1042,19 +1127,11 @@ public class Router implements Disposable {
             this.result = result;
         }
 
-        /** {@inheritDoc} */
-        @Override
-        public void dispose() {}
-
         @Override
         public String toString() {
             return "RouterBackstackEntry{" +
                     "destination=" + destination +
                     ", data=" + data +
-                    ", enterAnimation='" + enterAnimation + '\'' +
-                    ", exitAnimation='" + exitAnimation + '\'' +
-                    ", popExitAnimation='" + popExitAnimation + '\'' +
-                    ", popEnterAnimation='" + popEnterAnimation + '\'' +
                     ", result=" + result +
                     '}';
         }

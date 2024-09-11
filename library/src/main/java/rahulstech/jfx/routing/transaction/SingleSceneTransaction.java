@@ -3,19 +3,28 @@ package rahulstech.jfx.routing.transaction;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import rahulstech.jfx.routing.RouterContext;
+import rahulstech.jfx.routing.RouterOptions;
 import rahulstech.jfx.routing.Transaction;
-import rahulstech.jfx.routing.backstack.Backstack;
+import rahulstech.jfx.routing.backstack.BackstackEntry;
 import rahulstech.jfx.routing.element.RouterAnimation;
+import rahulstech.jfx.routing.util.StringUtil;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A {@code SingleSceneTransaction} is an implementation of {@link Transaction} that handles single scene screen
- * transactions. Screens are shown inside the content parent provided via contructor while creating instnace.
+ * transactions. Screens are shown inside the content parent provided via constructor while creating instance.
  * {@code SingleSceneTransaction} provides add, replace, pop transactions.
+ *
+ * @author Rahul Bagchi
+ * @since 1.0.0
  */
-public class SingleSceneTransaction extends Transaction {
+public class SingleSceneTransaction extends BaseGenericOperationTransaction<SingleSceneTransaction.SingleSceneTarget> {
 
     private final Pane content;
 
@@ -24,10 +33,13 @@ public class SingleSceneTransaction extends Transaction {
     /**
      * Create new {@code SingleSceneTransaction} instance with the {@link Pane}
      * to use as content parent for all screens handled by this {@code SingleSceneTransaction}
+     * and {@link RouterContext}
      *
+     * @param context the associated {@code RouterContext}
      * @param content {@code Pane} as content parent for screens
      */
-    public SingleSceneTransaction(Pane content) {
+    public SingleSceneTransaction(RouterContext context, Pane content) {
+        super(context);
         this.content = content;
     }
 
@@ -44,7 +56,9 @@ public class SingleSceneTransaction extends Transaction {
      * throw exception.
      *
      * @return this instance
+     * @deprecated since 1.1.0
      */
+    @Deprecated
     public SingleSceneTransaction begin() {
         inTransaction = true;
         return this;
@@ -61,13 +75,12 @@ public class SingleSceneTransaction extends Transaction {
      * @param enter_animation non-null {@link RouterAnimation} instance to apply on entering {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
+     * @deprecated since 1.1.0
+     * @see #show(SingleSceneTarget, RouterOptions)
+     * @see #showSingleTop(String, Supplier, RouterOptions)
      */
+    @Deprecated
     public SingleSceneTransaction add(SingleSceneTarget target, RouterAnimation enter_animation) {
-        ensureInTransaction();
-        enqueueOperation(()->{
-            target.showInContent(getContent(),enter_animation,null);
-            getBackstack().pushBackstackEntry(target);
-        });
         return this;
     }
 
@@ -81,34 +94,12 @@ public class SingleSceneTransaction extends Transaction {
      * @param popExit non-null {@link RouterAnimation} instance to apply on pop exiting {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
+     * @deprecated since 1.1.0
+     * @see #popShow(String, RouterOptions)
+     * @see #popHide(String, RouterOptions)
      */
+    @Deprecated
     public SingleSceneTransaction popBackstack(String tag, RouterAnimation popEnter, RouterAnimation popExit) {
-        ensureInTransaction();
-        if (getBackstack().isEmpty()) {
-            return this;
-        }
-        enqueueOperation(()->{
-            Backstack<Target> backstack = getBackstack();
-
-            // the top entry is the target entry, i.e. we are already in the target, no transaction to perform
-            SingleSceneTarget from = (SingleSceneTarget) backstack.peekBackstackEntry();
-            if (from.getTag().equals(tag)) {
-                return;
-            }
-
-            // peek the Target with the tag to show next
-            backstack.findFirst(target -> target.getTag().equals(tag))
-                    .ifPresent(target -> {
-                        SingleSceneTarget to = (SingleSceneTarget) target;
-
-                        // remove the top entry from backstack
-                        backstack.remove(from);
-
-                        // perform the transaction
-                        to.showInContent(getContent(),popEnter,null);
-                        from.hideFromContent(getContent(),popExit, Target::onDestroy);
-                    });
-        });
         return this;
     }
 
@@ -120,18 +111,14 @@ public class SingleSceneTransaction extends Transaction {
      * @param exit_animation non-null {@link RouterAnimation} instance to apply on exiting {@link Node}
      * @return this instance
      * @throws IllegalStateException if begin is not called
+     * @deprecated since 1.1.0
+     * @see #show(SingleSceneTarget, RouterOptions)
+     * @see #showSingleTop(String, Supplier, RouterOptions)
+     * @see #hide(String, RouterOptions)
      */
+    @Deprecated
     public SingleSceneTransaction replace(SingleSceneTarget target,
                                           RouterAnimation enter_animation, RouterAnimation exit_animation) {
-        ensureInTransaction();
-        enqueueOperation(()->{
-            if (!getBackstack().isEmpty()) {
-                SingleSceneTarget top = (SingleSceneTarget) getBackstack().peekBackstackEntry();
-                top.hideFromContent(getContent(),exit_animation,null);
-            }
-            target.showInContent(getContent(),enter_animation,null);
-            getBackstack().bringToTop(target);
-        });
         return this;
     }
 
@@ -140,12 +127,156 @@ public class SingleSceneTransaction extends Transaction {
      *
      * @return true if anything executed, false otherwise
      * @throws IllegalStateException if begin is not called
+     * @deprecated since 1.1.0
      */
     @SuppressWarnings("UnusedReturnValue")
+    @Deprecated
     public boolean commit() {
-        ensureInTransaction();
         return executePendingOperations();
     }
+
+    /************************************************************
+     *                   Transaction Methods                    *
+     ***********************************************************/
+
+    /**
+     * Shows the {@code target} in the content pane returned by {@link #getContent()}
+     * using the optional enter animation passed via {@code options}
+     *
+     * @param target  non-null subclass of {@link rahulstech.jfx.routing.Transaction.Target} to display.
+     * @param options non-null {@link RouterOptions} for extra configuration .
+     * @since 2.0
+     * @see rahulstech.jfx.routing.backstack.Backstack#pushBackstackEntry(BackstackEntry)
+     */
+    @Override
+    public void show(SingleSceneTarget target, RouterOptions options) {
+        RouterAnimation animation = getAnimation(options.getEnterAnimation());
+        target.showInContent(getContent(),animation,null);
+        getBackstack().pushBackstackEntry(target);
+    }
+
+    /**
+     * Shows the single-top target with tag in the content pane returned by {@link #getContent()}
+     * using the optional enter animation passed via {@code options}.
+     * <p>
+     * It searches for the target with tag in the backstack,
+     * if found then brings the entry at backstack top and shows it. If not found then creates a
+     * new using the {@code supplier}, push to backstack and shows it.
+     *
+     * @param tag      the unique tag identifying the target.
+     * @param supplier a non-null {@link Supplier} that provides the target instance if it does not exist.
+     * @param options  non-null {@code RouterOptions} for extra configuration
+     * @since 2.0
+     * @see rahulstech.jfx.routing.backstack.Backstack#bringToTop(BackstackEntry)
+     * @see rahulstech.jfx.routing.backstack.Backstack#pushBackstackEntry(BackstackEntry)
+     */
+    @Override
+    public void showSingleTop(String tag, Supplier<SingleSceneTarget> supplier, RouterOptions options) {
+        RouterAnimation animation = getAnimation(options.getEnterAnimation());
+        Optional<Target> optional = getBackstack().findFirst(e->e.getTag().equals(tag));
+        if (optional.isPresent()) {
+            SingleSceneTarget target = (SingleSceneTarget) optional.get();
+            target.showInContent(getContent(),animation,null);
+            getBackstack().bringToTop(target);
+        }
+        else {
+            SingleSceneTarget target = supplier.get();
+            target.showInContent(getContent(),animation,null);
+            getBackstack().pushBackstackEntry(target);
+        }
+    }
+
+    /**
+     * Shows the single-top target with tag in the content pane returned by {@link #getContent()}
+     * using the optional pop enter animation passed via options.
+     * <p>
+     * It shows the target if and only if a target with tag is found.
+     *
+     * @param tag     the unique tag identifying the target to display.
+     * @param options non-null {@code RouterOptions} for extra configuration
+     * @since 2.0
+     * @see rahulstech.jfx.routing.backstack.Backstack#findFirst(Predicate)
+     */
+    @Override
+    public void popShow(String tag, RouterOptions options) {
+        getBackstack().findFirst(entry->entry.getTag().equals(tag))
+                .ifPresent(entry->{
+                    RouterAnimation animation = getAnimation(options.getPopEnterAnimation());
+                    SingleSceneTarget target = (SingleSceneTarget) entry;
+                    target.showInContent(getContent(),animation,null);
+                });
+    }
+
+    /**
+     * Hides the target with tag from the content pane returned by {@link #getContent()}
+     * using optional exit animation returned by {@code options}
+     * <p>
+     * It hides the target if and only if a target with tag is found.
+     *
+     * @param tag     the unique tag identifying the target to hide.
+     * @param options non-null {@code RouterOptions} for extra configuration
+     * @since 2.0
+     * @see rahulstech.jfx.routing.backstack.Backstack#findFirst(Predicate)
+     */
+    @Override
+    public void hide(String tag, RouterOptions options) {
+        getBackstack()
+                .findFirst(entry->entry.getTag().equals(tag))
+                .ifPresent(entry->{
+                    RouterAnimation animation = getAnimation(options.getExitAnimation());
+                    SingleSceneTarget target = (SingleSceneTarget) entry;
+                    target.hideFromContent(getContent(),animation,null);
+                });
+    }
+
+    /**
+     * Hides the target with tag from the content pane returned by {@link #getContent()}
+     * using optional pop exit animation returned by {@code options} and destroys
+     * <p>
+     * It hides the target if and only if a target with tag is found.
+     *
+     * @param tag     the unique tag identifying the target to hide.
+     * @param options nullable {@code RouterOptions} for extra configuration
+     * @since 2.0
+     * @see rahulstech.jfx.routing.backstack.Backstack#findFirst(Predicate)
+     */
+    @Override
+    public void popHide(String tag, RouterOptions options) {
+        if (getBackstack().isEmpty()) {
+            return;
+        }
+        getBackstack().popBackstackEntryIf(entry->entry.getTag().equals(tag))
+                .ifPresent(entry->{
+                    RouterAnimation animation = getAnimation(options.getPopExitAnimation());
+                    SingleSceneTarget target = (SingleSceneTarget) entry;
+                    target.doDestroy(getContent(),animation,null);
+                });
+    }
+
+    /**
+     * Returns {@link RouterAnimation} byt name  or id from {@link RouterContext}
+     *
+     * @param nameOrId the animation name or id
+     * @return {@code RouterAnimation} for the given animation name or id,
+     * or {@link RouterAnimation#getNoOpAnimation() NO_OP} animation if not found
+     * @since 2.0
+     * @see RouterContext#getAnimation(String)
+     */
+    public RouterAnimation getAnimation(String nameOrId) {
+        RouterContext context = getRouterContext();
+        if (StringUtil.isEmpty(nameOrId)) {
+            return RouterAnimation.getNoOpAnimation();
+        }
+        RouterAnimation animation = context.getAnimation(nameOrId);
+        if (null==animation) {
+            return RouterAnimation.getNoOpAnimation();
+        }
+        return animation;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    //                       Lifecycle Methods                           //
+    //////////////////////////////////////////////////////////////////////
 
     /** {@inheritDoc} */
     @Override
@@ -198,16 +329,6 @@ public class SingleSceneTransaction extends Transaction {
         return content;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    //                          Private Methods                          //
-    //////////////////////////////////////////////////////////////////////
-
-    private void ensureInTransaction() {
-        if (!inTransaction) {
-            throw new IllegalStateException("not in transaction, call begin() to start transaction");
-        }
-    }
-
     /////////////////////////////////////////////////////////////////////////
     //                       Declared Sub Classes                         //
     ///////////////////////////////////////////////////////////////////////
@@ -224,14 +345,16 @@ public class SingleSceneTransaction extends Transaction {
 
         private final Object controller;
 
+        private boolean singleTop;
+
         private RouterAnimation cachedAnimation;
 
         /**
-         * Create new {@code SingleSceneTrget} instnace with {@code tag} and
+         * Create new {@code SingleSceneTarget} instance with {@code tag} and
          * {@code controller} instance
          *
          * @param tag uniquely identify a target in backstack by tag
-         * @param controller controller instnace to handle lifecycle states
+         * @param controller controller instance to handle lifecycle states
          */
         public SingleSceneTarget(String tag, Object controller) {
             super(tag);
@@ -245,6 +368,24 @@ public class SingleSceneTransaction extends Transaction {
          */
         public Object getController() {
             return controller;
+        }
+
+        /**
+         * Sets whether this target is single-top. For a single-top target, backstack will hold at most one instance.
+         *
+         * @param singleTop {@code true} means single-top, {@code false} is not single-top
+         */
+        public void setSingleTop(boolean singleTop) {
+            this.singleTop = singleTop;
+        }
+
+        /**
+         * Returns whether this target is single-top
+         *
+         * @return {@code true} means single-top, {@code false} is not single-top
+         */
+        public boolean isSingleTop() {
+            return singleTop;
         }
 
         /**
@@ -275,9 +416,9 @@ public class SingleSceneTransaction extends Transaction {
         }
 
         /**
-         * Adds screen node to the content screen as child, performs animations, handles lifecyle methods
+         * Adds screen node to the content screen as child, performs animations, handles lifecycle methods
          *
-         * @param content instnace of {@link Pane} to add the screen node as child
+         * @param content instance of {@link Pane} to add the screen node as child
          * @param enter_animation no null instance of {@link RouterAnimation}
          * @param OnShown {@link Consumer} to be called when screen is shown
          */
@@ -315,14 +456,18 @@ public class SingleSceneTransaction extends Transaction {
         }
 
         /**
-         * Removes screen node from the content screen, performs animation, handles lifecycle methods
+         * Removes screen node from the content screen, performs animation, handles lifecycle hide
          *
-         * @param content instance of {@link Pane} to add the screen node as child
+         * @param content {@link Pane} to remove the screen node
          * @param exit_animation non-null instance of {@link RouterAnimation}
-         * @param OnHide {@link Consumer} to be called when screen is hidden
+         * @param OnHide nullable {@link Consumer} to call on screen hides
          */
         public void hideFromContent(Pane content, RouterAnimation exit_animation, Consumer<SingleSceneTarget> OnHide) {
             Node front = getNode();
+
+            if (!isInContent(content,front)) {
+                return;
+            }
 
             RouterAnimation pending = RouterAnimation.removePendingAnimation(front);
             if (null!=pending) {
@@ -345,6 +490,22 @@ public class SingleSceneTransaction extends Transaction {
             });
             RouterAnimation.addPendingAnimation(front,exit_animation);
             exit_animation.play();
+        }
+
+        /**
+         * Removes the screen node from the content screen, performs animation, and finally does destroy the lifecycle
+         *
+         * @param content {@link Pane} to remove the screen node
+         * @param exit_animation non-null instance of {@link RouterAnimation}
+         * @param OnDestroy nullable {@link Consumer} to call on screen destroys
+         */
+        public void doDestroy(Pane content, RouterAnimation exit_animation, Consumer<SingleSceneTarget> OnDestroy) {
+            hideFromContent(content,exit_animation,target->{
+                target.onDestroy();
+                if (null!=OnDestroy) {
+                    OnDestroy.accept(target);
+                }
+            });
         }
 
         /**
@@ -374,7 +535,7 @@ public class SingleSceneTransaction extends Transaction {
         }
 
         /**
-         * Checkes weather the node is added as child to the parent
+         * Checks weather the node is added as child to the parent
          *
          * @param content the parent {@link Pane}
          * @param child the child {@link Node}

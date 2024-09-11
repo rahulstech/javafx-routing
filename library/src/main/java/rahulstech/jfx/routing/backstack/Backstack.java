@@ -2,19 +2,16 @@ package rahulstech.jfx.routing.backstack;
 
 import rahulstech.jfx.routing.util.Disposable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
  * Backstack is a {@link List} based backstack with some special features.
- * Backstack let you peek and pop item from any inde but item is always pushed
+ * Backstack let you peek and pop item from any index but item is always pushed
  * at the top of backstack. Index "0" or the first element in the backstack
  * is the last element added or the top element. There is another utility
- * method popBackstackUpTo which let you pop items from top untill a perticular
+ * method popBackstackUpTo which let you pop items from top until a particular
  * condition is met. if the condition is never met then no item is popped.
  * Backstack accepts only {@link BackstackEntry}.
  *
@@ -26,7 +23,7 @@ import java.util.function.Predicate;
  */
 public class Backstack<E extends BackstackEntry> implements Disposable {
 
-    ArrayList<E> backstack = new ArrayList<>();
+    List<E> backstack = new LinkedList<>();
 
     /**
      * Creates new {@code Backstack} instance
@@ -43,7 +40,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (null==entry) {
             throw new NullPointerException("can not add null entry to backstack");
         }
-        backstack.add(entry);
+        backstack.add(0,entry);
     }
 
     /**
@@ -57,27 +54,60 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             throw new NullPointerException("can not add null entry to backstack");
         }
         backstack.remove(entry);
-        backstack.add(entry);
+        backstack.add(0,entry);
     }
 
     /**
      * Returns top entry in backstack without removing
      *
      * @return get but don't remove the top entry
-     * @throws IndexOutOfBoundsException if backstack is empty
+     * @throws NoSuchElementException if backstack is empty
      */
     public E peekBackstackEntry() {
-        return peekBackstackEntry(0);
+        if (isEmpty()) {
+            throw new NoSuchElementException("can not peek from empty backstack");
+        }
+        return backstack.get(0);
     }
 
     /**
      * Removes and returns the top entry of the backstack
      *
      * @return get and remove the top entry
-     * @throws IndexOutOfBoundsException if backstack is empty
+     * @throws NoSuchElementException if backstack is empty
      */
     public E popBackstackEntry() {
-        return popBackstackEntry(0);
+        if (isEmpty()) {
+            throw new NoSuchElementException("can not pop from empty backstack");
+        }
+        return backstack.remove(0);
+    }
+
+
+    /**
+     * Pops the first entry that passes {@link Predicate#test(Object)}
+     *
+     * @param check non-null {@code Predicate} instance to run test for each entry
+     * @return non-null {@link Optional} with popped entry or and empty Optional if nothing popped
+     * @throws NullPointerException if {@code check} is null
+     * @since 2.0
+     */
+    public Optional<E> popBackstackEntryIf(Predicate<E> check) {
+        if (null==check) {
+            throw new NullPointerException("null Predicate provided");
+        }
+        if (isEmpty()) {
+            return Optional.empty();
+        }
+        Iterator<E> it = backstack.iterator();
+        while (it.hasNext()) {
+            E e = it.next();
+            if (check.test(e)) {
+                it.remove();
+                return Optional.of(e);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -86,7 +116,9 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * @param indexFromTop the index of the target entry from top
      * @return get but don't remove at the index from the top
      * @throws IndexOutOfBoundsException if invalid index provided
+     * @deprecated since 2.0.0
      */
+    @Deprecated
     public E peekBackstackEntry(int indexFromTop) {
         int size = size();
         int index = size-1-indexFromTop;
@@ -102,26 +134,33 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * Use parameter inclusive to decide popping the target entry.
      *
      * @param check {@link Predicate} to test the target entry
-     * @param inclusive if {@literal true} then target entry is popped, if {@literal false} target entry is not poppped
+     * @param inclusive if {@literal true} then target entry is popped, if {@literal false} target entry is not popped
      * @return non-null {@link List} of popped entries
      */
     public List<E> popBackstackEntriesUpTo(Predicate<E> check, boolean inclusive) {
-        int size = size();
-        int target = -1;
-        for (int i=size-1; i>=0; i--) {
-            E entry = backstack.get(i);
-            if (check.test(entry)) {
-                target = i;
-                break;
-            }
-        }
-        if (target==-1) {
+        if (isEmpty()) {
             return Collections.emptyList();
         }
         ArrayList<E> popentries = new ArrayList<>();
-        int start = inclusive ? target : target+1;
-        for (int i=size-1; i>=start; i--) {
-            popentries.add(popBackstackEntry());
+        boolean found = false;
+        ListIterator<E> it = backstack.listIterator();
+        while (it.hasNext()) {
+            E e = it.next();
+            popentries.add(e);
+            it.remove();
+            if (check.test(e)) {
+                found = true;
+                if (!inclusive) {
+                    popentries.remove(popentries.size()-1);
+                    it.add(e);
+                }
+                break;
+            }
+        }
+        if (!found) {
+            backstack.addAll(0,popentries);
+            popentries.clear();
+            return Collections.emptyList();
         }
         return popentries;
     }
@@ -132,7 +171,9 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * @param indexFromTop the index of the target entry from the top
      * @return get and remove the entry at the index from the top
      * @throws IndexOutOfBoundsException if invalid index provided
+     * @deprecated since 2.0.0
      */
+    @Deprecated
     public E popBackstackEntry(int indexFromTop) {
         int size = size();
         int index = size-1-indexFromTop;
@@ -158,7 +199,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     /**
      * Checks if backstack is empty
      *
-     * @return {@code true} menas backstack contains no entry,
+     * @return {@code true} means backstack contains no entry,
      *          {@code false} otherwise
      */
     public boolean isEmpty() {
@@ -168,14 +209,14 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
     /**
      * Returns current no. of entries in backstack
      *
-     * @return no. of elntries in the backstack
+     * @return no. of entities in the backstack
      */
     public int size() {
-        return null==backstack ? 0 : backstack.size();
+        return backstack.size();
     }
 
     /**
-     * Removes all enetries form backstack; but does not dispose
+     * Removes all entries form backstack; but does not dispose
      * entries
      */
     public void clear() {
@@ -187,13 +228,13 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * starting from the last element and moving towards the first.
      *
      * @param consumer the action to be performed on each element
+     * @throws NullPointerException if {@code consumer} is null
      */
     public void forEach(Consumer<E> consumer) {
-        int size = size();
-        for (int i=size-1; i>=0; i--) {
-            E entry = backstack.get(i);
-            consumer.accept(entry);
+        if (null==consumer) {
+            throw new NullPointerException("null Consumer provided");
         }
+        backstack.forEach(consumer);
     }
 
     /**
@@ -203,13 +244,15 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * @param predicate the condition to match elements against
      * @return an {@link Optional} containing the first element that matches the
      *         predicate, or an empty {@link Optional} if no match is found
+     * @throws NullPointerException if {@code predicated} parameter is null
      */
     public Optional<E> findFirst(Predicate<E> predicate) {
-        int size = size();
-        for (int i=size-1; i>=0; i--) {
-            E entry = backstack.get(i);
-            if (predicate.test(entry)) {
-                return Optional.of(entry);
+        if (null==predicate) {
+            throw new NullPointerException("null  Predicate provided");
+        }
+        for (E e : backstack) {
+            if (predicate.test(e)) {
+                return Optional.of(e);
             }
         }
         return Optional.empty();

@@ -16,7 +16,7 @@ public abstract class SimpleLifecycleAwareController implements LifecycleAwareCo
     private Router router;
 
     /**
-     * Creaets new {@code SimpleLifecycleAwareController} instnace
+     * Creates new {@code SimpleLifecycleAwareController} instance
      */
     public SimpleLifecycleAwareController() {}
 

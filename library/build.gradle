@@ -1,3 +1,18 @@
 javafx {
     configuration = 'compileOnly'
 }
+
+jar {
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Implementation-Title': 'JavaFx Routing (2.0.0-RC1)',
+                'Implementation-Version': '2.0.0-rc1',
+                'Implementation-Vendor': 'rahulstech',
+                'Specification-Title': 'JavaFX Routing',
+                'Specification-Version': '2.0.0',
+                'Built-By': 'Rahul Bagchi',
+                'Created-By': '21.0.3 (Amazon Corretto)'
+        )
+    }
+}

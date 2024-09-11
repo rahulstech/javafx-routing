@@ -1,0 +1,12 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainModule = 'historydemo'
+    mainClass = 'rahulstech.jfx.historydemo.HistoryDemoApplication'
+}
+
+dependencies {
+    implementation project(':library')
+}

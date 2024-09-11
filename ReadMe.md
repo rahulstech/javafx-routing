@@ -2,6 +2,7 @@
 
 ---
 
+[![Javadocs](https://img.shields.io/badge/javadoc-1.0.0-brightgreen.svg)](https://jitpack.io/com/github/rahulstech/javafx-routing/1.0.0/javadoc/)
 [![](https://jitpack.io/v/rahulstech/javafx-routing.svg)](https://jitpack.io/#rahulstech/javafx-routing)
 [![](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -34,7 +35,7 @@ Minimum requirements to run `javafx-routing` are
 
 **Getting Started:**
 
-To use `javafx-routing` just add the following two lines in yout `build.gradle`.
+To use `javafx-routing` just add the following two lines in your `build.gradle`. Check _jitpack_ badge above for the latest version.
 
 ```groovy
 repositories {
@@ -67,6 +68,10 @@ Explore the various functionalities of `javafx-routing` through these detailed e
 1. [Basic Demo](./samples/basic-demo/ReadMe.md)
 2. [Advance Demo](./samples/single-scene-demo/ReadMe.md)
 3. [Nested Router Demo](./samples/nested-router-demo/ReadMe.md)
+4. [History Demo](./samples/history-demo/ReadMe.md)
+
+**Change Log:**  
+Track the changes and features added in each version [here](CHANGELOG.md)
 
 **Contributing:**
 

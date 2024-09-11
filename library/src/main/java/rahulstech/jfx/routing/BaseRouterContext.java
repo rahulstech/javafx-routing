@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
+import static rahulstech.jfx.routing.Router.KEY_DEFAULT_ROUTER_EXECUTOR;
 import static rahulstech.jfx.routing.Router.KEY_SINGLE_SCENE_SCREEN_EXECUTOR;
 
 /**
@@ -228,7 +229,7 @@ public abstract class BaseRouterContext extends RouterContext {
      * Caches a {@link RouterExecutor} instance
      *
      * @param name name of the {@code RouterExecutor}
-     * @param executor instance of {@code RouterExector}
+     * @param executor instance of {@code RouterExecutor}
      */
     public void cacheRouterExecutor(String name, RouterExecutor executor) {
         if (StringUtil.isEmpty(name)) {
@@ -266,7 +267,7 @@ public abstract class BaseRouterContext extends RouterContext {
      * @return instance of {@code RouterExecutor} or {@code null} for unknown name
      */
     protected RouterExecutor createRouterExecutor(String name, Router router) {
-        if (KEY_SINGLE_SCENE_SCREEN_EXECUTOR.equals(name)) {
+        if (KEY_SINGLE_SCENE_SCREEN_EXECUTOR.equals(name) || KEY_DEFAULT_ROUTER_EXECUTOR.equals(name)) {
             return new SingleSceneScreenExecutor(router,
                     (SingleSceneTransaction) getTransaction(SingleSceneTransaction.class, router.getContentPane()));
         }
@@ -307,15 +308,15 @@ public abstract class BaseRouterContext extends RouterContext {
      *
      * @param clazz {@code Class} value of {@code Transaction} subclass
      * @param args constructor arguments
-     * @return new instnace of {@code Transaction}
-     * @throws RuntimeException throwns if instance is not created
+     * @return new instance of {@code Transaction}
+     * @throws RuntimeException throws if instance is not created
      * @throws IllegalStateException throws if no suitable constructor found
      * @see ReflectionUtil#newInstance(Class, Object[])
      */
     protected Transaction createNewTransaction(Class<? extends Transaction> clazz, Object... args) {
         if (clazz==SingleSceneTransaction.class) {
             Pane content = (Pane) args[0];
-            return new SingleSceneTransaction(content);
+            return new SingleSceneTransaction(this,content);
         }
         return (Transaction) ReflectionUtil.newInstance(clazz,args);
     }

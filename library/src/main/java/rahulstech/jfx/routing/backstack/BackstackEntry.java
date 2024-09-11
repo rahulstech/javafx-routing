@@ -10,4 +10,8 @@ import rahulstech.jfx.routing.util.Disposable;
  * @since 1.0
  */
 public interface BackstackEntry extends Disposable {
+
+    /** {@inheritDoc} */
+    @Override
+    default void dispose() {}
 }

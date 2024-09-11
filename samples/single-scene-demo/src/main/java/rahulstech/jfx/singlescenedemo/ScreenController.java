@@ -74,7 +74,7 @@ public class ScreenController extends DemoBaseController {
     private void handleNextDestinationButtonClick() {
         Integer value = spinner.getValue();
         Optional<String> oNextDestination = getNextDestinationId();
-        if (!oNextDestination.isPresent()) {
+        if (oNextDestination.isEmpty()) {
             return;
         }
         Router router = getRouter();
@@ -134,7 +134,7 @@ public class ScreenController extends DemoBaseController {
     @FXML
     private void handleNextDestinationWihtoutDataButtonClick() {
         Optional<String> oNextDestination = getNextDestinationId();
-        if (!oNextDestination.isPresent()) {
+        if (oNextDestination.isEmpty()) {
             return;
         }
         Router router = getRouter();

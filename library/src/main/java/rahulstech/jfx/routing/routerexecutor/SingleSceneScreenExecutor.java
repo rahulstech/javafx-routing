@@ -10,6 +10,7 @@ import rahulstech.jfx.routing.transaction.SingleSceneTransaction;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * The {@code SingleSceneScreenExecutor} class is a concrete implementation of {@link RouterExecutor}
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
  */
 public class SingleSceneScreenExecutor extends RouterExecutor {
 
-    private SingleSceneTransaction transaction;
+    private final SingleSceneTransaction transaction;
 
     /**
      * Constructs a new {@code SingleSceneScreenExecutor} with the given {@link Router} and {@link SingleSceneTransaction}.
@@ -51,33 +52,26 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
     }
 
     /**
-     * Replace the current screen in the {@link Router#getContentPane() content} with the requested screen.
-     * The current screen i.e. the screen in the backstack top of the {@code transaction}, if any, is hidden.
-     * A new screen is created, if required, is shown. It handles enter and exit animations for screens
-     * if specified.
+     * Shows the destination
      *
      * @param destination the destination to be shown
      * @param options the options containing routing configurations
-     * @see SingleSceneTransaction#replace(SingleSceneTransaction.SingleSceneTarget, RouterAnimation, RouterAnimation)
+     * @see SingleSceneTransaction#show(SingleSceneTransaction.SingleSceneTarget, RouterOptions)
+     * @see SingleSceneTransaction#showSingleTop(String, Supplier, RouterOptions)
+     * @see SingleSceneTransaction#popShow(String, RouterOptions)
      */
     @Override
     public void show(Destination destination, RouterOptions options) {
-        String enterAnimationId = options.getEnterAnimation();
-        String exitAnimationId = options.getExitAnimation();
-        RouterAnimation enterAnimation = getAnimation(enterAnimationId);
-        RouterAnimation exitAnimation = getAnimation(exitAnimationId);
-        SingleSceneTransaction.SingleSceneTarget target;
-        // if destination is single top then find for existing target, if not found then create a new
-        // if destination is not single top then simplely create a new target instance
-        if (destination.isSingleTop()) {
-            target = (SingleSceneTransaction.SingleSceneTarget) transaction.getBackstack()
-                    .findFirst(t -> t.getTag().equals(destination.getId()))
-                    .orElse(createTarget(destination,options));
+        if (options.getPopBackStack()) {
+            transaction.popShow(destination.getId(),options);
+        }
+        else if (destination.isSingleTop()) {
+            transaction.showSingleTop(destination.getId(),()->createTarget(destination,options),options);
         }
         else {
-            target = createTarget(destination,options);
+            SingleSceneTransaction.SingleSceneTarget target = createTarget(destination,options);
+            transaction.show(target,options);
         }
-        transaction.begin().replace(target,enterAnimation,exitAnimation).commit();
     }
 
     /**
@@ -87,16 +81,11 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
      *
      * @param destination the destination to be shown next
      * @param options     the options containing routing configuration
-     * @see SingleSceneTransaction#popBackstack(String, RouterAnimation, RouterAnimation)
+     * @see SingleSceneTransaction#popHide(String, RouterOptions)
      */
     @Override
     public void popBackstack(Destination destination, RouterOptions options) {
-        String id = destination.getId();
-        String enterAnimationId = options.getPopEnterAnimation();
-        String exitAnimationId = options.getPopExitAnimation();
-        RouterAnimation enterAnimation = getAnimation(enterAnimationId);
-        RouterAnimation exitAnimation = getAnimation(exitAnimationId);
-        transaction.begin().popBackstack(id,enterAnimation,exitAnimation).commit();
+        transaction.popHide(destination.getId(),options);
     }
 
     /** {@inheritDoc} */
@@ -105,7 +94,7 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         String id = destination.getId();
         transaction.getBackstack()
                 .findFirst(target -> id.equals(target.getTag()))
-                .ifPresent(target -> transaction.doForcedShow(target));
+                .ifPresent(transaction::doForcedShow);
     }
 
     /** {@inheritDoc} */
@@ -114,7 +103,7 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         String id = destination.getId();
         transaction.getBackstack()
                 .findFirst(target -> id.equals(target.getTag()))
-                .ifPresent(target -> transaction.doForcedHide(target));
+                .ifPresent(transaction::doForcedHide);
     }
 
     /** {@inheritDoc} */
@@ -123,18 +112,14 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         String id = destination.getId();
         transaction.getBackstack()
                 .findFirst(target -> id.equals(target.getTag()))
-                .ifPresent(target -> transaction.doForcedDestroy(target));
+                .ifPresent(transaction::doForcedDestroy);
     }
 
-    /**
-     * {@code SingleSceneExecutor} does not implementes this method because
-     * screen hide transition and transaction is handled by either of the
-     * methods {@link #show(Destination, RouterOptions) show}
-     * or {@link #popBackstack(Destination, RouterOptions) popBackstack}
-     */
     /** {@inheritDoc} */
     @Override
-    public void hide(Destination destination, RouterOptions options) {}
+    public void hide(Destination destination, RouterOptions options) {
+        transaction.hide(destination.getId(),options);
+    }
 
     /**
      * Returns {@link RouterAnimation} byt name  or id from {@link RouterContext}
@@ -144,17 +129,12 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
      *          no animation found then {@link RouterAnimation#getNoOpAnimation() NO_OP} animation
      *          as default. Return value is always non-null
      * @see RouterContext#getAnimation(String)
+     * @deprecated since 1.1.0
      */
+    @Deprecated
     public RouterAnimation getAnimation(String id) {
         RouterContext context = getRouter().getContext();
         return Objects.requireNonNullElse(context.getAnimation(id),context.getAnimation(RouterAnimation.NO_OP));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        super.dispose();
-        transaction = null;
     }
 
     /**
@@ -176,6 +156,7 @@ public class SingleSceneScreenExecutor extends RouterExecutor {
         }
         SingleSceneTransaction.SingleSceneTarget target
                 = new LifecycleAwareControllerTarget(destination.getId(),controller);
+        target.setSingleTop(destination.isSingleTop());
         target.onCreate();
         return target;
     }

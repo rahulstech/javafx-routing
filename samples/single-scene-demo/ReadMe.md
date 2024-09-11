@@ -24,7 +24,7 @@ This advanced demo unlocks the full potential of JavaFx-Routing, empowering you 
     - Discover how to personalize navigation transition animations using Java and the [`RouterOptions`](../../library/src/main/java/rahulstech/jfx/routing/RouterOptions.java) class. Take control of the look and feel of your application's navigation flow.
 * **Dynamic Stage Titles: Reflecting Navigation Status**
     - Learn how to update the stage title in response to destination changes. Leverage the `title` attribute of destinations to set the desired title while navigating. If no title is specified, the destination's `id` is used for clarity.
-
+  
 **Ready to Explore?**
 
 Fire up the sample by executing the following command in your terminal from the root project directory:

@@ -3,6 +3,9 @@ package rahulstech.jfx.routing;
 import rahulstech.jfx.routing.util.StringUtil;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -24,22 +27,29 @@ import java.util.ResourceBundle;
  */
 public class RouterOptions {
 
-    private String enterAnimation;
+    private static final String KEY_ENTER_ANIMATION = "rahulstech.jfx.routeroptions.ENTER_ANIMATION";
 
-    private String exitAnimation;
+    private static final String KEY_EXIT_ANIMATION = "rahulstech.jfx.routeroptions.EXIT_ANIMATION";
 
-    private String popEnterAnimation;
+    private static final String KEY_POP_ENTER_ANIMATION = "rahulstech.jfx.routeroptions.POP_ENTER_ANIMATION";
 
-    private String popExitAnimation;
-    
-    private ResourceBundle bundle;
-    
-    private Charset charset;
+    private static final String KEY_POP_EXIT_ANIMATION = "rahulstech.jfx.routeroptions.POP_EXIT_ANIMATION";
+
+    private static final String KEY_RESOURCE_BUNDLE = "rahulstech.jfx.routeroptions.RESOURCE_BUNDLE";
+
+    private static final String KEY_CHARSET = "rahulstech.jfx.routeroptions.CHARSET";
+
+    private static final String KEY_POP_BACKSTACK = "rahulstech.jfx.routeroptions.POP_BACKSTACK";
+
+
+    final Map<String,Object> map = new HashMap<>();
 
     /**
      * Creates a new instance of {@code RouterOptions} with default settings.
      */
-    public RouterOptions() {}
+    public RouterOptions() {
+        this(null);
+    }
 
     /**
      * Creates a new instance of {@code RouterOptions} by copying the settings from another instance.
@@ -48,7 +58,9 @@ public class RouterOptions {
      * @see #apply(RouterOptions) 
      */
     public RouterOptions(RouterOptions from) {
-        apply(from);
+        if (null!=from) {
+            apply(from);
+        }
     }
 
     /**
@@ -57,12 +69,86 @@ public class RouterOptions {
      * @param from the {@code RouterOptions} instance to copy settings from
      */
     public void apply(RouterOptions from) {
-        enterAnimation = from.enterAnimation;
-        exitAnimation = from.exitAnimation;
-        popEnterAnimation = from.popEnterAnimation;
-        popExitAnimation = from.popExitAnimation;
-        bundle = from.bundle;
-        charset = from.charset;
+        if (null==from) {
+            throw new NullPointerException("source RouterOptions is null");
+        }
+        this.map.putAll(from.map);
+    }
+
+    /**
+     * Adds a new key-value pair
+     *
+     * @param key the key
+     * @param value the value
+     * @return this {@code RouterOptions} instance
+     * @since 2.0
+     */
+    public RouterOptions add(String key, Object value) {
+        if (StringUtil.isEmpty(key)) {
+            throw new IllegalArgumentException("key is empty");
+        }
+        map.put(key,value);
+        return this;
+    }
+
+    /**
+     * Return the value associated to the given key
+     *
+     * @param key the key
+     * @return the value associated to the key or {@code null}
+     * @param <T> the desired return type of value
+     * @throws ClassCastException if value can not be cast to return type
+     * @since 2.0
+     */
+    public <T> T get(String key) {
+        return get(key,null);
+    }
+
+    /**
+     * Returns the value associated to the key or the provided defaultValue if key does not exist
+     *
+     * @param key the key
+     * @param defaultValue the value to return if key does not exist
+     * @return the value associated to the key or the default value
+     * @param <T> the desired return type of value
+     * @throws ClassCastException if value can not be cast to return type
+     * @since 2.0
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key, T defaultValue) {
+        return (T) map.getOrDefault(key,defaultValue);
+    }
+
+    /**
+     * Returns the value associated to the key as {@link Optional}
+     *
+     * @param key the key
+     * @return non-null {@code Optional} containing the value or an empty Optional
+     * @param <T> the desired return type of the value
+     * @throws ClassCastException if value can not be cast to return type
+     * @since 2.0
+     */
+    public <T> Optional<T> getOptional(String key) {
+        return Optional.ofNullable(get(key));
+    }
+
+    /**
+     * Remove the value associated to the key and return the value
+     *
+     * @param key the key
+     * @return the value associated to the key or {@code null}
+     * @since 2.0
+     */
+    public Object remove(String key) {
+        return map.remove(key);
+    }
+
+    /**
+     * Removes all key-value pairs
+     * @since 2.0
+     */
+    public void clear() {
+        map.clear();
     }
 
     /**
@@ -71,7 +157,7 @@ public class RouterOptions {
      * @return the enter animation setting, or {@code null} if not set
      */
     public String getEnterAnimation() {
-        return enterAnimation;
+        return get(KEY_ENTER_ANIMATION);
     }
 
     /**
@@ -81,7 +167,7 @@ public class RouterOptions {
      * @return the enter animation setting, or {@code defaultValue} if not set
      */
     public String getEnterAnimation(String defaultValue) {
-        return StringUtil.isEmpty(enterAnimation) ? defaultValue : enterAnimation;
+        return get(KEY_ENTER_ANIMATION,defaultValue);
     }
 
     /**
@@ -91,8 +177,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setEnterAnimation(String enterAnimation) {
-        this.enterAnimation = enterAnimation;
-        return this;
+        return add(KEY_ENTER_ANIMATION,enterAnimation);
     }
 
     /**
@@ -101,7 +186,7 @@ public class RouterOptions {
      * @return the exit animation setting, or {@code null} if not set
      */
     public String getExitAnimation() {
-        return exitAnimation;
+        return get(KEY_EXIT_ANIMATION);
     }
 
     /**
@@ -111,7 +196,7 @@ public class RouterOptions {
      * @return the exit animation setting, or {@code defaultValue} if not set
      */
     public String getExitAnimation(String defaultValue) {
-        return StringUtil.isEmpty(exitAnimation) ? defaultValue : exitAnimation;
+        return get(KEY_EXIT_ANIMATION,defaultValue);
     }
 
     /**
@@ -121,8 +206,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setExitAnimation(String exitAnimation) {
-        this.exitAnimation = exitAnimation;
-        return this;
+        return add(KEY_EXIT_ANIMATION,exitAnimation);
     }
 
     /**
@@ -131,7 +215,7 @@ public class RouterOptions {
      * @return the pop enter animation setting, or {@code null} if not set
      */
     public String getPopEnterAnimation() {
-        return popEnterAnimation;
+        return get(KEY_POP_ENTER_ANIMATION);
     }
 
     /**
@@ -141,7 +225,7 @@ public class RouterOptions {
      * @return the pop enter animation setting, or {@code defaultValue} if not set
      */
     public String getPopEnterAnimation(String defaultValue) {
-        return StringUtil.isEmpty(popEnterAnimation) ? defaultValue : popEnterAnimation;
+        return get(KEY_POP_ENTER_ANIMATION,defaultValue);
     }
 
     /**
@@ -151,8 +235,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setPopEnterAnimation(String popEnterAnimation) {
-        this.popEnterAnimation = popEnterAnimation;
-        return this;
+        return add(KEY_POP_ENTER_ANIMATION,popEnterAnimation);
     }
 
     /**
@@ -161,7 +244,7 @@ public class RouterOptions {
      * @return the pop exit animation setting, or {@code null} if not set
      */
     public String getPopExitAnimation() {
-        return popExitAnimation;
+        return get(KEY_POP_EXIT_ANIMATION);
     }
 
     /**
@@ -171,7 +254,7 @@ public class RouterOptions {
      * @return the pop exit animation setting, or {@code defaultValue} if not set
      */
     public String getPopExitAnimation(String defaultValue) {
-        return StringUtil.isEmpty(popExitAnimation) ? defaultValue : popExitAnimation;
+        return get(KEY_POP_EXIT_ANIMATION,defaultValue);
     }
 
     /**
@@ -181,8 +264,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setPopExitAnimation(String popExitAnimation) {
-        this.popExitAnimation = popExitAnimation;
-        return this;
+        return add(KEY_POP_EXIT_ANIMATION,popExitAnimation);
     }
 
     /**
@@ -192,8 +274,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-        return this;
+        return add(KEY_RESOURCE_BUNDLE,bundle);
     }
 
     /**
@@ -201,7 +282,7 @@ public class RouterOptions {
      * @return the {@link ResourceBundle}, or {@code null} if not set
      */
     public ResourceBundle getBundle() {
-        return bundle;
+        return get(KEY_RESOURCE_BUNDLE);
     }
 
     /**
@@ -211,8 +292,7 @@ public class RouterOptions {
      * @return this {@code RouterOptions} instance for chaining
      */
     public RouterOptions setCharset(Charset charset) {
-        this.charset = charset;
-        return this;
+        return add(KEY_CHARSET,charset);
     }
 
     /**
@@ -221,6 +301,25 @@ public class RouterOptions {
      * @return the {@link Charset}, or {@code null} if not set
      */
     public Charset getCharset() {
-        return charset;
+        return get(KEY_CHARSET);
+    }
+
+    /**
+     * Sets whether it is a popping operation
+     *
+     * @param popping {@code true} means popping, {@code false} otherwise
+     * @return the current {@code RouterOptions} instance
+     */
+    public RouterOptions setPopBackstack(boolean popping) {
+        return add(KEY_POP_BACKSTACK,popping);
+    }
+
+    /**
+     * Returns whether it is a popping operation. Default value if {@code false} means not popping.
+     *
+     * @return {@code true} means popping, {@code false} otherwise
+     */
+    public boolean getPopBackStack() {
+        return get(KEY_POP_BACKSTACK,false);
     }
 }

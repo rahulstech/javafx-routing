@@ -12,7 +12,7 @@ public interface Disposable {
      * Note that this method must not throw any exception. dispose() may be
      * called more than one due to its hierarchy, but you must check first
      * if it's already deallocated or not. Many Disposables in this library
-     * usage a boolean flag disposed to check before deallocation.
+     * usage a boolean flag disposed to check before de-allocation.
      */
     void dispose();
 }

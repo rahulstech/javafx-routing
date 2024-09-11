@@ -12,7 +12,7 @@ allprojects {
     }
 
     group 'com.github.rahulstech'
-    version '1.0.0'
+    version '2.0.0-rc1'
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
@@ -78,8 +78,8 @@ subprojects {
 
                         scm {
                             connection = 'scm:git:git://github.com/rahulstech/javafx-routing.git'
-                            developerConnection = 'scm:git:git@github.com:rahulstech/javafx-routing.git'
-                            url = 'https://github.com/rahulstech/javafx-routing'
+                            developerConnection = 'scm:git:git://github.com/rahulstech/javafx-routing'
+                            url = 'https://rahulstech.github.com/javafx-routing'
                         }
                     }
                 }

@@ -64,7 +64,7 @@ public abstract class RouterExecutor implements Disposable {
     public abstract void hide(Destination destination, RouterOptions options);
 
     /**
-     * Removes and destory the top destination, handled by this executor, and shows the requeseted destination.
+     * Removes and destroy the top destination, handled by this executor, and shows the requested destination.
      *
      * @param destination the destination to be shown next
      * @param options     the options for routing
@@ -73,7 +73,7 @@ public abstract class RouterExecutor implements Disposable {
 
     /**
      * Invokes the lifecycle "show" event for the specified {@link Destination}.
-     * This method is not called during the normal lifecyle of the destination
+     * This method is not called during the normal lifecycle of the destination
      * i.e. during the {@link #show(Destination, RouterOptions) show}
      * or {@link #popBackstack(Destination, RouterOptions) popBackstack} . It triggers
      * lifecycle "show" event on an existing state of the destination. If no
@@ -85,7 +85,7 @@ public abstract class RouterExecutor implements Disposable {
 
     /**
      * Invokes the lifecycle "hide" event for the specified {@link Destination}
-     * This method is not called during the normal lifecyle of the destination
+     * This method is not called during the normal lifecycle of the destination
      * i.e. during the {@link #hide(Destination, RouterOptions) hide}
      * or {@link #popBackstack(Destination, RouterOptions) popBackstack}. It triggers
      * lifecycle "hide" event on an existing state of the destination. If no
@@ -97,7 +97,7 @@ public abstract class RouterExecutor implements Disposable {
 
     /**
      * Invokes the lifecycle "destroy" event for the specified {@link Destination}.
-     * This method is not called during the normal lifecyle of the destination
+     * This method is not called during the normal lifecycle of the destination
      * i.e. during the {@link #popBackstack(Destination, RouterOptions) popBackstack}. It triggers
      * lifecycle "destroy" event on an existing state of the destination. If no
      * state exists then nothing happens.
