@@ -1,5 +1,6 @@
 package rahulstech.jfx.routing.backstack;
 
+import javafx.application.Platform;
 import rahulstech.jfx.routing.util.Disposable;
 
 import java.lang.ref.WeakReference;
@@ -370,34 +371,42 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
 
         @Override
         public void onBackstackTopChanged(Backstack<E> backstack, E entry) {
-            BackstackCallback<E> callback = get();
-            if (null != callback) {
-                callback.onBackstackTopChanged(backstack,entry);
-            }
+            Platform.runLater(() -> {
+                BackstackCallback<E> callback = get();
+                if (null != callback) {
+                    callback.onBackstackTopChanged(backstack,entry);
+                }
+            });
         }
 
         @Override
         public void onPushedMultiple(Backstack<E> backstack, List<E> entries) {
-            BackstackCallback<E> callback = get();
-            if (null != callback) {
-                callback.onPushedMultiple(backstack,entries);
-            }
+            Platform.runLater(() -> {
+                BackstackCallback<E> callback = get();
+                if (null != callback) {
+                    callback.onPushedMultiple(backstack,entries);
+                }
+            });
         }
 
         @Override
         public void onPoppedMultiple(Backstack<E> backstack, List<E> entries) {
-            BackstackCallback<E> callback = get();
-            if (null != callback) {
-                callback.onPoppedMultiple(backstack,entries);
-            }
+            Platform.runLater(() -> {
+                BackstackCallback<E> callback = get();
+                if (null != callback) {
+                    callback.onPoppedMultiple(backstack,entries);
+                }
+            });
         }
 
         @Override
         public void onPoppedSingle(Backstack<E> backstack, E entry) {
-            BackstackCallback<E> callback = get();
-            if (null != callback) {
-                callback.onPoppedSingle(backstack,entry);
-            }
+            Platform.runLater(() -> {
+                BackstackCallback<E> callback = get();
+                if (null != callback) {
+                    callback.onPoppedSingle(backstack,entry);
+                }
+            });
         }
 
         @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
