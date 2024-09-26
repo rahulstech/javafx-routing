@@ -18,13 +18,17 @@ public class NestedContentController extends SimpleLifecycleAwareController {
         context = new NestedRouterDemoRouterContext();
         root.setContext(context);
 
-        setRoot(root);
-    }
+        // parent Router is directly added to the child Router
+        root.routerProperty().addListener((ov,oldValue,newValue) -> {
+            if (null != oldValue) {
+                oldValue.setParentRouter(null);
+            }
+            if (null != newValue) {
+                newValue.setParentRouter(getRouter());
+            }
+        });
 
-    @Override
-    public void onLifecycleInitialize() {
-        super.onLifecycleInitialize();
-        context.setParentRouter(getRouter());
+        setRoot(root);
     }
 
     @Override

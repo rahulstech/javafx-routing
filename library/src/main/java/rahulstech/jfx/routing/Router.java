@@ -72,6 +72,8 @@ public class Router implements Disposable {
 
     private Destination homeDestination;
 
+    private Router parentRouter;
+
     /**
      * Name or id of the home destination enter animation. if
      * nothing is specified then default enter animation is used
@@ -136,6 +138,24 @@ public class Router implements Disposable {
     /////////////////////////////////////////////////////////////
     //                     Getter and Setts                   //
     ///////////////////////////////////////////////////////////
+
+    /**
+     * Sets the parent {@code Router} of this Router, if any
+     *
+     * @param parentRouter the parent {@code Router} instnace or {@code null}
+     */
+    public void setParentRouter(Router parentRouter) {
+        this.parentRouter = parentRouter;
+    }
+
+    /**
+     * Returns the associated parent {@code Router}
+     *
+     * @return an instance of {@code Router} or {@code null}
+     */
+    public Router getParentRouter() {
+        return parentRouter;
+    }
 
     /**
      * Returns {@link RouterContext} instance associated with this {@code Router}

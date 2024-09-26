@@ -2,6 +2,7 @@ package rahulstech.jfx.routing.backstack;
 
 import rahulstech.jfx.routing.util.Disposable;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,10 +26,34 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
 
     List<E> backstack = new LinkedList<>();
 
+    List<BackstackCallback<E>> callbacks = new LinkedList<>();
+
+    private final WrappedBackstackCallback wrappedCallback = new WrappedBackstackCallback();
+
     /**
      * Creates new {@code Backstack} instance
      */
     public Backstack() {}
+
+    /**
+     * Registers a {@link BackstackCallback} to this {@code Backstack}
+     *
+     * @param callback the {@code BackstackCallback}
+     * @since 2.0
+     */
+    public void registerBackstackCallback(BackstackCallback<E> callback) {
+        callbacks.add(new WeakBackstackCallback(callback));
+    }
+
+    /**
+     * Unregisters a {@link BackstackCallback} from this {@code Backstack}
+     *
+     * @param callback the {@code BackstackCallback}
+     * @since 2.0
+     */
+    public void unregisterBackstackCallback(BackstackCallback<E> callback) {
+        callbacks.remove(callback);
+    }
 
     /**
      * Add a new entry to the top
@@ -41,6 +66,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             throw new NullPointerException("can not add null entry to backstack");
         }
         backstack.add(0,entry);
+        wrappedCallback.onBackstackTopChanged(this,entry);
     }
 
     /**
@@ -53,8 +79,12 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (null==entry) {
             throw new NullPointerException("can not add null entry to backstack");
         }
+        E top = peekBackstackEntry();
         backstack.remove(entry);
         backstack.add(0,entry);
+        if (top!=entry) {
+            wrappedCallback.onBackstackTopChanged(this,entry);
+        }
     }
 
     /**
@@ -80,7 +110,12 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (isEmpty()) {
             throw new NoSuchElementException("can not pop from empty backstack");
         }
-        return backstack.remove(0);
+        E entry = backstack.remove(0);
+        wrappedCallback.onPoppedSingle(this,entry);
+        if (!isEmpty()) {
+            wrappedCallback.onBackstackTopChanged(this,peekBackstackEntry());
+        }
+        return entry;
     }
 
 
@@ -100,14 +135,20 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             return Optional.empty();
         }
         Iterator<E> it = backstack.iterator();
+        E entry = null;
         while (it.hasNext()) {
             E e = it.next();
             if (check.test(e)) {
                 it.remove();
-                return Optional.of(e);
+                entry = e;
+                break;
             }
         }
-        return Optional.empty();
+        if (null==entry) {
+            return Optional.empty();
+        }
+        wrappedCallback.onPoppedSingle(this,entry);
+        return Optional.of(entry);
     }
 
     /**
@@ -162,6 +203,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             popentries.clear();
             return Collections.emptyList();
         }
+        wrappedCallback.onPoppedMultiple(this,Collections.unmodifiableList(popentries));
         return popentries;
     }
 
@@ -193,7 +235,9 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
      * @param entry the entry to remove
      */
     public void remove(E entry) {
-        backstack.remove(entry);
+        if (backstack.remove(entry)) {
+            wrappedCallback.onPoppedSingle(this,entry);
+        }
     }
 
     /**
@@ -269,13 +313,107 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             // it's already disposed
             return;
         }
+        callbacks.clear();
         forEach(Disposable::dispose);
         clear();
         backstack = null;
+        callbacks = null;
     }
 
     @Override
     public String toString() {
         return null==backstack ? "[]" : backstack.toString();
+    }
+
+    private class WrappedBackstackCallback implements  BackstackCallback<E> {
+
+        @Override
+        public void onBackstackTopChanged(Backstack<E> backstack, E entry) {
+            for (BackstackCallback<E> callback : callbacks) {
+                callback.onBackstackTopChanged(backstack,entry);
+            }
+        }
+
+        @Override
+        public void onPushedMultiple(Backstack<E> backstack, List<E> entries) {
+            for (BackstackCallback<E> callback : callbacks) {
+                callback.onPushedMultiple(backstack,entries);
+            }
+        }
+
+        @Override
+        public void onPoppedMultiple(Backstack<E> backstack, List<E> entries) {
+            for (BackstackCallback<E> callback : callbacks) {
+                callback.onPoppedMultiple(backstack,entries);
+            }
+        }
+
+        @Override
+        public void onPoppedSingle(Backstack<E> backstack, E entry) {
+            for (BackstackCallback<E> callback : callbacks) {
+                callback.onPoppedSingle(backstack,entry);
+            }
+        }
+    }
+
+    private class WeakBackstackCallback implements BackstackCallback<E> {
+
+        final WeakReference<BackstackCallback<E>> wrapped;
+
+        WeakBackstackCallback(BackstackCallback<E> callback) {
+            wrapped = new WeakReference<>(callback);
+        }
+
+        public BackstackCallback<E> get() {
+            return wrapped.get();
+        }
+
+        @Override
+        public void onBackstackTopChanged(Backstack<E> backstack, E entry) {
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onBackstackTopChanged(backstack,entry);
+            }
+        }
+
+        @Override
+        public void onPushedMultiple(Backstack<E> backstack, List<E> entries) {
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPushedMultiple(backstack,entries);
+            }
+        }
+
+        @Override
+        public void onPoppedMultiple(Backstack<E> backstack, List<E> entries) {
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPoppedMultiple(backstack,entries);
+            }
+        }
+
+        @Override
+        public void onPoppedSingle(Backstack<E> backstack, E entry) {
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPoppedSingle(backstack,entry);
+            }
+        }
+
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+        @Override
+        public boolean equals(Object obj) {
+            BackstackCallback<E> org = get();
+            return Objects.equals(org,obj);
+        }
+
+        @Override
+        public int hashCode() {
+            BackstackCallback<E> org = get();
+            if (null==org) {
+                return 0;
+            }
+            return org.hashCode();
+        }
     }
 }

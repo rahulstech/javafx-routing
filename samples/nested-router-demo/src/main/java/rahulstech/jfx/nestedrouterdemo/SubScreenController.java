@@ -85,7 +85,6 @@ public class SubScreenController extends SimpleLifecycleAwareController {
     }
 
     private Router getParentRouter() {
-        NestedRouterDemoRouterContext context = (NestedRouterDemoRouterContext) getRouter().getContext();
-        return context.getParentRouter();
+        return getRouter().getParentRouter();
     }
 }

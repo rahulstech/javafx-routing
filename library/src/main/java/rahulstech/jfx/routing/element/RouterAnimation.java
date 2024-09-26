@@ -225,10 +225,11 @@ public abstract class RouterAnimation {
      *
      * @param node the target {@link Node}
      * @return {@literal true} if any pending animation found, {@literal false} otherwise
-     * @throws NullPointerException if node is null
      */
     public static boolean hasPendingAnimation(Node node) {
-        Objects.requireNonNull(node, "node is null");
+        if (null==node) {
+            return false;
+        }
         return node.getProperties().containsKey(RouterAnimation.class);
     }
 
@@ -237,10 +238,11 @@ public abstract class RouterAnimation {
      *
      * @param node the target node {@link Node}
      * @return instance of {@link RouterAnimation} if available or null
-     * @throws NullPointerException if node is null
      */
     public static RouterAnimation getPendingAnimation(Node node) {
-        Objects.requireNonNull(node, "node is null");
+        if (null==node) {
+            return null;
+        }
         return (RouterAnimation) node.getProperties().get(RouterAnimation.class);
     }
 
@@ -249,10 +251,11 @@ public abstract class RouterAnimation {
      *
      * @param node the target {@link Node}
      * @return instance of {@link RouterAnimation} if found or null
-     * @throws NullPointerException if node is null
      */
     public static RouterAnimation removePendingAnimation(Node node) {
-        Objects.requireNonNull(node, "node is null");
+        if (null==node) {
+            return null;
+        }
         return (RouterAnimation) node.getProperties().remove(RouterAnimation.class);
     }
 
@@ -262,10 +265,11 @@ public abstract class RouterAnimation {
      *
      * @param node the target {@link Node}
      * @param animation the {@link RouterAnimation} instance to check
-     * @throws NullPointerException if node is null
      */
     public static void removePendingAnimation(Node node, RouterAnimation animation) {
-        Objects.requireNonNull(node, "node is null");
+        if (null==node) {
+            return;
+        }
         node.getProperties().remove(RouterAnimation.class, animation);
     }
 
