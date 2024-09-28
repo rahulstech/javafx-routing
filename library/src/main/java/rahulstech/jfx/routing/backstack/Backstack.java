@@ -135,6 +135,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (isEmpty()) {
             return Optional.empty();
         }
+        final E top = peekBackstackEntry();
         Iterator<E> it = backstack.iterator();
         E entry = null;
         while (it.hasNext()) {
@@ -149,6 +150,12 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             return Optional.empty();
         }
         wrappedCallback.onPoppedSingle(this,entry);
+        if (!isEmpty()) {
+            final E newTop = peekBackstackEntry();
+            if (top != newTop) {
+                wrappedCallback.onBackstackTopChanged(this, newTop);
+            }
+        }
         return Optional.of(entry);
     }
 
@@ -183,6 +190,7 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
         if (isEmpty()) {
             return Collections.emptyList();
         }
+        final E top = peekBackstackEntry();
         ArrayList<E> popentries = new ArrayList<>();
         boolean found = false;
         ListIterator<E> it = backstack.listIterator();
@@ -205,6 +213,12 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
             return Collections.emptyList();
         }
         wrappedCallback.onPoppedMultiple(this,Collections.unmodifiableList(popentries));
+        if (!isEmpty()) {
+            final E newTop = peekBackstackEntry();
+            if (top != newTop) {
+                wrappedCallback.onBackstackTopChanged(this, newTop);
+            }
+        }
         return popentries;
     }
 
@@ -330,30 +344,39 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
 
         @Override
         public void onBackstackTopChanged(Backstack<E> backstack, E entry) {
-            for (BackstackCallback<E> callback : callbacks) {
-                callback.onBackstackTopChanged(backstack,entry);
-            }
+            Platform.runLater(() -> {
+                for (BackstackCallback<E> callback : callbacks) {
+                    callback.onBackstackTopChanged(backstack,entry);
+                }
+            });
+
         }
 
         @Override
         public void onPushedMultiple(Backstack<E> backstack, List<E> entries) {
-            for (BackstackCallback<E> callback : callbacks) {
-                callback.onPushedMultiple(backstack,entries);
-            }
+            Platform.runLater(() -> {
+                for (BackstackCallback<E> callback : callbacks) {
+                    callback.onPushedMultiple(backstack,entries);
+                }
+            });
         }
 
         @Override
         public void onPoppedMultiple(Backstack<E> backstack, List<E> entries) {
-            for (BackstackCallback<E> callback : callbacks) {
-                callback.onPoppedMultiple(backstack,entries);
-            }
+            Platform.runLater(() -> {
+                for (BackstackCallback<E> callback : callbacks) {
+                    callback.onPoppedMultiple(backstack,entries);
+                }
+            });
         }
 
         @Override
         public void onPoppedSingle(Backstack<E> backstack, E entry) {
-            for (BackstackCallback<E> callback : callbacks) {
-                callback.onPoppedSingle(backstack,entry);
-            }
+            Platform.runLater(() -> {
+                for (BackstackCallback<E> callback : callbacks) {
+                    callback.onPoppedSingle(backstack,entry);
+                }
+            });
         }
     }
 
@@ -371,42 +394,34 @@ public class Backstack<E extends BackstackEntry> implements Disposable {
 
         @Override
         public void onBackstackTopChanged(Backstack<E> backstack, E entry) {
-            Platform.runLater(() -> {
-                BackstackCallback<E> callback = get();
-                if (null != callback) {
-                    callback.onBackstackTopChanged(backstack,entry);
-                }
-            });
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onBackstackTopChanged(backstack,entry);
+            }
         }
 
         @Override
         public void onPushedMultiple(Backstack<E> backstack, List<E> entries) {
-            Platform.runLater(() -> {
-                BackstackCallback<E> callback = get();
-                if (null != callback) {
-                    callback.onPushedMultiple(backstack,entries);
-                }
-            });
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPushedMultiple(backstack,entries);
+            }
         }
 
         @Override
         public void onPoppedMultiple(Backstack<E> backstack, List<E> entries) {
-            Platform.runLater(() -> {
-                BackstackCallback<E> callback = get();
-                if (null != callback) {
-                    callback.onPoppedMultiple(backstack,entries);
-                }
-            });
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPoppedMultiple(backstack,entries);
+            }
         }
 
         @Override
         public void onPoppedSingle(Backstack<E> backstack, E entry) {
-            Platform.runLater(() -> {
-                BackstackCallback<E> callback = get();
-                if (null != callback) {
-                    callback.onPoppedSingle(backstack,entry);
-                }
-            });
+            BackstackCallback<E> callback = get();
+            if (null != callback) {
+                callback.onPoppedSingle(backstack,entry);
+            }
         }
 
         @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
