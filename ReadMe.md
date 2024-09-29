@@ -1,7 +1,7 @@
 ## JavaFx Routing: Elegant Navigation for JavaFX Applications
 
 
-[![Javadocs](https://img.shields.io/badge/javadoc-1.0.0-brightgreen.svg)](https://jitpack.io/com/github/rahulstech/javafx-routing/1.0.0/javadoc/)
+[![Javadocs](https://img.shields.io/badge/javadoc-2.0.0-brightgreen.svg)](https://jitpack.io/com/github/rahulstech/javafx-routing/2.0.0/javadoc/)
 [![](https://jitpack.io/v/rahulstech/javafx-routing.svg)](https://jitpack.io/#rahulstech/javafx-routing)
 [![](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
