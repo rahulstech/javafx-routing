@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<router xmlns="https://github.com/rahulstech/javafx-routing"
+        home="page1">
+
+    <destination id="page1"
+                 singleTop="true"
+                 title="Page 1"
+                 controllerClass="rahulstech.jfx.routing.demo.backstackcallback.PageController"/>
+
+    <destination id="page2"
+                 singleTop="true"
+                 title="Page 2"
+                 controllerClass="rahulstech.jfx.routing.demo.backstackcallback.PageController"/>
+
+    <destination id="page3"
+                 singleTop="true"
+                 title="Page 3"
+                 controllerClass="rahulstech.jfx.routing.demo.backstackcallback.PageController"/>
+
+
+
+</router>

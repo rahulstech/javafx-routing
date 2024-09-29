@@ -1,7 +1,3 @@
-plugins {
-    id "application"
-}
-
 application {
     mainModule = "singlescenedemo"
     mainClass = "rahulstech.jfx.singlescenedemo.DemoApplication"

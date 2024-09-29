@@ -1,4 +1,4 @@
-### v2.0.0-rc2
+### v2.0.0
 **Features:**
 1. **BackstackCallback:** Added callback to listen for different backstack operations like push, pop and multiple pop etc.
 2. **Parent Router:** Added reference to the parent [Router](/library/src/main/java/rahulstech/jfx/routing/Router.java) inside a **Router**.

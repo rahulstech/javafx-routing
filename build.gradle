@@ -12,7 +12,7 @@ allprojects {
     }
 
     group 'com.github.rahulstech'
-    version '2.0.0-rc2'
+    version '2.0.0'
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
@@ -29,6 +29,10 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.openjfx.javafxplugin'
+
+    if (project.name.endsWith("-demo")) {
+        apply plugin: 'application'
+    }
 
     if (project.name == 'library') {
         apply plugin: 'maven-publish'

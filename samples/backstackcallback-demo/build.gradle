@@ -1,0 +1,8 @@
+application {
+    mainModule = 'demo.backstackcallback'
+    mainClass = 'rahulstech.jfx.routing.demo.backstackcallback.DemoApplication'
+}
+
+dependencies {
+    implementation project(':library')
+}

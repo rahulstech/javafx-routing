@@ -1,6 +1,5 @@
 ## JavaFx Routing: Elegant Navigation for JavaFX Applications
 
----
 
 [![Javadocs](https://img.shields.io/badge/javadoc-1.0.0-brightgreen.svg)](https://jitpack.io/com/github/rahulstech/javafx-routing/1.0.0/javadoc/)
 [![](https://jitpack.io/v/rahulstech/javafx-routing.svg)](https://jitpack.io/#rahulstech/javafx-routing)
@@ -69,6 +68,7 @@ Explore the various functionalities of `javafx-routing` through these detailed e
 2. [Advance Demo](./samples/single-scene-demo/ReadMe.md)
 3. [Nested Router Demo](./samples/nested-router-demo/ReadMe.md)
 4. [History Demo](./samples/history-demo/ReadMe.md)
+5. [Navigation UI Demo](/samples/backstackcallback-demo/ReadMe.md)
 
 **Change Log:**  
 Track the changes and features added in each version [here](CHANGELOG.md)

@@ -547,7 +547,7 @@ public class Router implements Disposable {
     }
 
     /**
-     * Navigate to the destination with data or throws execution if not destination found for id
+     * Navigate to the destination with data or throws exception if no destination found for id
      *
      * @param id the target destination id
      * @param data the destination data
@@ -559,22 +559,34 @@ public class Router implements Disposable {
     }
 
     /**
+     * Navigate to the destination with navigation realted options or throws exception if no destination found
+     * 
+     * @param id the target destination id
+     * @param options the options
+     * @throws IllegalStateException if no destination found for id
+     * @see #moveto(Destination, RouterArgument, RouterOptions) 
+     */
+    public void moveto(String id, RouterOptions options) {
+        moveto(id,null,options);
+    }
+
+    /**
      * Navigate to the destination with data and navigation related options
-     * or throws exception if not destination found for the id.
+     * or throws exception if no destination found for the id.
      *
      * @param id the target destination id
      * @param data the destination data
      * @param options options for navigation
      * @throws IllegalStateException if no destination found for id
-     * @see #moveto(Destination, RouterArgument, RouterOptions)
+     * @see #moveto(Destination, RouterArgument, RouterOptions) 
      */
     public void moveto(String id, RouterArgument data, RouterOptions options) {
         Destination dest = getDestinationOrThrow(id);
-        moveForward(dest,options,data);
+        moveto(dest,data,options);
     }
 
     /**
-     * Navigate to the destination.
+     * Navigate to the destination with data nda navigation related options
      *
      * @param target the target {@link  Destination} must non-null
      * @param data {@link RouterArgument} instance as destination data, may be null
